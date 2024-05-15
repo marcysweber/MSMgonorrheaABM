@@ -1,0 +1,6 @@
+#
+#Mon Oct 16 14:46:47 EDT 2023
+incoming=tcp\://127.0.0.1\:5555
+outgoing=tcp\://127.0.0.1\:5556
+scenario=../SimpleSIR.rs
+working.directory=../

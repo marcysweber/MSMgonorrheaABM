@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<parameters>
+					<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
+						defaultValue="__NULL__"
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+				<parameter name="annual_contacts" displayName="Mean Contacts per Year" type="double" 
+						defaultValue="5.0" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+											/>
+				<parameter name="population_size" displayName="Uninfected Population Size" type="int" 
+						defaultValue="100000" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+				<parameter name="recovery_lambda" displayName="Recovery Lambda" type="double" 
+						defaultValue="4.0" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
+											/>
+				<parameter name="infected_count_init" displayName="Number Infected at Initialization" type="int" 
+						defaultValue="5000" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+		</parameters>
+
+

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$USER_HOME$/Downloads/cglib-3.3.0.jar!/" />
+    <libelement value="file:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/bin" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/commons-cli-1.3.1.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/commons-logging-1.1.2.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/javassist-3.17.1-GA.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/jpf-boot.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/jpf.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-1.2-api-2.17.2.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-api-2.17.2.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-core-2.17.2.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/saf.core.runtime.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xmlpull-1.1.3.1.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xpp3_min-1.1.4c.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xstream-1.4.19.jar!/" />
+    <libelement value="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.bin_and_src_2.10.0/repast.simphony.bin_and_src.jar!/" />
+    <varelement var="file:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/bin" value="link:runtimebin" />
+    <conelement value="REPAST_SIMPHONY_SUPPORT" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/test" expected_position="1" />
+      <src_folder value="GROOVY_DSL_SUPPORT" expected_position="3" />
+      <src_folder value="GROOVY_SUPPORT" expected_position="4" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../repast.simphony">
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.R/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.batch/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.batch/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.batch/test_scripts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.chart/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.core/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.core/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.core/test_watcher" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.data.ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.data.ui/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.data/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.data/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.dataLoader.ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.dataLoader/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.dataLoader/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch.ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch.ui/src-standalone" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch.ui/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.distributed.batch/test_data/JZombies/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.eclipse/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.eclipse/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.essentials/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.essentials/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.freezedry/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gis.visualization/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gis.visualization/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gis/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gis/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.groovy/docs" isTestSource="false" packagePrefix="repast.simphony.groovy" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.gui/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.integration/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.integration/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.jasperreports/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.jdbcfreezedryer/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.jdbcfreezedryer/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.jung/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.pajek/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.plugin.util/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.builder/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.builder/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.ide/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.ide/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.runtime/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.relogo.runtime/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.runtime/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.scenario/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.scenario/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.spreadsheet/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.sql/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.diagram/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.diagram/src-gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.diagram/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.diagram/test-data" isTestSource="false" packagePrefix="sample5.relogo" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.edit/src-gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.generator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.generator/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.model/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.model/src-gen" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.visualization/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts.visualization/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.statecharts/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.userpanel.ui/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.visualization/old_test/repast/simphony" isTestSource="false" packagePrefix="repast" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.visualization/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/repast.simphony.weka/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../repast.simphony/saf.core.ui/osx" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="liberica-11" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="REPAST_SIMPHONY_SUPPORT" level="application" />
+    <orderEntry type="module-library">
+      <library name="junit4">
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cglib-3.3.0.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/cglib-3.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="runtimebin">
+        <CLASSES>
+          <root url="file:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/bin" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-cli-1.3.1.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/commons-cli-1.3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging-1.1.2.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/commons-logging-1.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javassist-3.17.1-GA.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/javassist-3.17.1-GA.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jpf-boot.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/jpf-boot.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jpf.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/jpf.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-1.2-api-2.17.2.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-1.2-api-2.17.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-api-2.17.2.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-api-2.17.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-core-2.17.2.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/log4j-core-2.17.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="saf.core.runtime.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/saf.core.runtime.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xmlpull-1.1.3.1.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xmlpull-1.1.3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xpp3_min-1.1.4c.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xpp3_min-1.1.4c.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xstream-1.4.19.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/lib/xstream-1.4.19.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="repast.simphony.bin_and_src.jar">
+        <CLASSES>
+          <root url="jar:///Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.bin_and_src_2.10.0/repast.simphony.bin_and_src.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="colt" level="project" />
+  </component>
+</module>

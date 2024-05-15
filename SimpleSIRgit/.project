@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>SimpleSIR</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>repast.simphony.statecharts.diagram.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>repast.simphony.eclipse.repast_simphony_nature</nature>
+		<nature>repast.simphony.statecharts.diagram.repast_simphony_statechart_nature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>repast.simphony</name>
+			<type>2</type>
+			<location>/Users/me597/Documents/GitHub/repast.simphony</location>
+		</link>
+		<link>
+			<name>repast.simphony.batch</name>
+			<type>2</type>
+			<location>/Users/me597/Documents/GitHub/repast.simphony/repast.simphony.batch</location>
+		</link>
+		<link>
+			<name>repast.simphony.runtime</name>
+			<type>2</type>
+			<location>/Users/me597/Documents/GitHub/repast.simphony/repast.simphony.runtime</location>
+		</link>
+		<link>
+			<name>runtimebin</name>
+			<type>2</type>
+			<location>/Applications/Repast Simphony 2.10.0/Eclipse.app/Contents/Eclipse/plugins/repast.simphony.runtime_2.10.0/bin</location>
+		</link>
+	</linkedResources>
+</projectDescription>
