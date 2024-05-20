@@ -1,11 +1,19 @@
 package simpleSIR;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -101,7 +109,12 @@ public class BatchRun {
 
 		System.out.println("completed sweep!");
 		
-		combineCSVs(batchDirPath, "sweep", resistance, 0);
+		try {
+			combineCSVs(batchDirPath, "sweep", resistance, 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -398,7 +411,12 @@ public class BatchRun {
 		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560));
 		System.out.println("completed " + reps + " runs!");
 		
-		combineCSVs(batchDirPath, counterfactual, resistance, yearX);
+		try {
+			combineCSVs(batchDirPath, counterfactual, resistance, yearX);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -508,7 +526,8 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		String dirname = "/Users/me597/Documents/output/output_" + fullDate +"_6_";
+		String dirname = "/Users/me597/Documents/output/output_" + fullDate +"_3_";
+		
 		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug2_";
 
 		//String filename = "SimpleSIR_custom_output_MAY_13_2024_overnight_";
@@ -523,236 +542,126 @@ public class BatchRun {
 		
 		dirname += String.valueOf(yearX);		
 		
+		//for debugging large number of files: 
+		dirname = "/Users/me597/Documents/output/output_MAY_15_2024_6_sweep_none_0";
+
+		
 		new File(dirname).mkdir();
 		
 		return dirname + "/";
 		
 	}
 	
-	public void combineCSVs(String dirpath, String counterfactual, String resistance, int yearX) {
+	public void combineCSVs(String dirpath, String counterfactual, String resistance, int yearX) throws IOException {
         // Directory containing CSV files
         File directory = new File(dirpath);
+        
+        if (!directory.exists() || !directory.isDirectory()) {
+            throw new IllegalArgumentException("The specified path is not a valid directory: " + dirpath);
+        }
 
         // Combined CSV file
-        File combinedFile = new File(dirpath + counterfactual + resistance + yearX + "combined.csv");
+        String combinedFile = (dirpath + counterfactual + resistance + yearX + "combined.csv");
+       
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
+        	boolean headerWritten = false;
+        	//CSVWriter CSVwriter = new CSVWriter(writer);
 
-        try {
-            // Create a writer for the combined file
-            FileWriter writer = new FileWriter(combinedFile);
-            CSVWriter CSVwriter = new CSVWriter(writer);
-            String[] header = { 
-	        		"RunNumber", 
-	        		"seed",
-	        		"counterfactual",
-	        		"InitialInfected",
-	        		
-	        		"TransmissionMSM",
-	        		"TransmissionMSW",
-	        		"TransmissionF",
-	        		
-	        		"RecoveryLambda",
-	        		
-	        		"ProbSymptomaticMSM",
-	        		"ProbSymptomaticMSW",
-	        		"ProbSymptomaticF",
-	        		
-	        		"ScreenIntervalMSM",
-	        		"ScreenIntervalMSW",
-	        		"ScreenIntervalW",
+        	//
+        	//	        for (File csvFile : directory.listFiles()) {
+        	//	        	if (csvFile.isFile() && csvFile.getName().endsWith(".csv")) {
+        	//	        		try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))){
+        	//	        			reader.readLine();
+        	//	        			
+        	//	        			String line;
+        	//	        			
+        	//	        		 	while ((line = reader.readLine()) != null) {
+        	//                    		writer.write(line + "\n");
+        	//                    	}
+        	//                    	
+        	//                    	reader.close();
+        	//	        			
+        	//	        		} catch (IOException e) {
+        	//	        			e.printStackTrace();
+        	//	        		}
+        	//	        	}
+        	//	        }
 
-	        		
-	        		"DelayToSeekCareMSM",
-	        		"DelayToSeekCareMSW",
-	        		"DelayToSeekCareF",
+        	List<Path> csvfiles = Files.list(Paths.get(dirpath)).filter(p -> !p.getFileName().toString().contains("combined")).collect(Collectors.toList());
+        	
+        	if (csvfiles.isEmpty()) {
+        		throw new FileNotFoundException("No CSV files found in directory: " + dirpath);
+        	}
 
-	        		"DelayToRetreatmentMSM",
-	        		"DelayToRetreatmentMSW",
-	        		"DelayToRetreatmentF",
+        	for (Path csvFile : csvfiles) {
+        		System.out.println("Reading from " + csvFile.getFileName());
+        		try (BufferedReader reader = Files.newBufferedReader(csvFile)){
+        			String line;
+        			boolean isFirstLine = true;
 
-	        		"PercentResistantA",
-	        		"BeginImportingB",
-	        		"ImportingBInterval",
-	        		"DSTsensitivity", 
-	        		"DSTspecificity",
-	        		"CareCost",
-	        		"TestCost",
-	        		"StrainTestCost",
-	        		"DrugATreatmentCost",
-	        		"DrugBTreatmentCost",
-	        		"DrugXTreatmentCost",
-	        		"DrugETreatmentCost",
-	        		"tick", 
-	        		"Prevalence",
-	        		"Incidence",
-	        		"ResistAIncidence",
-	        		"ResistBIncidence",
-	        		"ResistBothIncidence",
-	        		"SymptomProportion",
-	        		"Treatments",
-	        		"FailedTreatments",
-	        		"Detected",
-	        		"DetectedAndSymptoms",
-	        		"DetectedThruScreen",
-//	        		"KnownFailedTreatments",
-//	        		"KnownFailedTreatmentsA",
-//	        		"KnownFailedTreatmentsB",
-//	        		"KnownFailedTreatmentsBoth",
-	        		"SuccessTreatmentsA",
-	        		"SuccessTreatmentsB",
-	        		"SuccessTreatmentsX",
-	        		"AttemptTreatmentsA",
-	        		"AttemptTreatmentsB",
-	        		"AttemptTreatmentsX",
-	        		"UsageofErtapenem",
-	        		"SurveillanceEstPropResistA",
-	        		"SurveillanceEstPropResistB",
-	        		"SurveillanceEstPropResistBoth",
-	        		"SwitchedToB",
-	        		"SwitchedToX",
-	        		"AnnualMonetaryCost",
-	        		"AnnualQALYsLost",
-	        		
-	        		//MSM output
-	        		"MSMPopSize",
-	    			 "prevMSM",
-	    			 "incMSM",
-	    			 "detectedIncMSM",
-	    			 "detectedAndSymptomsMSM",
-	    			 "resistAIncidenceMSM",
-	    			 "resistBIncidenceMSM",
-	    			 "resistBothIncidenceMSM",
-//	    			 "knownFailedTreatmentsMSM",
-//	    			 "knownFailedTreatmentsBMSM",
-//	    			 "knownFailedTreatmentsBothMSM",
-	    			 "successTreatmentsAMSM",
-	    			 "successTreatmentsBMSM", 
-	    			 "successTreatmentsXMSM",
-	    			 "attemptTreatmentsAMSM",
-	    			 "attemptTreatmentsBMSM",
-	    			 "attemptTreatmentsXMSM",
-	    			 "usageEMSM",
-	    			 "monetaryCostMSM",
-	    			 "QALYcostMSM",
-	    			
-	    			"MSMWPopSize",
-	    			 "prevMSMW",
-	    			"incMSMW",
-	    			"detectedIncMSMW",
-	    			 "detectedAndSymptomsMSMW",
-	    			"resistAIncidenceMSMW",
-	    			"resistBIncidenceMSMW",
-	    			"resistBothIncidenceMSMW",
-//	    			"knownFailedTreatmentsMSMW",
-//	    			"knownFailedTreatmentsAMSMW",
-//	    			"knownFailedTreatmentsBMSMW",
-//	    			"knownFailedTreatmentsBothMSMW",
-	    			"successTreatmentsAMSMW",
-	    			"successTreatmentsBMSMW", 
-	    			"successTreatmentsXMSMW",
-	    			"attemptTreatmentsAMSMW",
-	    			"attemptTreatmentsBMSMW",
-	    			"attemptTreatmentsXMSMW",
-	    			"usageEMSMW",
-	    			"monetaryCostMSMW",
-	    			"QALYcostMSMW",
-	    			
-	    			//MSW output
-	    			"MSWPopSize",
-	    			"prevMSW",
-	    			"incMSW",
-	    			"detectedIncMSW",
-	    			 "detectedAndSymptomsMSW",
-	    			"resistAIncidenceMSW",
-	    			"resistBIncidenceMSW",
-	    			"resistBothIncidenceMSW",
-//	    			"knownFailedTreatmentsMSW",
-//	    			"knownFailedTreatmentsAMSW",
-//	    			"knownFailedTreatmentsBMSW",
-//	    			"knownFailedTreatmentsBothMSW",
-	    			"successTreatmentsAMSW",
-	    			"successTreatmentsBMSW", 
-	    			"successTreatmentsXMSW",
-	    			"attemptTreatmentsAMSW",
-	    			"attemptTreatmentsBMSW",
-	    			"attemptTreatmentsXMSW",
-	    			"usageEMSW",
-	    			"monetaryCostMSW",
-	    			"QALYcostMSW",
-	    			
-	    			//W output
-	    			"WPopSize",
-	    			"prevW",
-	    			"incW",
-	    			"detectedIncW",
-	    			 "detectedAndSymptomsW",
-	    			"resistAIncidenceW",
-	    			"resistBIncidenceW",
-	    			"resistBothIncidenceW",
-//	    			"knownFailedTreatmentsW",
-//	    			"knownFailedTreatmentsAW",
-//	    			"knownFailedTreatmentsBW",
-//	    			"knownFailedTreatmentsBothW",
-	    			"successTreatmentsAW",
-	    			"successTreatmentsBW", 
-	    			"successTreatmentsXW",
-	    			"attemptTreatmentsAW",
-	    			"attemptTreatmentsBW",
-	    			"attemptTreatmentsXW",
-	    			"usageEW",
-	    			"monetaryCostW",
-	    			"QALYcostW",
-	    			
-	    			//NB output
-	    			"NBPopSize",
-	    			"prevNB",
-	    			"incNB",
-	    			"detectedIncNB",
-	    			 "detectedAndSymptomsNB",
-	    			"resistAIncidenceNB",
-	    			"resistBIncidenceNB",
-	    			"resistBothIncidenceNB",
-//	    			"knownFailedTreatmentsNB",
-//	    			"knownFailedTreatmentsANB",
-//	    			"knownFailedTreatmentsBNB",
-//	    			"knownFailedTreatmentsBothNB",
-	    			"successTreatmentsANB",
-	    			"successTreatmentsBNB", 
-	    			"successTreatmentsXNB",
-	    			"attemptTreatmentsANB",
-	    			"attemptTreatmentsBNB",
-	    			"attemptTreatmentsXNB",
-	    			"usageENB",
-	    			"monetaryCostNB",
-	    			"QALYcostNB"
-	        }; 
-	        
-	        CSVwriter.writeNext(header); 
+        			while ((line = reader.readLine()) != null) {
+        				if (isFirstLine) {
+        					if (!headerWritten) {
+        						writer.write(line);
+        						writer.newLine();
+        						headerWritten = true;
+        						System.out.println("Header written to" + csvFile);
+        					}
+        				} else {
+        					writer.write(line);
+        					writer.newLine();
+        					//System.out.println("Line written to " + csvFile);
+        				}
+        				isFirstLine = false;
+        			}
 
-            // Iterate through CSV files in the directory
-            Files.list(directory.toPath())
-                .filter(path -> path.toString().endsWith(".csv"))
-                .forEach(csvFile -> {
-                    try {
-                        // Read content of each CSV file and write it to the combined file
-                        Files.lines(csvFile).skip(1).forEach(line -> {
-                            try {
-                                writer.write(line + "\n");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            // Close the writer
-            writer.close();
-            
-            System.out.println("All CSV files have been combined into " + combinedFile.getAbsolutePath());
+        		} catch (IOException e){
+        			System.err.println("Error reading file: " + csvFile.toString());
+        			e.printStackTrace();
+        		}
+        	}
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+        		System.err.println("Error writing file: " + combinedFile.toString());
+    			e.printStackTrace();
+        	}
+
+            
+	        
+			/*
+			 * ForkJoinPool forkJoinPool = new ForkJoinPool(1); forkJoinPool.submit(() -> {
+			 * // Iterate through CSV files in the directory files .filter(path ->
+			 * path.toString().endsWith(".csv")) .forEach(csvFile -> { try (BufferedReader
+			 * reader = Files.newBufferedReader(csvFile)) {
+			 * 
+			 * reader.readLine();
+			 * 
+			 * String line;
+			 * 
+			 * while ((line = reader.readLine()) != null) { writer.write(line + "\n"); }
+			 * 
+			 * reader.close();
+			 * 
+			 * // Read content of each CSV file and write it to the combined file
+			 * Files.lines(csvFile).skip(1).forEach(item -> { try { writer.write(item +
+			 * "\n"); } catch (IOException e) { e.printStackTrace(); } }); } catch
+			 * (IOException e) { e.printStackTrace(); }
+			 * 
+			 * 
+			 * });
+			 * 
+			 * // Close the writer try { writer.close(); } catch (IOException e) { // TODO
+			 * Auto-generated catch block e.printStackTrace(); }
+			 * 
+			 * });
+			 */
+            System.out.println("All CSV files have been combined into " + combinedFile);
+
+            
+        
+	}
+	
+	public void processRunFiles() {
+		
 	}
         
   
