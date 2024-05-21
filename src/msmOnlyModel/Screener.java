@@ -1,0 +1,69 @@
+/**
+ * 
+ */
+package msmOnlyModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cern.jet.random.Normal;
+import cern.jet.random.Uniform;
+import repast.simphony.parameter.Parameters;
+
+/**
+ * @author me597
+ *
+ */
+public class Screener {
+
+	public Screener() {}
+	
+	public void screen(Indiv indiv, Observer observer) {
+		if (indiv.infectious()) {
+			observer.recordNewDetectedThruScreen(indiv);
+			
+			if (indiv.symptoms()) {observer.recordNewDetectedAndSymptoms(indiv);}
+			
+			Treatment treatment = new Treatment(indiv, observer);
+			treatment.treat();
+		}
+	}
+	
+	public List<Integer> makeScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
+		Normal screenIntervalDist = null;
+		Uniform firstValueDist = null;
+		
+		if (subPop.equals("msm")) {
+			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSMNormal");
+			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSMUniform");
+		} else if (subPop.equals("msw")) {
+			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSWNormal");
+			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSWUniform");
+		} else if (subPop.equals("w")) {
+			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
+			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
+		} else {
+			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
+			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
+		}
+
+		//Parameters params = RunEnvironment.getInstance().getParameters();
+		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
+		
+		List screenings = new ArrayList<Integer>();
+		screenings.add(firstValueDist.nextInt());
+		
+		//while the last value is still less than 1300
+		while ((int) screenings.get(screenings.size()-1) < endTime) {
+			//draw a new interval value from distribution
+			int newInterval = screenIntervalDist.nextInt();
+			//add that interval to the last value
+			int newValue = newInterval + (int) screenings.get(screenings.size()-1);
+			//add this new value to the list
+			screenings.add(newValue);
+			
+		}
+		
+		return screenings;
+	}
+}
