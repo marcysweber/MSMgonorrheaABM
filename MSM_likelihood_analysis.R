@@ -133,8 +133,8 @@ calc_weights = function(df){
   
   # to use proper weights for resampling
   for (i in 1:nrow(data_ends_loc)){
-    thisrun <- data_ends_loc$RunNumber[i]
-    data_ends_loc$weight[i] <- exp(sum(target_data$combined_log_likelihood[target_data$RunNumber == thisrun])) #sum likelihoods across this trajectory
+    thisrun <- data_ends_loc$uniqueID[i]
+    data_ends_loc$weight[i] <- exp(sum(target_data$combined_log_likelihood[target_data$uniqueID == thisrun])) #sum likelihoods across this trajectory
   }
   
   return(data_ends_loc)
@@ -196,7 +196,7 @@ best_ends = function(df, n){
 
 #takes data ends and matches to full trajectories (to visualize best n trajectories)
 best_traj = function(full_df, best_df){
-  new_df <- full_df %>% filter(RunNumber %in% best_df$RunNumber)
+  new_df <- full_df %>% filter(uniqueID %in% best_df$uniqueID)
   return(new_df)
 }
 
@@ -255,10 +255,10 @@ calc_failure_rate = function(df){
 get_ends = function(df){
   ends <- data.frame()
   
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     
     thisRunLastRow <- thisRunData %>% filter(tick == max(tick))
     ends <- rbind(ends, thisRunLastRow)
@@ -390,10 +390,10 @@ discountedcostW = function(df){
 
 cumulative_QALYs = function(df){
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedQALYs(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -403,10 +403,10 @@ cumulative_QALYs = function(df){
 
 cumulative_QALYs_MSM = function(df){
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedQALYsMSM(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -417,10 +417,10 @@ cumulative_QALYs_MSM = function(df){
 
 cumulative_QALYs_MSW = function(df){
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedQALYsMSW(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -431,10 +431,10 @@ cumulative_QALYs_MSW = function(df){
 
 cumulative_QALYs_W = function(df){
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedQALYsW(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -448,10 +448,10 @@ cumulative_QALYs_W = function(df){
 cumulative_costs = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedcost(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -463,10 +463,10 @@ cumulative_costs = function(df){
 cumulative_costs_MSM = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedcostMSM(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -478,10 +478,10 @@ cumulative_costs_MSM = function(df){
 cumulative_costs_MSW = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedcostMSW(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -493,10 +493,10 @@ cumulative_costs_MSW = function(df){
 cumulative_costs_W = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedcostW(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -515,10 +515,10 @@ discountedX = function(df){
 cumulative_X = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedX(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -545,10 +545,10 @@ discountedResist = function(df){
 cumulative_inc = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedInc(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -561,10 +561,10 @@ cumulative_inc = function(df){
 cumulative_resist = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$seed)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(seed == i)
     thisRunCumulative <- sum(discountedResist(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -823,7 +823,7 @@ smdm_summary_plot_color = function(df1, df2, df3, df4){
     my_theme +
     scale_y_discrete(labels=counter_labels)+
     scale_fill_brewer(palette = "Set2", direction=-1)+
-    coord_cartesian(xlim=c(0, 400))
+    coord_cartesian(xlim=c(0, 500))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure *100, y = factor(counterfactual, levels = counter_levels), fill = counterfactual)) +
     geom_boxplot(outlier.shape = NA, show.legend = FALSE) +
@@ -836,7 +836,7 @@ smdm_summary_plot_color = function(df1, df2, df3, df4){
     scale_fill_brewer(palette = "Set2", direction=-1)+
     
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 80))
+    coord_cartesian(xlim=c(0, 60))
   
   resist <- ggplot(data = allends, aes(x=cumulativeResist, y = factor(counterfactual, levels = counter_levels), fill = counterfactual)) +
     geom_boxplot(outlier.shape = NA, show.legend = FALSE) +
@@ -847,9 +847,9 @@ smdm_summary_plot_color = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    scale_fill_brewer(palette = "Set2", direction=-1)
+    scale_fill_brewer(palette = "Set2", direction=-1)+
     
-    #coord_cartesian(xlim=c(0, 60))
+    coord_cartesian(xlim=c(0, 300000))
   
   
   summary <- ggarrange(inc, failure,
@@ -1391,7 +1391,7 @@ ggplot() +
        fill="Counterfactual")+
   scale_fill_brewer(palette="Set2")+
   scale_color_brewer(palette="Set2")+
-  coord_cartesian(xlim=c(0, 20), ylim=c(-20, 40))+
+ # coord_cartesian(xlim=c(0, 20), ylim=c(-20, 40))+
   my_theme 
 }
 
@@ -1454,7 +1454,7 @@ nmb = function(cea_df, title){
   
   ggplot(data = cea_df) + 
    # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
-    ylim(-20000000, 10000000) +
+    ylim(-20000000, 15000000) +
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#66C2A5")+
     
@@ -1535,8 +1535,8 @@ viz_prev_cal = function(df, title){
 
 viz_incMSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
-  inc <- ggplot(data = df, aes(x = tick / 52, y = 100000 * (detectedIncMSM / MSMPopSize), group = RunNumber)) + 
-    geom_line( aes(y = 100000 * (detectedIncMSM / MSMPopSize)),size = 0.05, color="black") +
+  inc <- ggplot(data = df, aes(x = tick / 52, y = 100000 * (Detected / 100000), group = RunNumber)) + 
+    geom_line( aes(y = 100000 * (Detected / 100000)),size = 0.05, color="black") +
     geom_point(aes(y=6508, x = 6), color="red", size = 1) +
     geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 6), color = "red")+
     geom_point(aes(y=6508, x = 7), color="red", size = 1) +
@@ -1610,8 +1610,8 @@ viz_incW_cal = function(df, title){
 
 viz_sympt_MSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
-  symptomatic <- ggplot(data = df, aes(x = tick / 52, y = detectedAndSymptomsMSM / detectedIncMSM, group = RunNumber)) + 
-    geom_line( aes(y = detectedAndSymptomsMSM / detectedIncMSM),size = 0.05, color="black") +
+  symptomatic <- ggplot(data = df, aes(x = tick / 52, y = DetectedAndSymptoms / Detected, group = RunNumber)) + 
+    geom_line( aes(y = DetectedAndSymptoms / Detected),size = 0.05, color="black") +
     geom_point(aes(y=0.679, x = 6), color="red", size = 1) +
     geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 6), color = "red")+
     geom_point(aes(y=0.679, x = 7), color="red", size = 1) +
@@ -1683,8 +1683,8 @@ viz_sympt_W_cal = function(df, title){
  #*
 viz_prev = function(df, title, yearX){
   df <- df %>% filter(tick > 260)
-  prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-     geom_line(aes(y = Prevalence),size = 0.05, color = "black") +
+  prev <- ggplot(data = df, aes(x = tick / 52, group = seed)) + 
+     geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
     # geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
     # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
     # geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
@@ -1707,7 +1707,7 @@ viz_prev = function(df, title, yearX){
 
 viz_prev_5 = function(df, title){
   prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line(aes(y = Prevalence),size = 0.05, color = "black") +
+    geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
     geom_point(aes(y=4.5, x = 1), color="red", size = 1) +
     geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 1), color = "red")+
     geom_point(aes(y=4.5, x = 2), color="red", size = 1) +
@@ -1746,7 +1746,7 @@ viz_prev_MSM = function(df, title, yearX){
 viz_prev_MSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
   prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line(aes(y = prevMSM),size = 0.05, color = "black") +
+    geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
     geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
     geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
     geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
@@ -3185,6 +3185,16 @@ visualize_QALYs_all = function(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31,
 
 
 
+visualize_calibration_MSM = function(dfcalibrated){
+  multiplot(
+    viz_prev_MSM_cal(dfcalibrated, "A. Prevalence in MSM"),
+    viz_incMSM_cal(dfcalibrated, "B. Detected Cases in MSM"),
+  
+    viz_sympt_MSM_cal(dfcalibrated, "C. Proportion Symptomatic, MSM"),
+  
+    cols = 2)
+}
+
 visualize_calibration_subpops = function(dfcalibrated){
   multiplot(
   viz_prev_MSM_cal(dfcalibrated, "A. Prevalence in MSM"),
@@ -3206,24 +3216,17 @@ write_calibrated = function(df){
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
   resampleTransmissionMSM <- df$TransmissionMSM
-  resampleTransmissionMSW <- df$TransmissionMSW
-  resampleTransmissionF <- df$TransmissionF
+ 
   resampleRecoveryLambda <- df$RecoveryLambda
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
-  resampleProbSymptomaticMSW <- df$ProbSymptomaticMSW
-  resampleProbSymptomaticF <- df$ProbSymptomaticF
+ 
   resampleScreenIntervalMSM <- df$ScreenIntervalMSM
-  resampleScreenIntervalMSW <- df$ScreenIntervalMSW
-  resampleScreenIntervalW <- df$ScreenIntervalW
+  
   
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
-  resampleDelayToSeekCareMSW <- df$DelayToSeekCareMSW
-  resampleDelayToSeekCareF <- df$DelayToSeekCareF
-  
+ 
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-  resampleDelayToRetreatmentMSW <- df$DelayToRetreatmentMSW
-  resampleDelayToRetreatmentF <- df$DelayToRetreatmentF
-  
+
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
   resampleImportingBInterval <- df$ImportingBInterval
@@ -3238,38 +3241,28 @@ write_calibrated = function(df){
   resampleDrugXtreatmentCost<-df$DrugXTreatmentCost
   resampleDrugEtreatmentCost<-df$DrugETreatmentCost
   
-  fwrite(list(resampleSeed), file = "/Users/me597/Documents/calibrated_params/seed_resample.txt")
-  fwrite(list(resampleInitialInfected), file = "/Users/me597/Documents/calibrated_params/initial_infected_resample.txt")
-  fwrite(list(resampleTransmissionMSM), file = "/Users/me597/Documents/calibrated_params/transmissionMSM_resample.txt")
-  fwrite(list(resampleTransmissionMSW), file = "/Users/me597/Documents/calibrated_params/transmissionMSW_resample.txt")
-  fwrite(list(resampleTransmissionF), file = "/Users/me597/Documents/calibrated_params/transmissionF_resample.txt")
-  fwrite(list(resampleRecoveryLambda), file = "/Users/me597/Documents/calibrated_params/recovery_lambda_resample.txt")
-  fwrite(list(resampleProbSymptomaticMSM), file = "/Users/me597/Documents/calibrated_params/prob_symptomatic_MSM_resample.txt")
-  fwrite(list(resampleProbSymptomaticMSW), file = "/Users/me597/Documents/calibrated_params/prob_symptomatic_MSW_resample.txt")
-  fwrite(list(resampleProbSymptomaticF), file = "/Users/me597/Documents/calibrated_params/prob_symptomatic_F_resample.txt")
-  fwrite(list(resampleScreenIntervalMSM), file = "/Users/me597/Documents/calibrated_params/screen_interval_MSM_resample.txt")
-  fwrite(list(resampleScreenIntervalMSW), file = "/Users/me597/Documents/calibrated_params/screen_interval_MSW_resample.txt")
-  fwrite(list(resampleScreenIntervalW), file = "/Users/me597/Documents/calibrated_params/screen_interval_W_resample.txt")
-  fwrite(list(resampleDelayToSeekCareMSM), file = "/Users/me597/Documents/calibrated_params/delay_to_seek_care_MSM_resample.txt")
-  fwrite(list(resampleDelayToSeekCareMSW), file = "/Users/me597/Documents/calibrated_params/delay_to_seek_care_MSW_resample.txt")
-  fwrite(list(resampleDelayToSeekCareF), file = "/Users/me597/Documents/calibrated_params/delay_to_seek_care_F_resample.txt")
-  fwrite(list(resampleDelayToRetreatmentMSM), file = "/Users/me597/Documents/calibrated_params/delay_to_retreatment_MSM_resample.txt")
-  fwrite(list(resampleDelayToRetreatmentMSW), file = "/Users/me597/Documents/calibrated_params/delay_to_retreatment_MSW_resample.txt")
-  fwrite(list(resampleDelayToRetreatmentF), file = "/Users/me597/Documents/calibrated_params/delay_to_retreatment_F_resample.txt")
-  fwrite(list(resamplePercentResistantA), file = "/Users/me597/Documents/calibrated_params/percent_resistant_A_resample.txt")
-  fwrite(list(resampleBeginImportingB), file = "/Users/me597/Documents/calibrated_params/begin_importing_B_resample.txt")
-  fwrite(list(resampleImportingBInterval), file = "/Users/me597/Documents/calibrated_params/importing_B_interval_resample.txt")
-  fwrite(list(resampleDSTsensitivity), file = "/Users/me597/Documents/calibrated_params/DSTsensitivity_resample.txt")
-  fwrite(list(resampleDSTspecifictiy), file = "/Users/me597/Documents/calibrated_params/DSTspecificity_resample.txt")
+  fwrite(list(resampleSeed), file = "/Users/me597/Documents/MSM_calibrated_params/seed_resample.txt")
+  fwrite(list(resampleInitialInfected), file = "/Users/me597/Documents/MSM_calibrated_params/initial_infected_resample.txt")
+  fwrite(list(resampleTransmissionMSM), file = "/Users/me597/Documents/MSM_calibrated_params/transmissionMSM_resample.txt")
+  fwrite(list(resampleRecoveryLambda), file = "/Users/me597/Documents/MSM_calibrated_params/recovery_lambda_resample.txt")
+  fwrite(list(resampleProbSymptomaticMSM), file = "/Users/me597/Documents/MSM_calibrated_params/prob_symptomatic_MSM_resample.txt")
+  fwrite(list(resampleScreenIntervalMSM), file = "/Users/me597/Documents/MSM_calibrated_params/screen_interval_MSM_resample.txt")
+  fwrite(list(resampleDelayToSeekCareMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_seek_care_MSM_resample.txt")
+  fwrite(list(resampleDelayToRetreatmentMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_retreatment_MSM_resample.txt")
+  fwrite(list(resamplePercentResistantA), file = "/Users/me597/Documents/MSM_calibrated_params/percent_resistant_A_resample.txt")
+  fwrite(list(resampleBeginImportingB), file = "/Users/me597/Documents/MSM_calibrated_params/begin_importing_B_resample.txt")
+  fwrite(list(resampleImportingBInterval), file = "/Users/me597/Documents/MSM_calibrated_params/importing_B_interval_resample.txt")
+  fwrite(list(resampleDSTsensitivity), file = "/Users/me597/Documents/MSM_calibrated_params/DSTsensitivity_resample.txt")
+  fwrite(list(resampleDSTspecifictiy), file = "/Users/me597/Documents/MSM_calibrated_params/DSTspecificity_resample.txt")
   
   
-  fwrite(list(resampleCareCost), file = "/Users/me597/Documents/calibrated_params/care_cost_resample.txt")
-  fwrite(list(resampleTestCost), file = "/Users/me597/Documents/calibrated_params/test_cost_resample.txt")
-  fwrite(list(resampleStrainTestCost), file = "/Users/me597/Documents/calibrated_params/strain_test_cost_resample.txt")
-  fwrite(list(resampleDrugAtreatmentCost), file = "/Users/me597/Documents/calibrated_params/drug_a_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugBtreatmentCost), file = "/Users/me597/Documents/calibrated_params/drug_b_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugXtreatmentCost), file = "/Users/me597/Documents/calibrated_params/drug_X_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugEtreatmentCost), file = "/Users/me597/Documents/calibrated_params/drug_E_treatment_cost_resample.txt")
+  fwrite(list(resampleCareCost), file = "/Users/me597/Documents/MSM_calibrated_params/care_cost_resample.txt")
+  fwrite(list(resampleTestCost), file = "/Users/me597/Documents/MSM_calibrated_params/test_cost_resample.txt")
+  fwrite(list(resampleStrainTestCost), file = "/Users/me597/Documents/MSM_calibrated_params/strain_test_cost_resample.txt")
+  fwrite(list(resampleDrugAtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_a_treatment_cost_resample.txt")
+  fwrite(list(resampleDrugBtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_b_treatment_cost_resample.txt")
+  fwrite(list(resampleDrugXtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_X_treatment_cost_resample.txt")
+  fwrite(list(resampleDrugEtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_E_treatment_cost_resample.txt")
 }
 
 
@@ -4500,7 +4493,7 @@ df_ends <- calc_weights_subpops(dfsweep)
 df_best_ends <- best_ends(df_ends, 200)
 df_best_traj <- best_traj(dfsweep,df_best_ends)
 #df_best_ends <- na.omit(df_best_ends)
-visualize_basic(df_best_traj)
+visualize_calibration_MSM(df_best_traj)
 
 visualize_parameters(df_best_ends)
 
@@ -4546,3 +4539,84 @@ smdm_summary_plot_color(dfGISP25, dfrandom25, dfTOC25, dfDST25)
 
 
 #############
+
+
+
+#May 2024 scaled-back MSM only model
+#################
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_30_2024_overnight_sweep_none_0/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- best_ends(df_ends, 200)
+df_best_traj <- best_traj(dfsweep,df_best_ends)
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+write_calibrated(df_best_ends)
+
+
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_none_none_10/nonenone101combined.csv")
+visualize_calibration_MSM(dfcalibrated)
+
+
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo251combined.csv")
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo251combined.csv")
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo251combined.csv")
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo251combined.csv")
+
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+smdm_summary_plot_color(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+compare_four_cost(25, dfGISP25, "GISP",  dfrandom25, "random", dfTOC25, "TOC", dfDST25, "DST")
+compare_four_resistance(25, dfGISP25, "GISP",  dfrandom25, "random", dfTOC25, "TOC", dfDST25, "DST")
+
+multiplot(
+  visualize_cea("A.", dfGISP25, dfrandom25, dfTOC25, dfDST25),#+theme(legend.position = "none"),
+  nmb(cea(dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+ceadf_sum <- cea(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+ceadf_sum <- rbind(ceadf_sum, lapply(ceadf_sum[], mean))
+ceadf_sum$seed[51] <- "mean"
+
+ceadf <- rearrange_cea(ceadf_sum)
+
+multiplot(
+viz_E(dfGISP25, "A. GISP", 25, 50000),
+viz_E(dfrandom25, "B. Random", 25, 50000),
+viz_E(dfTOC25, "C. TOC", 25, 50000),
+viz_E(dfDST25, "D. DST", 25, 50000), cols = 2)
+
+
+
+dfGISP10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo101combined.csv")
+dfGISP15 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo151combined.csv")
+dfGISP20 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo201combined.csv")
+dfGISP25 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo251combined.csv")
+dfGISP31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo311combined.csv")
+
+dfrandom10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo101combined.csv")
+dfrandom15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo151combined.csv")
+dfrandom20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo201combined.csv")
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo251combined.csv")
+dfrandom31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo311combined.csv")
+
+dfTOC10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo101combined.csv")
+dfTOC15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo151combined.csv")
+dfTOC20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo201combined.csv")
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo311combined.csv")
+
+dfDST10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo101combined.csv")
+dfDST15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo151combined.csv")
+dfDST20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo201combined.csv")
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo311combined.csv")
+
+
+
+
+##############

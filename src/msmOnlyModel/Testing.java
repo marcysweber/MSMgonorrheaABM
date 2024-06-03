@@ -119,7 +119,9 @@ public class Testing {
 		}
 		
 		result = resultA + resultB;
-		if (result.equals("")) {result = "XE";}//if neither A nor B, then X or E
+		if (result.equals("")) {
+			result = "XE";
+			}//if neither A nor B, then X or E
 		return result;
 	}
 	

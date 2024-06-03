@@ -19,7 +19,7 @@ public class Population {
 //	public List<Indiv> msmwList;
 //	public List<Indiv> nbList;
 	
-	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		indivs = new ArrayList<Indiv>();
 		
 		//all MSM
@@ -69,6 +69,11 @@ public class Population {
 	
 	public Stream<Indiv> msmInfected(){
 		return msmList.stream().filter(indiv -> indiv.infectious()).collect(Collectors.toList()).stream();
+	}
+	
+	public void add(Indiv indiv) {
+		indivs.add(indiv);
+		msmList = msm();
 	}
 	
 	

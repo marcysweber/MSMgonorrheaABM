@@ -67,6 +67,8 @@ public class CostCalc {
 	public void addQALYsLost(Indiv indiv, double delay) {
 		double QALYs = (delay * 0.1) / 52.0;
 		
+		if (indiv.infectious() && indiv.symptoms()) {
+		
 		QALYsLost = QALYsLost + QALYs;
 		
 		if (indiv.getGender().equals("f")) {
@@ -85,7 +87,7 @@ public class CostCalc {
 			//MSM
 			this.QALYsLostMSM+= QALYs;
 		}
-		
+		}
 		
 	}
 	

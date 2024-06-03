@@ -18,14 +18,13 @@ import java.util.List;
  * 
  * @author Nick Collier
  */
-public class ThreadSafeActionList extends ActionList{
+public class ThreadSafeActionList extends ActionList {
 
   private List<ISchedulableAction> list = new ArrayList<ISchedulableAction>();
   private boolean dirty = false;
   private ThreadSafeRandomHelper randomHelper;
   
   public ThreadSafeActionList(ThreadSafeRandomHelper randomHelper) {
-	  super();
 	  this.randomHelper = randomHelper;
   }
 

@@ -56,14 +56,15 @@ public class Main {
 			
 			BatchRun batchRunner = new BatchRun("sweep", resistance, 0);
 			
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
-			batchRunner.executeSweep(scenariofile, reps, resistance);
+			int batches = 20;
+			
+			for (int i = 0; i < batches; i++) {
+				batchRunner.executeSweep(scenariofile, reps, resistance);
+
+				
+				
+			}
+			
 			
 			try {
 				batchRunner.combineBatchFiles();
@@ -77,11 +78,11 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
-			executeCounterfactualScenarios(scenariofile);
+			//executeCounterfactualScenarios(scenariofile);
 
-			//executeDrugDevBatch(scenariofile);
+			executeDrugDevBatch(scenariofile);
 
 			
 			

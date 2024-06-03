@@ -184,6 +184,7 @@ public class ThreadSafeScheduleGroup extends ScheduleGroup {
     lastActions.clear();
     firstOfLastActions.clear();
     count = 0;
+    super.clear();
   }
 
   /**

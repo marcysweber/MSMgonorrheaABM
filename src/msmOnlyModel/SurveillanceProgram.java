@@ -71,16 +71,16 @@ public class SurveillanceProgram {
 	
 	@ScheduledMethod(start = 261, interval = 4, priority = 1)
 	public void conductSurveillance() {
+		//System.out.println("conducting surveillance");
 		if (counterfactual.contains("GISP")) {
 
-			Observer observer = getObserver();
 			List<Infection> detected = observer.getDetectedList();
 			
-			List <Infection >detectedM = detected.stream().filter(inf -> inf.getHostGender().equals("m")).collect(Collectors.toList());
+			//List <Infection >detectedM = detected.stream().filter(inf -> inf.getHostGender().equals("m")).collect(Collectors.toList());
 
-			collectSamples(detectedM);
+			collectSamples(detected);
 			addThisMonthToAnnual();
-			clearThisMonth(observer);
+			clearThisMonth();
 		}
 	}
 	
@@ -133,6 +133,7 @@ public class SurveillanceProgram {
 	}
 	
 	public void collectSamples(List<Infection> detected) {
+		//System.out.println("collecting samples");
 		//int amountToSkip = RandomHelper.nextIntFromTo(0, detected.size() - amountToTest);
 	
 		CostCalc costCalc = getCostCalc();
@@ -152,7 +153,7 @@ public class SurveillanceProgram {
 		List <String> susProfiles = new ArrayList <String>();
 
 		//System.out.println(sample.size());
-		
+		//System.out.println("Susceptibility profiles:");
 		for (Infection inf : sample) {
 			susProfiles.add(detectSus(inf));
 		}
@@ -187,6 +188,7 @@ public class SurveillanceProgram {
 	public String detectSus(Infection inf) {
 		Testing testing = new Testing(inf, parameters);
 		String sus = testing.drugSusceptibilityTest();
+		//System.out.println(sus);
 		return sus;
 	}
 	
@@ -194,7 +196,7 @@ public class SurveillanceProgram {
 	public boolean checkForSwitch(double surveillanceResult) {
 		boolean shouldSwitch = false;
 		
-		double switchPrev = Double.parseDouble(counterfactual.substring(5)) / 100.0;
+		double switchPrev = 5.0 / 100.0;
 		if (surveillanceResult >= switchPrev) {
 			shouldSwitch = true;
 		}
@@ -222,7 +224,7 @@ public class SurveillanceProgram {
 		annualCumulativeDetectionsBoth += thisMonthDetectionsBoth;
 	}
 	
-	public void clearThisMonth(Observer observer) {
+	public void clearThisMonth() {
 
 		thisMonthDetectionsA = 0;
 		thisMonthDetectionsB = 0;

@@ -237,6 +237,7 @@ public class Treatment {
 	}
 
 	public void retreat(String retreatment) {
+		if (indiv.infectious()){//confirm still infectious
 		indiv.abstain(); // should already be abstaining, but just to confirm
 
 		// check that indiv is still infectious, bc there is chance of natural recovery
@@ -286,7 +287,7 @@ public class Treatment {
 		if (success != null) {
 			indiv.recoverOrDevelopResistance(success);
 		}
-
+		}
 	}
 
 	public void treatDefaultBeforeSwitch() {

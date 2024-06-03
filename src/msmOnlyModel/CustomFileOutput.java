@@ -64,7 +64,7 @@ public class CustomFileOutput {
 		String filename = "MSMonly_output_" + fullDate +"_1_";
 		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug2_";
 
-		//String filename = "SimpleSIR_custom_output_MAY_13_2024_overnight_";
+		//String filename = "SimpleSIR_custom_output_JUNE_3_2024_overnight_";
 		
 		filename += counterfactual;
 		
@@ -102,6 +102,7 @@ public class CustomFileOutput {
 	        		"RunNumber", 
 	        		"seed",
 	        		"counterfactual",
+	        		"yearX",
 	        		"InitialInfected",
 	        		
 	        		"TransmissionMSM",
@@ -182,6 +183,7 @@ public class CustomFileOutput {
 			int runNumber, 
 			int seed,
 			String counterfactual,
+			int yearX,
 			int initialInfected,
 			
 			double transmissionMSM, 
@@ -257,6 +259,7 @@ public class CustomFileOutput {
 	        		String.valueOf(runNumber), 
 	        		String.valueOf(seed),
 	        		String.valueOf(counterfactual),
+	        		String.valueOf(yearX),
 	        		String.valueOf(initialInfected),
 	        		
 	        		String.valueOf(transmissionMSM),

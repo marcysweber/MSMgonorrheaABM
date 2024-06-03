@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,7 +82,7 @@ public class BatchRun {
 		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
 			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, "none", 31,
+					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, 31,
 							initialInfectedValuesList.get(i), 
 							transmissionMSMValuesList.get(i),
 							recoveryLambdaValuesList.get(i), 
@@ -95,10 +97,28 @@ public class BatchRun {
 							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
 							treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i))));
 		}
+		
+//		comboStream.
+//		parallel().
+//		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520));
+//		System.out.println("completed " + reps + " runs!");
+		
+		
+		
+		final Stream<ParamConfig> parallelizableComboStream = comboStream;
 
-		comboStream.
-		parallel().
-		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520));
+		ForkJoinPool customThreadPool = new ForkJoinPool(7);
+		try {
+			customThreadPool.submit(
+			() -> 
+			parallelizableComboStream.
+			parallel().
+			forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520))).get();
+		} catch (InterruptedException | ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		
 		System.out.println("completed " + reps + " runs! ");
 
@@ -123,7 +143,8 @@ public class BatchRun {
 		this.yearX=yearX;
 
 		String batchDirPath = makeBatchDir();
-
+		
+		
 		List<Integer> initialInfectedValuesList = new ArrayList<Integer>();
 		
 		List<Double> transmissionMSMValuesList = new ArrayList<Double>();
@@ -340,6 +361,7 @@ public class BatchRun {
 		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560));
 		System.out.println("completed " + reps + " runs!");
 		
+		
 		try {
 			combineCSVs(batchDirPath);
 		} catch (IOException e) {
@@ -377,6 +399,10 @@ public class BatchRun {
 		
 		thisRun.go();
 		
+		thisRun.end();
+		
+		// Hint to the Garbage Collector that it might want to collect the garbs
+		System.gc();
 		//setUpOne(runner, paramConfig, endTime);
 		//runOne(runner);
 		//runner.cleanUpRun();
@@ -443,9 +469,9 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_5_";
+		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_1_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/output_MAY_20_2024_overnight_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/output_JUNE_1_2024_overnight_";
 		
 		dirname += counterfactual;
 		
@@ -471,6 +497,15 @@ public class BatchRun {
 		
 		dirname += String.valueOf(batchNumber);
 		
+		dirname += "_";
+		
+		dirname += counterfactual;
+	
+		dirname += "_";
+		
+		dirname += yearX;
+
+		
 		//for debugging large number of files: 
 		//dirname = "/Users/me597/Documents/output/output_MAY_15_2024_6_sweep_none_0";
 
@@ -494,29 +529,10 @@ public class BatchRun {
        
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
         	boolean headerWritten = false;
-        	//CSVWriter CSVwriter = new CSVWriter(writer);
 
-        	//
-        	//	        for (File csvFile : directory.listFiles()) {
-        	//	        	if (csvFile.isFile() && csvFile.getName().endsWith(".csv")) {
-        	//	        		try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))){
-        	//	        			reader.readLine();
-        	//	        			
-        	//	        			String line;
-        	//	        			
-        	//	        		 	while ((line = reader.readLine()) != null) {
-        	//                    		writer.write(line + "\n");
-        	//                    	}
-        	//                    	
-        	//                    	reader.close();
-        	//	        			
-        	//	        		} catch (IOException e) {
-        	//	        			e.printStackTrace();
-        	//	        		}
-        	//	        	}
-        	//	        }
-
-        	List<Path> csvfiles = Files.list(Paths.get(dirpath)).filter(p -> !p.getFileName().toString().contains("combined")).collect(Collectors.toList());
+        	List<Path> csvfiles = Files.list(Paths.get(dirpath)).
+        			filter(p -> p.getFileName().toString().contains(counterfactual)).
+        			collect(Collectors.toList());
         	
         	if (csvfiles.isEmpty()) {
         		throw new FileNotFoundException("No CSV files found in directory: " + dirpath);
@@ -534,7 +550,7 @@ public class BatchRun {
         						writer.write(line);
         						writer.newLine();
         						headerWritten = true;
-        						//System.out.println("Header written to" + csvFile);
+        						System.out.println("Header written from" + csvFile);
         					}
         				} else {
         					writer.write(line);
@@ -556,34 +572,7 @@ public class BatchRun {
 
             
 	        
-			/*
-			 * ForkJoinPool forkJoinPool = new ForkJoinPool(1); forkJoinPool.submit(() -> {
-			 * // Iterate through CSV files in the directory files .filter(path ->
-			 * path.toString().endsWith(".csv")) .forEach(csvFile -> { try (BufferedReader
-			 * reader = Files.newBufferedReader(csvFile)) {
-			 * 
-			 * reader.readLine();
-			 * 
-			 * String line;
-			 * 
-			 * while ((line = reader.readLine()) != null) { writer.write(line + "\n"); }
-			 * 
-			 * reader.close();
-			 * 
-			 * // Read content of each CSV file and write it to the combined file
-			 * Files.lines(csvFile).skip(1).forEach(item -> { try { writer.write(item +
-			 * "\n"); } catch (IOException e) { e.printStackTrace(); } }); } catch
-			 * (IOException e) { e.printStackTrace(); }
-			 * 
-			 * 
-			 * });
-			 * 
-			 * // Close the writer try { writer.close(); } catch (IOException e) { // TODO
-			 * Auto-generated catch block e.printStackTrace(); }
-			 * 
-			 * });
-			 */
-           // System.out.println("All CSV files have been combined into " + combinedFile);
+			
 
             
         

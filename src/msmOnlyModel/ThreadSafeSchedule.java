@@ -42,7 +42,7 @@ public class ThreadSafeSchedule implements ISchedule {
 	 * 
 	 * TODO Check if this is fixed in future units release then we can remove it.
 	 */
-	static {
+	 {
 		Calculus.setCurrentNumberSystem(new DefaultNumberSystem());
 	}
 	

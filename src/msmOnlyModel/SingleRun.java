@@ -56,7 +56,7 @@ public void setUp(double endTime) {
 		//context.add(randomHelper);	 
 		
 		this.fileOutputter = createOutputter();
-		observer = createObserver(seed, counterfactual, resistance, yearX);
+		createObserver(seed, counterfactual, resistance, yearX);
 		//context.add(observer);
 		
 		createSurveillance(counterfactual);
@@ -103,9 +103,7 @@ public void step() {
 
 
 public void end() {
-	
-	
-	
+	schedule.actionQueue.clear();	
 }
 
 
@@ -128,7 +126,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("genderPrefBeta", genderPrefBeta);
 			
 			//dist for recovery
-			Exponential recoveryExp = new Exponential(1/parameters.getDouble("recovery_lambda"), eng);
+			double recoveryLambda = parameters.getDouble("recovery_lambda") * 52.0;
+			Exponential recoveryExp = new Exponential(1/recoveryLambda, eng);
 			randomHelper.registerDistribution("recoveryExp", recoveryExp);
 			
 			//dist for contact
@@ -165,8 +164,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("developResistanceUniform", developResistanceUniform);
 			
 			
-			
-			Exponential delayToSeekCareMSMExp = new Exponential(1/parameters.getDouble("delay_to_seek_care_msm"), eng);
+			double mean_delay_to_seek_care_MSM = parameters.getDouble("delay_to_seek_care_msm") * 52.0;
+			Exponential delayToSeekCareMSMExp = new Exponential(1/mean_delay_to_seek_care_MSM, eng);
 			randomHelper.registerDistribution("delayToSeekCareMSMExp", delayToSeekCareMSMExp);
 			
 
@@ -174,8 +173,9 @@ public ThreadSafeRandomHelper registerDistributions() {
 			
 			
 			
-			
-			Exponential delayToRetreatmentMSMExp = new Exponential(1/parameters.getDouble("delay_to_retreatment_msm"), eng);
+			double mean_delay_to_retreatment_MSM = parameters.getDouble("delay_to_retreatment_msm") * 52.0;
+
+			Exponential delayToRetreatmentMSMExp = new Exponential(1/mean_delay_to_retreatment_MSM, eng);
 			randomHelper.registerDistribution("delayToRetreatmentMSMExp", delayToRetreatmentMSMExp);
 			
 		
@@ -204,12 +204,13 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 			
 			
 			scheduleAddX(yearX, observer);
+			this.observer = observer;
 			return observer;
 
 }
 
 public void createSurveillance(String counterfactual) {
-	 surveillanceProgram = new SurveillanceProgram(counterfactual, observer);
+	surveillanceProgram = new SurveillanceProgram(counterfactual, observer);
 	observer.setSurveillance(surveillanceProgram);
 	
 	scheduleSurveillance(surveillanceProgram, counterfactual);
@@ -297,6 +298,33 @@ public CustomFileOutput createOutputter() {
 	
 	return fileOutputter;
 }
+
+
+public ThreadSafeSchedule schedule() {
+	return schedule;
+}
+
+public Population population() {
+	return population;
+}
+
+public Observer observer() {
+	return observer;
+}
+
+public SurveillanceProgram surveillanceProgram() {
+	return surveillanceProgram;
+}
+
+public InsertResistance resistanceInserter() {
+	return resistanceInserter;
+}
+
+public void assignSchedule(ThreadSafeSchedule schedule) {
+	this.schedule = schedule; //for testing
+}
+
+
 
 
 }

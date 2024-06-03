@@ -39,41 +39,15 @@ public class Observer {
 	
 	private int newCases;
 	private int newCasesMSM;
-	private int newCasesMSMW;
-	private int newCasesMSW;
-	private int newCasesW;
-	private int newCasesNB;
-	
-	private double anyResistPrevalence;
-	private double anyResistIncidence;
 	
 	private int newResistACases;
-	private int newResistACasesMSM;
-	private int newResistACasesMSMW;
-	private int newResistACasesMSW;
-	private int newResistACasesW;
-	private int newResistACasesNB;
-	
-	private double resistAPrevalence;
 	private double resistAIncidence;
 	
 	private int newResistBCases;
-	private int newResistBCasesMSM;
-	private int newResistBCasesMSMW;
-	private int newResistBCasesMSW;
-	private int newResistBCasesW;
-	private int newResistBCasesNB;
-	private double resistBPrevalence;
 	private double resistBIncidence;
 	
 	
 	private int newResistBothCases;
-	private int newResistBothCasesMSM;
-	private int newResistBothCasesMSMW;
-	private int newResistBothCasesMSW;
-	private int newResistBothCasesW;
-	private int newResistBothCasesNB;
-	private double resistBothPrevalence;
 	private double resistBothIncidence;
 	
 	private double symptomProportion;
@@ -83,124 +57,18 @@ public class Observer {
 	private int detected;
 	private List<Infection> detectedList;
 	
-	private int detectedM;
-	private List<Infection> detectedMList; //for GISP?
-	
-	private int detectedMSM;
-	private List<Infection> detectedListMSM;
-	
-	private int detectedMSMW;
-	private List<Infection> detectedListMSMW;
-	
-	private int detectedMSW;
-	private List<Infection> detectedListMSW;
-	
-	private int detectedW;
-	private List<Infection> detectedListW;
-	
-	private int detectedNB;
-	private List<Infection> detectedListNB;
 
+	
 	private int detectedAndSymptoms;
-	private int detectedAndSymptomsMSM;
-	private int detectedAndSymptomsMSMW;
-	private int detectedAndSymptomsMSW;
-	private int detectedAndSymptomsW;
-	private int detectedAndSymptomsNB;
-
 	private int soughtCare;
-	private int soughtCareMSM;
-	private int soughtCareMSMW;
-	private int soughtCareMSW;
-	private int soughtCareW;
-	private int soughtCareNB;
-	
 	private int detectedThruScreen;
-	private int detectedThruScreenMSM;
-	private int detectedThruScreenMSMW;
-	private int detectedThruScreenMSW;
-	private int detectedThruScreenW;
-	private int detectedThruScreenNB;
-
-	private int knownFailedTreatments;
-	private int knownFailedTreatmentsMSM;
-	private int knownFailedTreatmentsMSMW;
-	private int knownFailedTreatmentsMSW;
-	private int knownFailedTreatmentsW;
-	private int knownFailedTreatmentsNB;
-
-	private int knownFailedTreatmentsA;
-	private int knownFailedTreatmentsAMSM;
-	private int knownFailedTreatmentsAMSMW;
-	private int knownFailedTreatmentsAMSW;
-	private int knownFailedTreatmentsAW;
-	private int knownFailedTreatmentsANB;
-
-	private int knownFailedTreatmentsB;
-	private int knownFailedTreatmentsBMSM;
-	private int knownFailedTreatmentsBMSMW;
-	private int knownFailedTreatmentsBMSW;
-	private int knownFailedTreatmentsBW;
-	private int knownFailedTreatmentsBNB;
-
-	private int knownFailedTreatmentsBoth;
-	private int knownFailedTreatmentsBothMSM;
-	private int knownFailedTreatmentsBothMSMW;
-	private int knownFailedTreatmentsBothMSW;
-	private int knownFailedTreatmentsBothW;
-	private int knownFailedTreatmentsBothNB;
-
 	private int successTreatmentsA;
-	private int successTreatmentsAMSM;
-	private int successTreatmentsAMSMW;
-	private int successTreatmentsAMSW;
-	private int successTreatmentsAW;
-	private int successTreatmentsANB;
-
 	private int successTreatmentsB;
-	private int successTreatmentsBMSM;
-	private int successTreatmentsBMSMW;
-	private int successTreatmentsBMSW;
-	private int successTreatmentsBW;
-	private int successTreatmentsBNB;
-
 	private int successTreatmentsX;
-	private int successTreatmentsXMSM;
-	private int successTreatmentsXMSMW;
-	private int successTreatmentsXMSW;
-	private int successTreatmentsXW;
-	private int successTreatmentsXNB;
-	
 	private int attemptTreatmentsA;
-	private int attemptTreatmentsAMSM;
-	private int attemptTreatmentsAMSMW;
-	private int attemptTreatmentsAMSW;
-	private int attemptTreatmentsAW;
-	private int attemptTreatmentsANB;
-
 	private int attemptTreatmentsB;
-	private int attemptTreatmentsBMSM;
-	private int attemptTreatmentsBMSMW;
-	private int attemptTreatmentsBMSW;
-	private int attemptTreatmentsBW;
-	private int attemptTreatmentsBNB;
-
 	private int attemptTreatmentsX;
-	private int attemptTreatmentsXMSM;
-	private int attemptTreatmentsXMSMW;
-	private int attemptTreatmentsXMSW;
-	private int attemptTreatmentsXW;
-	private int attemptTreatmentsXNB;
-	
 	private int usageE;
-	private int usageEMSM;
-	private int usageEMSMW;
-	private int usageEMSW;
-	private int usageEW;
-	private int usageENB;
-
-
-	
 	private CostCalc costCalc;
 	
 	
@@ -248,16 +116,11 @@ public class Observer {
 		
 		this.symptomProportion = 0;
 		this.newCases = 0;
-		this.anyResistIncidence = 0;
-		this.anyResistPrevalence = 0;
 		this.newResistACases = 0;
-		this.resistAPrevalence = 0;
 		this.resistAIncidence = 0;
 		this.newResistBCases = 0;
-		this.resistBPrevalence = 0;
 		this.resistBIncidence = 0;
 		this.newResistBothCases = 0;
-		this.resistBothPrevalence = 0;
 		this.resistBothIncidence = 0;
 		this.treatments = 0;
 		this.failedTreatments = 0;
@@ -266,10 +129,6 @@ public class Observer {
 		this.detectedAndSymptoms = 0;
 		this.soughtCare = 0;
 		this.detectedThruScreen = 0;
-		this.knownFailedTreatments = 0;
-		this.knownFailedTreatmentsA = 0;
-		this.knownFailedTreatmentsB = 0;
-		this.knownFailedTreatmentsBoth = 0;
 		this.successTreatmentsA = 0;
 		this.successTreatmentsB = 0;
 		this.successTreatmentsX = 0;
@@ -298,21 +157,16 @@ public class Observer {
 		//surveillance.collectSamples(detectedList);
 		
 		//Stream<Object> indivs = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
-		double popSize = population.totalSize();
 
 		//each time step, update the Observer's values
-		this.prevalence = calcPrev(popSize);
-		this.incidence = calcInc(popSize);  
+		this.prevalence = calcPrev();
+		this.incidence = calcInc();  
 		
-		this.anyResistPrevalence = calcAllStrainPrev(popSize);
-		this.anyResistIncidence = calcAllStrainInc(popSize);
 
-		this.resistAPrevalence = calcResistAPrev(popSize);
-		this.resistAIncidence = calcResistAInc(popSize);
-		this.resistBPrevalence = calcResistBPrev(popSize);
-		this.resistBIncidence = calcResistBInc(popSize);
-		this.resistBothPrevalence = calcResistBothPrev(popSize);
-		this.resistBothIncidence = calcResistBothInc(popSize);
+
+		this.resistAIncidence = calcResistAInc();
+		this.resistBIncidence = calcResistBInc();
+		this.resistBothIncidence = calcResistBothInc();
 
 		this.symptomProportion = calcSymptomProportion();
 	
@@ -341,6 +195,7 @@ public class Observer {
 				this.runNumber,
 				this.seed,
 				this.counterfactual,
+				this.parameters.getInteger("yearX"),
 				this.parameters.getInteger("infected_count_init"),
 				
 				this.parameters.getDouble("transmissionMSM"),
@@ -421,129 +276,37 @@ public class Observer {
 		
 		this.newCases = 0; //now that incidence has been calculated, clear newCases
 		this.newCasesMSM = 0;
-		this.newCasesMSMW = 0;
-		this.newCasesMSW = 0;
-		this.newCasesW = 0;
-		this.newCasesNB = 0;
-		
-		
-		
 		this.newResistACases = 0;
-		this.newResistACasesMSM = 0;
-		this.newResistACasesMSMW = 0;
-		this.newResistACasesMSW = 0;
-		this.newResistACasesW = 0;
-		this.newResistACasesNB = 0;
-
 		this.newResistBCases = 0;
-		this.newResistBCasesMSM = 0;
-		this.newResistBCasesMSMW = 0;
-		this.newResistBCasesMSW = 0;
-		this.newResistBCasesW = 0;
-		this.newResistBCasesNB = 0;
-
-		
 		this.newResistBothCases = 0;
-		this.newResistBothCasesMSM = 0;
-		this.newResistBothCasesMSMW = 0;
-		this.newResistBothCasesMSW = 0;
-		this.newResistBothCasesW = 0;
-		this.newResistBothCasesNB = 0;
-
-		
-		
 		this.treatments = 0;
 		this.failedTreatments = 0;
 		this.detected = 0;
-		this.detectedMSM = 0;
-		this.detectedMSMW = 0;
-		this.detectedMSW = 0;
-		this.detectedW = 0;
-		this.detectedNB = 0;
-
-		
 		this.detectedList = new ArrayList<Infection>();
-		this.detectedListMSM = new ArrayList<Infection>();
-		this.detectedListMSMW = new ArrayList<Infection>();
-		this.detectedListMSW = new ArrayList<Infection>();
-		this.detectedListW = new ArrayList<Infection>();
-		this.detectedListNB = new ArrayList<Infection>();
+		
+		new ArrayList<Infection>();
 
 		
 		this.detectedAndSymptoms = 0;
-		this.detectedAndSymptomsMSM = 0;
-		this.detectedAndSymptomsMSMW = 0;
-		this.detectedAndSymptomsMSW = 0;
-		this.detectedAndSymptomsW = 0;
-		this.detectedAndSymptomsNB = 0;
-		
-		
 		this.soughtCare = 0;
-		this.soughtCareMSM = 0;
-		this.soughtCareMSMW = 0;
-		this.soughtCareMSW = 0;
-		this.soughtCareW = 0;
-		this.soughtCareNB = 0;
-
 		this.detectedThruScreen = 0;
 //		this.knownFailedTreatments = 0;
 //		this.knownFailedTreatmentsA = 0;
 //		this.knownFailedTreatmentsB = 0;
 //		this.knownFailedTreatmentsBoth = 0;
 		this.successTreatmentsA = 0;
-		this.successTreatmentsAMSM = 0;
-		this.successTreatmentsAMSMW = 0;
-		this.successTreatmentsAMSW = 0;
-		this.successTreatmentsAW = 0;
-		this.successTreatmentsANB = 0;
-
 		this.successTreatmentsB = 0;
-		this.successTreatmentsBMSM = 0;
-		this.successTreatmentsBMSMW = 0;
-		this.successTreatmentsBMSW = 0;
-		this.successTreatmentsBW = 0;
-		this.successTreatmentsBNB = 0;
-
 		this.successTreatmentsX = 0;
-		this.successTreatmentsXMSM = 0;
-		this.successTreatmentsXMSMW = 0;
-		this.successTreatmentsXMSW = 0;
-		this.successTreatmentsXW = 0;
-		this.successTreatmentsXNB = 0;
-
-
 		this.attemptTreatmentsA = 0;
-		this.attemptTreatmentsAMSM = 0;
-		this.attemptTreatmentsAMSMW = 0;
-		this.attemptTreatmentsAMSW = 0;
-		this.attemptTreatmentsAW = 0;
-		this.attemptTreatmentsANB = 0;
-
-		
 		this.attemptTreatmentsB = 0;
-		this.attemptTreatmentsBMSM = 0;
-		this.attemptTreatmentsBMSMW = 0;
-		this.attemptTreatmentsBMSW = 0;
-		this.attemptTreatmentsBW = 0;
-		this.attemptTreatmentsBNB = 0;
-
 		this.attemptTreatmentsX = 0;
-		this.attemptTreatmentsXMSM = 0;
-		this.attemptTreatmentsXMSMW = 0;
-		this.attemptTreatmentsXMSW = 0;
-		this.attemptTreatmentsXW = 0;
-		this.attemptTreatmentsXNB = 0;
-
 		this.usageE = 0;
-		this.usageEMSM = 0;
-		this.usageEMSMW = 0;
-		this.usageEMSW = 0;
-		this.usageEW = 0;
-		this.usageENB = 0;
 
 	}
 	
-	public double calcPrev(double popSize) {
+	public double calcPrev() {
+		
+		double popSize = (double) population.totalSize();
  
 		//pass in the Stream as the argument here
 		//use the filter as the intermediate operator
@@ -574,7 +337,9 @@ public class Observer {
 	
 
 	
-	public double calcInc(double popSize) {
+	public double calcInc() {
+		double popSize = (double) population.totalSize();
+
 		double newInc = 0;
 		newInc = (this.newCases / popSize) * 100000.0; 
 		
@@ -592,9 +357,10 @@ public class Observer {
 	
 	
 	
-	public double calcAllStrainPrev(double popSize) {
+	public double calcAllStrainPrev() {
 		
-		
+		double popSize = (double) population.totalSize();
+
 		//Stream<Object> infectious = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 		List<Object> withStrain = population.allIndivs()
 				.filter(infection -> ((Indiv) infection).getState()==1)
@@ -610,7 +376,9 @@ public class Observer {
 	}
 	
 	
-	public double calcAllStrainInc(double popSize) {
+	public double calcAllStrainInc() {
+		double popSize = (double) population.totalSize();
+
 		double newInc = 0;
 		newInc = ((this.newResistACases + this.newResistBCases - this.newResistBothCases) / popSize) * 100000.0; 
 		
@@ -618,9 +386,10 @@ public class Observer {
 	}
 	
 	
-	public double calcResistAPrev(double popSize) {
+	public double calcResistAPrev() {
 		
-		
+		double popSize = (double) population.totalSize();
+
 		//Stream<Object> infectious = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 		List<Object> withStrain = population.allIndivs()
 				.filter(infection -> ((Indiv) infection).getState()==1)
@@ -639,7 +408,9 @@ public class Observer {
 	
 	
 	
-	public double calcResistAInc(double popSize) {
+	public double calcResistAInc() {
+		double popSize = (double) population.totalSize();
+
 		double newInc = 0;
 		newInc = ((this.newResistACases) / popSize) * 100000.0; 
 		
@@ -647,9 +418,10 @@ public class Observer {
 	}
 	
 	
-	public double calcResistBPrev(double popSize) {
+	public double calcResistBPrev() {
 		
-		
+		double popSize = (double) population.totalSize();
+
 	//	Stream<Object> infectious = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 		List<Object> withStrain = population.allIndivs()
 				.filter(infection -> ((Indiv) infection).getState()==1)
@@ -665,7 +437,9 @@ public class Observer {
 	}
 	
 	
-	public double calcResistBInc(double popSize) {
+	public double calcResistBInc() {
+		double popSize = (double) population.totalSize();
+
 		double newInc = 0;
 		newInc = ((this.newResistBCases) / popSize) * 100000.0; 
 		
@@ -673,9 +447,10 @@ public class Observer {
 	}
 	
 	
-	public double calcResistBothPrev(double popSize) {
+	public double calcResistBothPrev() {
 		
-		
+		double popSize = (double) population.totalSize();
+
 		//Stream<Object> infectious = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 		List<Object> withStrain = population.allIndivs()
 				.filter(infection -> ((Indiv) infection).getState()==1)
@@ -691,7 +466,9 @@ public class Observer {
 	}
 	
 	
-	public double calcResistBothInc(double popSize) {
+	public double calcResistBothInc() {
+		double popSize = (double) population.totalSize();
+
 		double newInc = 0;
 		newInc = ((this.newResistBothCases) / popSize) * 100000.0; 
 		
@@ -723,9 +500,9 @@ public class Observer {
 //		long infectedcount = .getObjectsAsStream(Indiv.class)
 //				.filter(indiv -> ((Indiv) indiv).getState()==1)
 //				.count();
-		double prev = calcPrev(100000);
+		double prev = calcPrev();
 		
-		if ((prev > 10.0 || prev < 0.05) && counterfactual.equals("none")) {
+		if ((prev > 10.0 || prev < 0.05) && counterfactual.equals("sweep")) {
 			System.out.print("I should stop now!!! ");
 			//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 			schedule.setFinishing(true);
@@ -748,17 +525,9 @@ public class Observer {
 			this.newCases++;
 			
 			if (potentialNewCase.getGender().equals("f")) {
-				//W
-				this.newCasesW++;
 			} else if (potentialNewCase.getGender().equals("nb")) {
-				//NB
-				this.newCasesNB++;
 			} else if (potentialNewCase.getSubPop().equals("msw")) {
-				//MSW
-				this.newCasesMSW++;
 			} else if (potentialNewCase.getSubPop().equals("msmw")) {
-				//MSMW
-				this.newCasesMSMW++;
 			} else {
 				//MSM
 				this.newCasesMSM++;
@@ -769,40 +538,20 @@ public class Observer {
 				this.newResistACases++;
 				
 				if (potentialNewCase.getGender().equals("f")) {
-					//W
-					this.newResistACasesW++;
 				} else if (potentialNewCase.getGender().equals("nb")) {
-					//NB
-					this.newResistACasesNB++;
 				} else if (potentialNewCase.getSubPop().equals("msw")) {
-					//MSW
-					this.newResistACasesMSW++;
 				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-					//MSMW
-					this.newResistACasesMSMW++;
 				} else {
-					//MSM
-					this.newResistACasesMSM++;
 				}
 				
 			} else if (potentialNewCase.myInfection().getStrain().equals("B")) {
 				this.newResistBCases++;
 				
 				if (potentialNewCase.getGender().equals("f")) {
-					//W
-					this.newResistBCasesW++;
 				} else if (potentialNewCase.getGender().equals("nb")) {
-					//NB
-					this.newResistBCasesNB++;
 				} else if (potentialNewCase.getSubPop().equals("msw")) {
-					//MSW
-					this.newResistBCasesMSW++;
 				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-					//MSMW
-					this.newResistBCasesMSMW++;
 				} else {
-					//MSM
-					this.newResistBCasesMSM++;
 				}
 				
 			} else if (potentialNewCase.myInfection().getStrain().equals("Both")) {
@@ -811,20 +560,10 @@ public class Observer {
 				this.newResistBothCases++;
 				
 				if (potentialNewCase.getGender().equals("f")) {
-					//W
-					this.newResistBothCasesW++;
 				} else if (potentialNewCase.getGender().equals("nb")) {
-					//NB
-					this.newResistBothCasesNB++;
 				} else if (potentialNewCase.getSubPop().equals("msw")) {
-					//MSW
-					this.newResistBothCasesMSW++;
 				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-					//MSMW
-					this.newResistBothCasesMSMW++;
 				} else {
-					//MSM
-					this.newResistBothCasesMSM++;
 				}
 			}
 		}
@@ -844,20 +583,10 @@ public class Observer {
 		soughtCare++;
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.soughtCareW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.soughtCareNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.soughtCareMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.soughtCareMSMW++;
 		} else {
-			//MSM
-			this.soughtCareMSM++;
 		}
 		
 	}
@@ -873,99 +602,55 @@ public class Observer {
 	}
 	
 	public void recordNewKnownFailedTreatment(Indiv indiv) {
-		knownFailedTreatments++;
 		
 	}
 	
 	public void recordNewKnownFailedTreatmentA(Indiv indiv) {
-		knownFailedTreatmentsA++;
 	}
 	
 	public void recordNewKnownFailedTreatmentB(Indiv indiv) {
-		knownFailedTreatmentsB++;
 	}
 	
 	public void recordNewKnownFailedTreatmentBoth(Indiv indiv) {
-		knownFailedTreatmentsBoth++;
 	}
 	
 	public void recordNewSuccessTreatmentA(Indiv indiv) {
 		successTreatmentsA++;
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.successTreatmentsAW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.successTreatmentsANB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.successTreatmentsAMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.successTreatmentsAMSMW++;
 		} else {
-			//MSM
-			this.successTreatmentsAMSM++;
 		}
 	}
 	
 	public void recordNewSuccessTreatmentB(Indiv indiv) {
 		successTreatmentsB++;
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.successTreatmentsBW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.successTreatmentsBNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.successTreatmentsBMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.successTreatmentsBMSMW++;
 		} else {
-			//MSM
-			this.successTreatmentsBMSM++;
 		}
 	}
 	
 	public void recordNewSuccessTreatmentX(Indiv indiv) {
 		successTreatmentsX++;
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.successTreatmentsXW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.successTreatmentsXNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.successTreatmentsXMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.successTreatmentsXMSMW++;
 		} else {
-			//MSM
-			this.successTreatmentsXMSM++;
 		}
 	}
 	
 	public void recordNewAttemptedTreatmentA(Indiv indiv) {
 		attemptTreatmentsA++;
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.attemptTreatmentsAW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.attemptTreatmentsANB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.attemptTreatmentsAMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.attemptTreatmentsAMSMW++;
 		} else {
-			//MSM
-			this.attemptTreatmentsAMSM++;
 		}
 	}
 	
@@ -973,20 +658,10 @@ public class Observer {
 		attemptTreatmentsB++;
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.attemptTreatmentsBW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.attemptTreatmentsBNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.attemptTreatmentsBMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.attemptTreatmentsBMSMW++;
 		} else {
-			//MSM
-			this.attemptTreatmentsBMSM++;
 		}
 	}
 	
@@ -994,20 +669,10 @@ public class Observer {
 		attemptTreatmentsX++;
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.attemptTreatmentsXW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.attemptTreatmentsXNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.attemptTreatmentsXMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.attemptTreatmentsXMSMW++;
 		} else {
-			//MSM
-			this.attemptTreatmentsXMSM++;
 		}
 	}
 	
@@ -1015,20 +680,10 @@ public class Observer {
 		usageE++;
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.usageEW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.usageENB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.usageEMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.usageEMSMW++;
 		} else {
-			//MSM
-			this.usageEMSM++;
 		}
 	}
 	
@@ -1042,20 +697,10 @@ public class Observer {
 		detectedList.add(indiv.myInfection());
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.detectedW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.detectedNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.detectedMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.detectedMSMW++;
 		} else {
-			//MSM
-			this.detectedMSM++;
 		}
 		
 	}
@@ -1064,20 +709,10 @@ public class Observer {
 		detectedAndSymptoms++;
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.detectedAndSymptomsW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.detectedAndSymptomsNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.detectedAndSymptomsMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.detectedAndSymptomsMSMW++;
 		} else {
-			//MSM
-			this.detectedAndSymptomsMSM++;
 		}
 		
 		
@@ -1090,20 +725,10 @@ public class Observer {
 		recordNewDetected(indiv);
 		
 		if (indiv.getGender().equals("f")) {
-			//W
-			this.detectedThruScreenW++;
 		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.detectedThruScreenNB++;
 		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.detectedThruScreenMSW++;
 		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.detectedThruScreenMSMW++;
 		} else {
-			//MSM
-			this.detectedThruScreenMSM++;
 		}
 		
 		
@@ -1152,6 +777,10 @@ public class Observer {
 	
 	public Parameters getParameters() {
 		return parameters;
+	}
+	
+	public int detected() {
+		return detected;
 	}
 	
 }

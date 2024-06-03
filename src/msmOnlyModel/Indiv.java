@@ -432,7 +432,6 @@ public class Indiv {
 	public double getRecoveryTime() {
 		Exponential recoveryExp = (Exponential)randomHelper.getDistribution("recoveryExp");
 		double thisRecovery = recoveryExp.nextDouble();
-		thisRecovery = thisRecovery * 52; //convert from yearly to weekly
 		//System.out.println(thisRecovery);
 		
 		return thisRecovery;
