@@ -61,10 +61,10 @@ public class CustomFileOutput {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 		
-		String filename = "MSMonly_output_" + fullDate +"_1_";
+		//String filename = "MSMonly_output_" + fullDate +"_1_";
 		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug2_";
 
-		//String filename = "SimpleSIR_custom_output_JUNE_3_2024_overnight_";
+		String filename = "SimpleSIR_custom_output_JUNE_3_2024_overnight_";
 		
 		filename += counterfactual;
 		

@@ -177,7 +177,7 @@ public class Observer {
 		double surveillanceResultB = surveillance.calcDetectedResistantB();
 		double surveillanceResultBoth = surveillance.calcDetectedResistantBoth();
 
-		if (counterfactual.contains("GISP")) {
+		if (counterfactual.contains("GISP") && tick > 520) {
 			if (!surveillance.getSwitchToB()) {//if not already switched to B
 				if (surveillance.checkForSwitch(surveillanceResultA)) {
 					surveillance.switchToDrugB();

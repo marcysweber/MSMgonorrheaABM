@@ -50,6 +50,26 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 #actual analysis functions:
 ############
 
+identify = function(df){
+  dfrowcount <- matrix(nrow = 1, ncol = 2)
+  for (i in unique(df$seed)){
+    newrow <- c(i,count(df[df$seed == i,]))
+    dfrowcount <- rbind(dfrowcount, newrow)
+    
+    
+  }
+  
+  dfrowcount[,2] <- as.integer(dfrowcount[,2])
+  duplicates <- dfrowcount[dfrowcount[,2]>31,1][-1]
+  duplicate.seeds <- unlist(duplicates, use.names=FALSE)
+  
+  
+  df$uniqueID <- as.integer(paste(as.character(df$RunNumber), as.character(df$seed), sep=''))
+  df <- df[!df$seed %in% duplicate.seeds,]
+  return(df)
+}
+
+
 #likelihood functions with the real observed values for three targets
 prev_binom_likelihood = function(x){
   return(dbinom(93, 2075, x / 100, log=TRUE)) # values from https://pubmed.ncbi.nlm.nih.gov/30973847/
@@ -255,10 +275,10 @@ calc_failure_rate = function(df){
 get_ends = function(df){
   ends <- data.frame()
   
-  runs <- unique(df$seed)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(seed == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     
     thisRunLastRow <- thisRunData %>% filter(tick == max(tick))
     ends <- rbind(ends, thisRunLastRow)
@@ -390,10 +410,10 @@ discountedcostW = function(df){
 
 cumulative_QALYs = function(df){
   cumulative <- c()
-  runs <- unique(df$seed)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(seed == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     thisRunCumulative <- sum(discountedQALYs(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -448,10 +468,10 @@ cumulative_QALYs_W = function(df){
 cumulative_costs = function(df){
   
   cumulative <- c()
-  runs <- unique(df$seed)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(seed == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     thisRunCumulative <- sum(discountedcost(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -545,10 +565,10 @@ discountedResist = function(df){
 cumulative_inc = function(df){
   
   cumulative <- c()
-  runs <- unique(df$seed)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(seed == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     thisRunCumulative <- sum(discountedInc(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -561,10 +581,10 @@ cumulative_inc = function(df){
 cumulative_resist = function(df){
   
   cumulative <- c()
-  runs <- unique(df$seed)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(seed == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     thisRunCumulative <- sum(discountedResist(thisRunData))
     cumulative <- c(cumulative, thisRunCumulative)
   }
@@ -630,13 +650,15 @@ sum_failures = function(df){
 cumulative_failure = function(df){
   
   cumulative <- c()
-  runs <- unique(df$RunNumber)
+  runs <- unique(df$uniqueID)
   
   for (i in runs){
-    thisRunData <- df %>% filter(RunNumber == i)
+    thisRunData <- df %>% filter(uniqueID == i)
     
     total_fails <- sum_failures(thisRunData)
-    total_attempts <- sum(discounted_attempts_A(thisRunData)) + sum(discounted_attempts_B(thisRunData)) + sum(discounted_attempts_X(thisRunData))
+    total_attempts <- sum(discounted_attempts_A(thisRunData)) + 
+      sum(discounted_attempts_B(thisRunData)) + 
+      sum(discounted_attempts_X(thisRunData))
     
     thisRunCumulative <- total_fails/total_attempts
     cumulative <- c(cumulative, thisRunCumulative)
@@ -1180,8 +1202,27 @@ summary_cost_plot = function(df1, df2, df3, df4){
 ############
 cea = function(dfGISP, dfRandom, dfTOC, dfDST){
 #new df which contains the cumulative outcomes for cost and QALYs, relative to GISP
-ceadf <- data.frame(matrix(ncol = 9, nrow = 200))
+ceadf <- data.frame(matrix(ncol = 24, nrow = length(unique(dfGISP$seed))))
 colnames(ceadf) <- c("seed", 
+                    # "InitialInfected",
+                     "TransmissionMSM",
+                     "RecoveryLambda",
+                     "ProbSymptomaticMSM",
+                     "ScreenIntervalMSM",
+                     "DelayToSeekCareMSM",
+                     "DelayToRetreatmentMSM",
+                     "PercentResistantA",
+                     #"BeginImportingB",
+                     #"ImportingBInterval",
+                     "DSTsensitivity",
+                     #"DSTspecificity",
+                     "CareCost",
+                     "TestCost",
+                     "StrainTestCost",
+                     "DrugATreatmentCost",
+                     "DrugBTreatmentCost",
+                     "DrugXTreatmentCost",
+                     "DrugETreatmentCost",
                      "GISPcumulativeQALYs", 
                      "GISPcumulativeCosts", 
                      "RandomcumulativeCosts", 
@@ -1191,8 +1232,35 @@ colnames(ceadf) <- c("seed",
                      "DSTcumulativeCosts", 
                      "DSTcumulativeQALYs")
 
+dfGISP <- dfGISP[order(dfGISP$seed),]
+dfRandom <- dfRandom[order(dfRandom$seed),]
+dfTOC <- dfTOC[order(dfTOC$seed),]
+dfDST <- dfDST[order(dfDST$seed),]
+
 
 ceadf$seed <- unique(dfGISP$seed)
+
+#ceadf$InitialInfected <- unique(dfGISP$InitialInfected)
+
+ceadf$TransmissionMSM<- unique(dfGISP$TransmissionMSM)
+ceadf$RecoveryLambda<- unique(dfGISP$RecoveryLambda)
+ceadf$ProbSymptomaticMSM<- unique(dfGISP$ProbSymptomaticMSM)
+ceadf$ScreenIntervalMSM<- unique(dfGISP$ScreenIntervalMSM)
+ceadf$DelayToSeekCareMSM<- unique(dfGISP$DelayToSeekCareMSM)
+ceadf$DelayToRetreatmentMSM<- unique(dfGISP$DelayToRetreatmentMSM)
+ceadf$PercentResistantA<- unique(dfGISP$PercentResistantA)
+#ceadf$BeginImportingB<- unique(dfGISP$BeginImportingB)
+#ceadf$ImportingBInterval<- unique(dfGISP$ImportingBInterval)
+ceadf$DSTsensitivity<- unique(dfGISP$DSTsensitivity)
+#ceadf$DSTspecificity<- unique(dfGISP$DSTspecificity)
+ceadf$CareCost<- unique(dfGISP$CareCost)
+ceadf$TestCost<- unique(dfGISP$TestCost)
+ceadf$StrainTestCost<- unique(dfGISP$StrainTestCost)
+ceadf$DrugATreatmentCost<- unique(dfGISP$DrugATreatmentCost)
+ceadf$DrugBTreatmentCost<- unique(dfGISP$DrugBTreatmentCost)
+ceadf$DrugXTreatmentCost<- unique(dfGISP$DrugXTreatmentCost)
+ceadf$DrugETreatmentCost<- unique(dfGISP$DrugETreatmentCost)
+
 
 ceadf$GISPcumulativeCosts <- cumulative_costs(dfGISP)
 ceadf$GISPcumulativeQALYs <- cumulative_QALYs(dfGISP)
@@ -1360,10 +1428,10 @@ rearrange_cea = function(ceadf){
                       "AdjustedCost",
                       "AdjustedQALYs")
   
-  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("GISP", 201), AdjustedCost = ceadf$GISPcumulativeCostsAdj, AdjustedQALYs = ceadf$GISPcumulativeQALYsAdj))
-  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("Random", 201), AdjustedCost =ceadf$RandomcumulativeCostsAdj, AdjustedQALYs = -ceadf$RandomcumulativeQALYsAdj))
-  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("TOC", 201), AdjustedCost =ceadf$TOCcumulativeCostsAdj, AdjustedQALYs = -ceadf$TOCcumulativeQALYsAdj))
-  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("DST", 201), AdjustedCost =ceadf$DSTcumulativeCostsAdj, AdjustedQALYs = -ceadf$DSTcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("GISP", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$GISPcumulativeCostsAdj, AdjustedQALYs = ceadf$GISPcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("Random", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$RandomcumulativeCostsAdj, AdjustedQALYs = -ceadf$RandomcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("TOC", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$TOCcumulativeCostsAdj, AdjustedQALYs = -ceadf$TOCcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("DST", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$DSTcumulativeCostsAdj, AdjustedQALYs = -ceadf$DSTcumulativeQALYsAdj))
   
   return(newdf)
 }
@@ -1477,30 +1545,30 @@ nmb = function(cea_df, title){
     )
     
 }
-
-ggplot(data = cea_example) + 
-  # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
-  ylim(-1000000, 1000000) + xlim(0, 150000)+
-  geom_abline(aes(slope = random_mean_slope, intercept=-random_mean_intercept)) +
-  geom_abline(aes(slope = random_lower_slope, intercept=-random_lower_intercept),linetype=2) +
-  geom_abline(aes(slope = random_upper_slope, intercept=-random_upper_intercept),linetype=2) 
-  
-
-random_intercepts <- t.test(cea_example$RandomcumulativeCostsAdj)
-random_mean_intercept <- random_intercepts$estimate
-random_lower_intercept <- random_intercepts$conf.int[1]
-random_upper_intercept <- random_intercepts$conf.int[2]
-
-random_slopes <- t.test(cea_example$RandomcumulativeQALYsAdj)
-random_mean_slope <- random_slopes$estimate
-random_lower_slope <- random_slopes$conf.int[1]
-random_upper_slope <- random_slopes$conf.int[2]
-
-TOC_intercepts
-TOC_slopes
-
-DST_intercepts
-DST_slopes
+# 
+# ggplot(data = cea_example) + 
+#   # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
+#   ylim(-1000000, 1000000) + xlim(0, 150000)+
+#   geom_abline(aes(slope = random_mean_slope, intercept=-random_mean_intercept)) +
+#   geom_abline(aes(slope = random_lower_slope, intercept=-random_lower_intercept),linetype=2) +
+#   geom_abline(aes(slope = random_upper_slope, intercept=-random_upper_intercept),linetype=2) 
+#   
+# 
+# random_intercepts <- t.test(cea_example$RandomcumulativeCostsAdj)
+# random_mean_intercept <- random_intercepts$estimate
+# random_lower_intercept <- random_intercepts$conf.int[1]
+# random_upper_intercept <- random_intercepts$conf.int[2]
+# 
+# random_slopes <- t.test(cea_example$RandomcumulativeQALYsAdj)
+# random_mean_slope <- random_slopes$estimate
+# random_lower_slope <- random_slopes$conf.int[1]
+# random_upper_slope <- random_slopes$conf.int[2]
+# 
+# TOC_intercepts
+# TOC_slopes
+# 
+# DST_intercepts
+# DST_slopes
 
 ############
 
@@ -4548,7 +4616,7 @@ smdm_summary_plot_color(dfGISP25, dfrandom25, dfTOC25, dfDST25)
 dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_30_2024_overnight_sweep_none_0/sweepnone0supercombined.csv")
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 df_ends <- calc_weights(dfsweep)
-df_best_ends <- best_ends(df_ends, 200)
+df_best_ends <- best_ends(df_ends, 1000)
 df_best_traj <- best_traj(dfsweep,df_best_ends)
 visualize_calibration_MSM(df_best_traj)
 visualize_parameters(df_best_ends)
@@ -4559,11 +4627,11 @@ dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_
 visualize_calibration_MSM(dfcalibrated)
 
 
-dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/GISP_05combo251combined.csv")
-dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/randomcombo251combined.csv")
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/GISP_05combo251combined.csv")
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo251combined.csv")
 
-dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/test-of-cure_80combo251combined.csv")
-dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
 
 new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
 
@@ -4620,3 +4688,152 @@ dfDST31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_
 
 
 ##############
+
+#investigating outliers, june 5 2024
+#################
+
+#these are the data
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25)
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25)
+
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25)
+
+
+#here we can visualize the outliers; those with change in cost below -10 or change in QALYS below -500
+multiplot(
+  visualize_cea("A.", dfGISP25, dfrandom25, dfTOC25, dfDST25),#+theme(legend.position = "none"),
+  nmb(cea(dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+#added the code below to identify() so that duplicates are removed
+dfrowcount <- matrix(nrow = 1, ncol = 2)
+for (i in unique(dfGISP25$seed)){
+  newrow <- c(i,count(dfGISP25[dfGISP25$seed == i,]))
+  dfrowcount <- rbind(dfrowcount, newrow)
+  
+  
+}
+
+dfrowcount[,2] <- as.integer(dfrowcount[,2])
+duplicates <- dfrowcount[dfrowcount[,2]>31,1][-1]
+duplicate.seeds <- unlist(duplicates, use.names=FALSE)
+#these are the seeds with more than one trajectory.
+
+
+#now we need to perform the CEA step by step, to find the rows/trajectories where those outliers originate
+ceadf_sum <- cea(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+ceadf <- rearrange_cea(ceadf_sum)
+
+outliers<-ceadf[ceadf$AdjustedCost<=-100000000 | ceadf$AdjustedQALYs<=-500 ,]
+outliers<-ceadf_sum[ceadf_sum$RandomcumulativeCostsAdj<=-100000000,]
+
+#something weird here: many trajectories are outliers for both TOC and DST. could be high cost of E or X?
+outlierscosts<-ceadf[ceadf$AdjustedCost<=-100000000,]
+
+outliersQALYs<-ceadf[ceadf$AdjustedQALYs<=-500 ,]
+
+
+outliers_params <- ceadf_sum[ceadf_sum$seed %in% outliers$seed,]
+outliers_costs_params <- ceadf_sum[ceadf_sum$seed %in% outliers$seed,]
+
+
+hist(unique(dfGISP25$TransmissionMSM))
+hist(outliers_costs_params$TransmissionMSM, col="red", add = TRUE)
+
+
+hist(unique(dfGISP25$ScreenIntervalMSM))
+hist(outliers_costs_params$ScreenIntervalMSM, col="red", add = TRUE)
+
+
+hist(unique(dfGISP25$ProbSymptomaticMSM))
+hist(outliers_costs_params$ProbSymptomaticMSM, col="red", add = TRUE)
+
+
+hist(unique(dfGISP25$RecoveryLambda))
+hist(outliers_costs_params$RecoveryLambda, col="red", add = TRUE)
+
+
+hist(unique(dfGISP25$DelayToSeekCareMSM))
+hist(outliers_costs_params$DelayToSeekCareMSM, col="red", add = TRUE)
+
+
+hist(unique(dfGISP25$DelayToRetreatmentMSM))
+hist(outliers_costs_params$DelayToRetreatmentMSM, col="red", add = TRUE)
+
+hist(unique(dfGISP25$DSTsensitivity))
+hist(outliers_costs_params$DSTsensitivity, col="red", add = TRUE)
+
+
+
+
+hist(unique(dfGISP25$CareCost))
+hist(outliers_costs_params$CareCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$TestCost))
+hist(outliers_costs_params$TestCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$StrainTestCost))
+hist(outliers_costs_params$StrainTestCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$DrugATreatmentCost))
+hist(outliers_costs_params$DrugATreatmentCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$DrugBTreatmentCost))
+hist(outliers_costs_params$DrugBTreatmentCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$DrugXTreatmentCost))
+hist(outliers_costs_params$DrugXTreatmentCost, col="red", add = TRUE)
+
+hist(unique(dfGISP25$DrugETreatmentCost))
+hist(outliers_costs_params$DrugETreatmentCost, col="red", add = TRUE)
+
+
+#the entire trajectories for seeds which creat CEA "outliers"
+outliers_costs_traj_GISP <- dfGISP25[dfGISP25$seed %in% outlierscosts$seed,]
+outliers_costs_traj_random <- dfrandom25[dfrandom25$seed %in% outlierscosts$seed,]
+outliers_costs_traj_TOC <- dfTOC25[dfTOC25$seed %in% outlierscosts$seed,]
+outliers_costs_traj_DST <- dfDST25[dfDST25$seed %in% outlierscosts$seed,]
+
+multiplot(
+  visualize_cea("A.", outliers_costs_traj_GISP, outliers_costs_traj_random, outliers_costs_traj_TOC, outliers_costs_traj_DST),#+theme(legend.position = "none"),
+  nmb(cea(outliers_costs_traj_GISP, outliers_costs_traj_random, outliers_costs_traj_TOC, outliers_costs_traj_DST), "B."),
+  cols = 2
+)
+
+new_figure_five(outliers_costs_traj_GISP, outliers_costs_traj_random, outliers_costs_traj_TOC, outliers_costs_traj_DST)
+compare_four_cost(25, outliers_costs_traj_GISP, "GISP",  outliers_costs_traj_random, "random", outliers_costs_traj_TOC, "TOC", outliers_costs_traj_DST, "DST")
+
+
+multiplot(
+  viz_E(outliers_costs_traj_GISP, "A. GISP", 25, 20000),
+  viz_E(outliers_costs_traj_random, "B. Random", 25, 20000),
+  viz_E(outliers_costs_traj_TOC, "C. TOC", 25, 20000),
+  viz_E(outliers_costs_traj_DST, "D. DST", 25, 20000), cols = 2)
+
+
+
+
+
+
+
+
+#seed 11198 is one of the most outlier ones
+new_figure_five(dfGISP25[dfGISP25$seed == 11198,], dfrandom25[dfrandom25$seed == 11198,], dfTOC25[dfTOC25$seed == 11198,], dfDST25[dfDST25$seed == 11198,])
+compare_four_cost(25, dfGISP25[dfGISP25$seed == 11198,], "GISP", dfrandom25[dfrandom25$seed == 11198,], "Random", dfTOC25[dfTOC25$seed == 11198,], "TOC", dfDST25[dfDST25$seed == 11198,], "DST")
+
+
+
+
+ceadf[ceadf$AdjustedCost<=-100000000,]
+
+
+##################
+
