@@ -18,15 +18,22 @@ public class Testing {
 	double sensitivity; //true positive rate. used for cases with actual resistance to determine the rate false negatives.
 	double specificity; // true negative rate. used for susceptible cases to determine the rare false positives.
 	private Uniform testsUniform;
+	private String counterfactual;
 	
 	public Testing(Infection infection, Parameters parameters) {
 		this.infection = infection;
 		this.randomHelper = infection.getRandomHelper();
 		this.testsUniform = (Uniform) randomHelper.getDistribution("testsUniform");
 		this.parameters=parameters;
+		this.counterfactual=parameters.getString("counterfactual");
 		
-		this.sensitivity = parameters.getDouble("DSTsensitivity");
-		this.specificity = parameters.getDouble("DSTspecificity");
+		if (counterfactual.contains("GISP")) {
+			this.specificity = 1.0;
+			this.sensitivity = 1.0;
+		} else {
+			this.specificity = parameters.getDouble("DSTspecificity");
+			this.sensitivity = parameters.getDouble("DSTsensitivity");
+		}
 
 	}
 	
@@ -40,10 +47,15 @@ public class Testing {
 		
 		this.randomHelper = indiv.getRandomHelper();
 		this.testsUniform = (Uniform) randomHelper.getDistribution("testsUniform");
-		
-		this.sensitivity = parameters.getDouble("DSTsensitivity");
-		this.specificity = parameters.getDouble("DSTspecificity");
+		this.counterfactual=parameters.getString("counterfactual");
 
+		if (counterfactual.contains("GISP")) {
+			this.specificity = 1.0;
+			this.sensitivity = 1.0;
+		} else {
+			this.specificity = parameters.getDouble("DSTspecificity");
+			this.sensitivity = parameters.getDouble("DSTsensitivity");
+		}
 	}
 	
 	
