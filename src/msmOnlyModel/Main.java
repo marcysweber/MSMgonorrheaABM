@@ -78,7 +78,7 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
 			//executeCounterfactualScenarios(scenariofile);
 
@@ -137,32 +137,33 @@ public class Main {
 	public static void executeDrugDevBatch(File scenario) {
 		BatchRun batchRunner = new BatchRun("all", "combo", 10);
 
+		//doing yearX = 25 first so that i can visualize those results while the others are still running
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 25);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 25);
+		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 25);
+		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 25);
 
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 10);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 20);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31);
 		
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 10);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 15);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 20);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 25);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 31);
-//		
-//		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10);
-//		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 15);
-//		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 20);
-//		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 25);
-//		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 31);
-//		
-//		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 10);
-//		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 15);
-//		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 20);
-//		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 25);
-//		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 31);
-//		
-//		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 10);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 15);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 20);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 31);
+		
+		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10);
+		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 15);
+		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 20);
+		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 31);
+		
+		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 10);
+		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 15);
+		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 20);
+		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 31);
+		
+		
 		
 		
 	}

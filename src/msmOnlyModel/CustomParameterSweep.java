@@ -45,8 +45,8 @@ public class CustomParameterSweep {
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
-		double annualContactsMin = 0.0;
-		double annualContactsMax = 10;
+		double annualContactsMin = 1.5;
+		double annualContactsMax = 5.5;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
@@ -77,8 +77,8 @@ public class CustomParameterSweep {
 	
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.9;
+		double probSymptomaticMin = 0.15;
+		double probSymptomaticMax = 0.55;
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
@@ -103,8 +103,8 @@ public class CustomParameterSweep {
 	
 	//screen interval parameters
 	public List<Double> getScreenIntervalMSMValues(int samples){
-		double screenIntervalMin = 0.3;
-		double screenIntervalMax = 5;
+		double screenIntervalMin = 1.75;
+		double screenIntervalMax = 4.5;
 		int seed = (int) System.currentTimeMillis() + 9;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
@@ -331,9 +331,9 @@ public class CustomParameterSweep {
 	
 	public List<Double> getBetaSweepValues(int seed, int samples, double mean, double sd){
 		RandomEngine eng = RandomHelper.registerGenerator("myStream", seed);
-		double v = ((mean * (1-mean))/sd) - 1;
+		double v = ((mean * (1-mean))/Math.pow(sd,2)) - 1;
 		double alpha = mean * v;
-		double beta = (1 - mean) * v;
+		double beta = v - alpha;
 		Beta betaDist = new Beta(alpha, beta, eng);		
 		
 		ArrayList<Double> values = new ArrayList<Double>();

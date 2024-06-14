@@ -7,6 +7,7 @@ library(data.table)
 library(RColorBrewer)
 library(egg)
 library(epiR)
+library(patchwork)
 
 
 #copied from cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)
@@ -50,7 +51,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 #actual analysis functions:
 ############
 
-identify = function(df){
+identify = function(df, resampledf){
   dfrowcount <- matrix(nrow = 1, ncol = 2)
   for (i in unique(df$seed)){
     newrow <- c(i,count(df[df$seed == i,]))
@@ -66,6 +67,12 @@ identify = function(df){
   
   df$uniqueID <- as.integer(paste(as.character(df$RunNumber), as.character(df$seed), sep=''))
   df <- df[!df$seed %in% duplicate.seeds,]
+  
+  df$resampled <- rep(0, length(df[,1]))
+  for (i in df$seed){
+    df$resampled[df$seed==i] <- sum(resampledf$seed==i)
+  }
+  
   return(df)
 }
 
@@ -547,6 +554,21 @@ cumulative_X = function(df){
   
 }
 
+cumulative_E = function(df){
+  
+  cumulative <- c()
+  runs <- unique(df$seed)
+  
+  for (i in runs){
+    thisRunData <- df %>% filter(seed == i)
+    thisRunCumulative <- sum(discounted_E(thisRunData))
+    cumulative <- c(cumulative, thisRunCumulative)
+  }
+  
+  return(cumulative)
+  
+}
+
 discountedInc = function(df){
   discountedValues <- c()
   i <- df$tick/52
@@ -637,6 +659,14 @@ discounted_attempts_X = function(df){
   return(discountedValues)
 }
 
+
+discounted_E = function(df){
+  discountedValues <- c()
+  i <- df$tick/52
+  discountedValues <- c(discountedValues, df$UsageofErtapenem/((1+discountRate)^i))
+  return(discountedValues)
+}
+
 sum_failures = function(df){
   failures_A <- sum(discounted_fail_A(df))
   
@@ -681,7 +711,7 @@ cumulative_everything = function(df){
   dfends$cumulativeInc <- cumulative_inc(df)
   dfends$cumulativeResist <- cumulative_resist(df)
   dfends$cumulativeFailure <- cumulative_failure(df)
-  
+  dfends$cumulativeE <- cumulative_E(df)
   
   return(dfends)
 }
@@ -711,7 +741,7 @@ summary_plot = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 600))
+    coord_cartesian(xlim=c(0, 400))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
     geom_boxplot(outlier.shape = NA) +
@@ -722,18 +752,18 @@ summary_plot = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 35))
+    coord_cartesian(xlim=c(0, 45))
   
-  x <- ggplot(data = allends, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
+  x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
     geom_boxplot(outlier.shape = NA) +
     labs(
       title = "C.",
       y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
+      x="Treatments with ertapenem\nover 30 years"
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 80))
+    coord_cartesian(xlim=c(0, 600))
   
   
   summary <- ggarrange(inc, failure + 
@@ -879,6 +909,61 @@ smdm_summary_plot_color = function(df1, df2, df3, df4){
   return(summary)
 }
 
+giant_inc_box = function(df, title){
+  counter_levels <- c("drug_sus_testing_80","test-of-cure_80", "random","GISP")
+  counter_labels <- c("DST 80%", "Test-of-Cure 80%", "Randomized", "GISP")
+  
+  inc <- ggplot(data = df, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(
+      title = title,
+      y = "",
+      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 400))
+  
+  return(inc)
+  
+}
+
+giant_failure_box = function(df, title){
+  counter_levels <- c("drug_sus_testing_80","test-of-cure_80", "random","GISP")
+  counter_labels <- c("DST 80%", "Test-of-Cure 80%", "Randomized", "GISP")
+  
+  failure <- ggplot(data = df, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(
+      title = title,
+      y = "",
+      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels) +
+    coord_cartesian(xlim=c(0, 60))
+  
+  return(failure)
+  
+}
+
+giant_e_box = function(df, title, xlim=100){
+  counter_levels <- c("drug_sus_testing_80","test-of-cure_80", "random","GISP")
+  counter_labels <- c("DST 80%", "Test-of-Cure 80%", "Randomized", "GISP")
+  
+  e <- ggplot(data = df, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+    geom_boxplot(outlier.shape = NA) +
+    labs(
+      title = title,
+      y = "",
+      x="Treatments with ertapenem\nover 30 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, xlim))
+  
+  
+}
 
 giant_summary_plot = function(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31,
                               dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31,
@@ -944,175 +1029,50 @@ giant_summary_plot = function(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31,
   counter_levels <- c("drug_sus_testing_80","test-of-cure_80", "random","GISP")
   counter_labels <- c("DST 80%", "Test-of-Cure 80%", "Randomized", "GISP")
   
-  inc10 <- ggplot(data = allends10, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "A. Drug X available year 10",
-      y = "",
-      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 400))
+  inc10 <- giant_inc_box(allends10, "A. Drug X available year 10")
   
-  failure10 <- ggplot(data = allends10, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "B.",
-      y = "",
-      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 70))
+  failure10 <-  giant_failure_box(allends10, "B.")
   
-  x10 <- ggplot(data = allends10, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "C.",
-      y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 60))
+  x10 <- giant_e_box(allends10, "C.")
   
   
   
-  inc15 <- ggplot(data = allends15, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "D. Drug X available year 15",
-      y = "",
-      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 400))
+  inc15 <-  giant_inc_box(allends15, "D. Drug X available year 15")
+    
+  failure15 <- giant_failure_box(allends15, "E.")
+     
   
-  failure15 <- ggplot(data = allends15, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "E.",
-      y = "",
-      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 70))
-  
-  x15 <- ggplot(data = allends15, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "F.",
-      y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 60))
+  x15 <-  giant_e_box(allends15, "F.")
+   
   
   
-  inc20 <- ggplot(data = allends20, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "G. Drug X available year 20",
-      y = "",
-      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 400))
+  inc20 <-  giant_inc_box(allends20,  "G. Drug X available year 20")
+    
   
-  failure20 <- ggplot(data = allends20, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "H.",
-      y = "",
-      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 70))
+  failure20 <- giant_failure_box(allends20, "H.")
+
   
-  x20 <- ggplot(data = allends20, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "I.",
-      y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 60))
+  x20 <- giant_e_box(allends20, "I.")
+     
   
+  inc25 <- giant_inc_box(allends25, "J. Drug X available year 25")
+      
   
-  inc25 <- ggplot(data = allends25, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "J. Drug X available year 25",
-      y = "",
-      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 400))
+  failure25 <- giant_failure_box(allends25,  "K.")
+    
   
-  failure25 <- ggplot(data = allends25, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "K.",
-      y = "",
-      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 70))
+  x25 <- giant_e_box(allends25,  "L.", 600)
+    
   
-  x25 <- ggplot(data = allends25, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "L.",
-      y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 60))
+  inc31 <- giant_inc_box(allends31, "M. Drug X never available")
+     
   
+  failure31 <- giant_failure_box(allends31,  "N.")
+    
+
+  x31 <- giant_e_box(allends31, "O.", 30000)
+     
   
-  inc31 <- ggplot(data = allends31, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "M. Drug X never available",
-      y = "",
-      x="Cumulative incidence over 30 years\nper 100,000 (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 400))
-  
-  failure31 <- ggplot(data = allends31, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "N.",
-      y = "",
-      x="% failures per treatment attempt\ncumulative, A, B, & X over 30 years"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 70))
-  
-  x31 <- ggplot(data = allends31, aes(x=cumulativeX/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
-    labs(
-      title = "O.",
-      y = "",
-      x="Treatments with drug X\nover 30 years (thousands)"
-    )+
-    my_theme +
-    scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 60))
   
   summary <- ggarrange(inc10, failure10 + 
                          theme(axis.text.y = element_blank(),
@@ -1289,6 +1249,104 @@ ceadf$DSTcumulativeQALYsAdj <- ceadf$DSTcumulativeQALYs - ceadf$GISPcumulativeQA
 return(ceadf)
 }
 
+cea_weighted = function(resampledf, dfGISP, dfRandom, dfTOC, dfDST){
+  #new df which contains the cumulative outcomes for cost and QALYs, relative to GISP
+  ceadf <- data.frame(matrix(ncol = 24, nrow = length(unique(dfGISP$seed))))
+  colnames(ceadf) <- c("seed", 
+                       # "InitialInfected",
+                       "TransmissionMSM",
+                       "RecoveryLambda",
+                       "ProbSymptomaticMSM",
+                       "ScreenIntervalMSM",
+                       "DelayToSeekCareMSM",
+                       "DelayToRetreatmentMSM",
+                       "PercentResistantA",
+                       #"BeginImportingB",
+                       #"ImportingBInterval",
+                       "DSTsensitivity",
+                       #"DSTspecificity",
+                       "CareCost",
+                       "TestCost",
+                       "StrainTestCost",
+                       "DrugATreatmentCost",
+                       "DrugBTreatmentCost",
+                       "DrugXTreatmentCost",
+                       "DrugETreatmentCost",
+                       "GISPcumulativeQALYs", 
+                       "GISPcumulativeCosts", 
+                       "RandomcumulativeCosts", 
+                       "RandomcumulativeQALYs", 
+                       "TOCcumulativeCosts", 
+                       "TOCcumulativeQALYs", 
+                       "DSTcumulativeCosts", 
+                       "DSTcumulativeQALYs")
+  
+  dfGISP <- dfGISP[order(dfGISP$seed),]
+  dfRandom <- dfRandom[order(dfRandom$seed),]
+  dfTOC <- dfTOC[order(dfTOC$seed),]
+  dfDST <- dfDST[order(dfDST$seed),]
+  
+  
+  ceadf$seed <- unique(dfGISP$seed)
+  
+  #ceadf$InitialInfected <- unique(dfGISP$InitialInfected)
+  
+  ceadf$TransmissionMSM<- unique(dfGISP$TransmissionMSM)
+  ceadf$RecoveryLambda<- unique(dfGISP$RecoveryLambda)
+  ceadf$ProbSymptomaticMSM<- unique(dfGISP$ProbSymptomaticMSM)
+  ceadf$ScreenIntervalMSM<- unique(dfGISP$ScreenIntervalMSM)
+  ceadf$DelayToSeekCareMSM<- unique(dfGISP$DelayToSeekCareMSM)
+  ceadf$DelayToRetreatmentMSM<- unique(dfGISP$DelayToRetreatmentMSM)
+  ceadf$PercentResistantA<- unique(dfGISP$PercentResistantA)
+  #ceadf$BeginImportingB<- unique(dfGISP$BeginImportingB)
+  #ceadf$ImportingBInterval<- unique(dfGISP$ImportingBInterval)
+  ceadf$DSTsensitivity<- unique(dfGISP$DSTsensitivity)
+  #ceadf$DSTspecificity<- unique(dfGISP$DSTspecificity)
+  ceadf$CareCost<- unique(dfGISP$CareCost)
+  ceadf$TestCost<- unique(dfGISP$TestCost)
+  ceadf$StrainTestCost<- unique(dfGISP$StrainTestCost)
+  ceadf$DrugATreatmentCost<- unique(dfGISP$DrugATreatmentCost)
+  ceadf$DrugBTreatmentCost<- unique(dfGISP$DrugBTreatmentCost)
+  ceadf$DrugXTreatmentCost<- unique(dfGISP$DrugXTreatmentCost)
+  ceadf$DrugETreatmentCost<- unique(dfGISP$DrugETreatmentCost)
+  
+  
+  ceadf$GISPcumulativeCosts <- cumulative_costs(dfGISP)
+  ceadf$GISPcumulativeQALYs <- cumulative_QALYs(dfGISP)
+  ceadf$RandomcumulativeCosts <- cumulative_costs(dfRandom)
+  ceadf$RandomcumulativeQALYs <- cumulative_QALYs(dfRandom)
+  ceadf$TOCcumulativeCosts <- cumulative_costs(dfTOC)
+  ceadf$TOCcumulativeQALYs <- cumulative_QALYs(dfTOC)
+  ceadf$DSTcumulativeCosts <- cumulative_costs(dfDST)
+  ceadf$DSTcumulativeQALYs <- cumulative_QALYs(dfDST)
+  
+  ceadf$GISPcumulativeCostsAdj <- ceadf$GISPcumulativeCosts - ceadf$GISPcumulativeCosts
+  ceadf$RandomcumulativeCostsAdj <- ceadf$RandomcumulativeCosts - ceadf$GISPcumulativeCosts
+  ceadf$TOCcumulativeCostsAdj <- ceadf$TOCcumulativeCosts - ceadf$GISPcumulativeCosts
+  ceadf$DSTcumulativeCostsAdj <- ceadf$DSTcumulativeCosts - ceadf$GISPcumulativeCosts
+  
+  ceadf$GISPcumulativeQALYsAdj <- ceadf$GISPcumulativeQALYs - ceadf$GISPcumulativeQALYs
+  ceadf$RandomcumulativeQALYsAdj <- ceadf$RandomcumulativeQALYs - ceadf$GISPcumulativeQALYs
+  ceadf$TOCcumulativeQALYsAdj <- ceadf$TOCcumulativeQALYs - ceadf$GISPcumulativeQALYs
+  ceadf$DSTcumulativeQALYsAdj <- ceadf$DSTcumulativeQALYs - ceadf$GISPcumulativeQALYs
+  
+  #get the cumulative QALYS and cost for each scenario
+  #subtract GISP values from GISP, random, TOC, and DST values
+  #add each seed under each scenario as its own row in a df
+  newceadf <- ceadf
+  for (traj in row.names(ceadf)){
+    #how many times does traj appear in resampled df?
+    dup <- sum(resampledf$seed==ceadf$seed[as.numeric(traj)])-1
+    
+    #add that many duplicate rows to ceadf
+    if (dup > 0){
+     newceadf <- rbind(newceadf, ceadf[rep(traj,dup),])
+    }
+  }
+  
+  return(newceadf)
+}
+
 ceaMSM = function(dfGISP, dfRandom, dfTOC, dfDST){
   #new df which contains the cumulative outcomes for cost and QALYs, relative to GISP
   ceadf <- data.frame(matrix(ncol = 9, nrow = 200))
@@ -1451,16 +1509,44 @@ ceadf$counterfactual <- factor(ceadf$counterfactual, levels=counter_levels, labe
 ggplot() +
   geom_hline(yintercept=0, color = "gray") +
   geom_vline(xintercept = 0, color = "gray") +
-  geom_point(data=ceadf, aes(x=AdjustedQALYs, y=AdjustedCost/1000000, color=counterfactual), size = 0.2, show.legend = FALSE) +
+  geom_point(data=ceadf, aes(x=AdjustedQALYs, y=AdjustedCost/1000000, color=counterfactual), size = 0.1, show.legend = FALSE) +
   geom_point(data=ceadf[ceadf$seed=="mean",], aes(x=AdjustedQALYs, y=AdjustedCost/1000000, fill=counterfactual), size = 2, shape = 23) +
   labs(title=title,
        x="Difference in QALYs relative to GISP",
-       y="Change in cost relative to GISP (in millions USD)",
+       y="Cost relative to GISP (in millions USD)",
        fill="Counterfactual")+
   scale_fill_brewer(palette="Set2")+
   scale_color_brewer(palette="Set2")+
- # coord_cartesian(xlim=c(0, 20), ylim=c(-20, 40))+
-  my_theme 
+  coord_cartesian(xlim=c(-5000, 20), ylim=c(-100, 160))+
+  my_theme  
+}
+
+visualize_cea_weighted = function(title, resampledf, df1, df2, df3, df4){
+  
+  ceadf_sum <- cea_weighted(resampledf, df1, df2, df3, df4)
+  ceadf_sum <- rbind(ceadf_sum, lapply(ceadf_sum[], mean))
+  ceadf_sum$seed[nrow(ceadf_sum)] <- "mean"
+  
+  ceadf <- rearrange_cea(ceadf_sum)
+  
+  counter_levels <- c("GISP", "Random", "TOC", "DST")
+  counter_labels <- c("GISP", "Randomized", "TOC 80%", "DST 80%")
+  
+  ceadf$counterfactual <- factor(ceadf$counterfactual, levels=counter_levels, labels=counter_labels)
+  
+  ggplot() +
+   # geom_hline(yintercept=0, color = "gray") +
+    #geom_vline(xintercept = 0, color = "gray") +
+    geom_point(data=ceadf, aes(x=AdjustedQALYs, y=AdjustedCost/1000000, color=counterfactual), size = 0.1, show.legend = FALSE) +
+    geom_point(data=ceadf[ceadf$seed=="mean",], aes(x=AdjustedQALYs, y=AdjustedCost/1000000, fill=counterfactual), size = 2, shape = 23) +
+    labs(title=title,
+         x="Difference in QALYs relative to GISP",
+         y="Cost relative to GISP (in millions USD)",
+         fill="Counterfactual")+
+    scale_fill_brewer(palette="Set2")+
+    scale_color_brewer(palette="Set2")+
+    coord_cartesian(xlim=c(-600, 50), ylim=c(-5, 25))+
+    my_theme  
 }
 
 
@@ -1522,7 +1608,7 @@ nmb = function(cea_df, title){
   
   ggplot(data = cea_df) + 
    # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
-    ylim(-20000000, 15000000) +
+    ylim(-15000000, 5000000) +
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#66C2A5")+
     
@@ -1604,23 +1690,25 @@ viz_prev_cal = function(df, title){
 viz_incMSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
   inc <- ggplot(data = df, aes(x = tick / 52, y = 100000 * (Detected / 100000), group = RunNumber)) + 
-    geom_line( aes(y = 100000 * (Detected / 100000)),size = 0.05, color="black") +
+    geom_line( aes(y = 100000 * (Detected / 100000), alpha=resampled),size = 0.1, color="black") +
     geom_point(aes(y=6508, x = 6), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 6), color = "red")+
+    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 6), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 7), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 7), color = "red")+
+    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 7), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 8), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809,x = 8), color = "red")+
+    geom_errorbar(aes(ymin = 5206, ymax = 7809,x = 8), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 9), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 9), color = "red")+
+    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 9), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 10), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 10), color = "red")+
+    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 10), color = "red", size=0.25)+
     labs(title = title,
          x = "Year",
          y = "Cases Detected per 100,000 MSM")+
     theme(plot.title = element_text(size=8)) +
-    coord_cartesian(ylim= c(0,55000),xlim=c(5,30))+
-    my_theme
+    coord_cartesian(ylim= c(0,20000),xlim=c(5,31))+
+    my_theme+
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(inc)
 }
 
@@ -1679,22 +1767,25 @@ viz_incW_cal = function(df, title){
 viz_sympt_MSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
   symptomatic <- ggplot(data = df, aes(x = tick / 52, y = DetectedAndSymptoms / Detected, group = RunNumber)) + 
-    geom_line( aes(y = DetectedAndSymptoms / Detected),size = 0.05, color="black") +
+    geom_line( aes(y = DetectedAndSymptoms / Detected, alpha=resampled),size = 0.1, color="black") +
     geom_point(aes(y=0.679, x = 6), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 6), color = "red")+
+    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 6), color = "red", size=0.25)+
     geom_point(aes(y=0.679, x = 7), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 7), color = "red")+
+    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 7), color = "red", size=0.25)+
     geom_point(aes(y=0.679, x = 8), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265,x = 8), color = "red")+
+    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265,x = 8), color = "red", size=0.25)+
     geom_point(aes(y=0.679, x = 9), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 9), color = "red")+
+    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 9), color = "red", size=0.25)+
     geom_point(aes(y=0.679, x = 10), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 10), color = "red")+
+    geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 10), color = "red", size=0.25)+
     labs(x = "Year",
          y = "Prop. Detected Cases with Symptoms", 
          title = title) +
+    coord_cartesian(ylim= c(0.5, 1.0),xlim=c(5,31))+
    # scale_y_continuous(limits = c(0.0, 1.0), labels = c(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)) + #ylim(0.4, 0.9) +
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   
   return(symptomatic)
 }
@@ -1750,9 +1841,9 @@ viz_sympt_W_cal = function(df, title){
 
  #*
 viz_prev = function(df, title, yearX){
-  df <- df %>% filter(tick > 260)
+  df <- df %>% filter(tick >= 520)
   prev <- ggplot(data = df, aes(x = tick / 52, group = seed)) + 
-     geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
+     geom_line(aes(y = Prevalence, alpha = resampled),linewidth = 0.1) +
     # geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
     # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
     # geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
@@ -1766,10 +1857,13 @@ viz_prev = function(df, title, yearX){
     labs(title = title,
          x = "Year",
          y = "Prevalence (%)") +
-    theme(plot.title = element_text(size=8)) +
+    theme(plot.title = element_text(size=8), legend.position = "none") +
     geom_vline(xintercept=yearX, linetype="dashed")+
-    coord_cartesian(ylim=c(0,20), xlim=c(5, 30))+
-    my_theme
+    coord_cartesian(ylim=c(0,10), xlim=c(10, 30))+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
+    
   return(prev)
 }
 
@@ -1814,24 +1908,26 @@ viz_prev_MSM = function(df, title, yearX){
 viz_prev_MSM_cal = function(df, title){
   df <- df %>% filter(tick > 260)
   prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
+    geom_line(aes(y = Prevalence, alpha = resampled),linewidth = 0.1, color = "black") +
     geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
+    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red", size=0.25)+
     geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 7), color = "red")+
+    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 7), color = "red", size=0.25)+
     geom_point(aes(y=4.5, x = 8), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 8), color = "red")+
+    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 8), color = "red", size=0.25)+
     geom_point(aes(y=4.5, x = 9), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 9), color = "red")+
+    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 9), color = "red", size=0.25)+
     geom_point(aes(y=4.5, x = 10), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 10), color = "red")+
+    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 10), color = "red", size=0.25)+
     labs(title = title,
          x = "Year",
          y = "Prevalence (%) in MSM") +
     theme(plot.title = element_text(size=8)) +
     #geom_vline(xintercept=yearX, linetype="dashed")+
-    coord_cartesian(ylim=c(0,20), xlim=c(5, 30))+
-    my_theme
+    coord_cartesian(ylim=c(0,10), xlim=c(5, 31))+
+    my_theme+
+    theme(legend.position = "none") +
+    scale_alpha(range=c(0.25, 1))
   return(prev)
 }
 
@@ -1871,27 +1967,29 @@ viz_prev_W = function(df, title, yearX){
 
 #*
 viz_inc = function(df, title, yearX){
-  df <- df %>% filter(tick > 260)
+  df <- df %>% filter(tick >= 520)
   inc <- ggplot(data = df, aes(x = tick / 52, y = Detected, group = RunNumber)) + 
-    geom_line( aes(y = Detected),size = 0.05, color="black") +
-    geom_point(aes(y=6508, x = 6), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 6), color = "red")+
-    geom_point(aes(y=6508, x = 7), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 7), color = "red")+
-    geom_point(aes(y=6508, x = 8), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809,x = 8), color = "red")+
-    geom_point(aes(y=6508, x = 9), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 9), color = "red")+
-    geom_point(aes(y=6508, x = 10), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 10), color = "red")+
+    geom_line( aes(y = Detected, alpha=resampled),size = 0.1, color="black") +
+    # geom_point(aes(y=6508, x = 6), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 6), color = "red")+
+    # geom_point(aes(y=6508, x = 7), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 7), color = "red")+
+    # geom_point(aes(y=6508, x = 8), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 5206, ymax = 7809,x = 8), color = "red")+
+    # geom_point(aes(y=6508, x = 9), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 9), color = "red")+
+    # geom_point(aes(y=6508, x = 10), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 10), color = "red")+
     labs(title = title,
          x = "Year",
          y = "Cases Detected per 100,000 MSM")+
     theme(plot.title = element_text(size=8)) +
-    coord_cartesian(ylim= c(0,55000),xlim=c(5,30))+
+    coord_cartesian(ylim= c(0,20000),xlim=c(10,30))+
     geom_vline(xintercept=yearX, linetype="dashed")+
   
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(inc)
 }
 
@@ -1913,7 +2011,7 @@ viz_true_inc = function(df, title, yearX){
 viz_symptomatic = function(df, title){
   df <- df %>% filter(tick > 260)
   symptomatic <- ggplot(data = df, aes(x = tick / 52, y = DetectedAndSymptoms / Detected, group = RunNumber)) + 
-    geom_line( aes(y = DetectedAndSymptoms / Detected),size = 0.05, color="black") +
+    geom_line( aes(y = DetectedAndSymptoms / Detected, alpha=resampled),size = 0.1, color="black") +
     geom_point(aes(y=0.679, x = 6), color="red", size = 1) +
     geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 6), color = "red")+
     geom_point(aes(y=0.679, x = 7), color="red", size = 1) +
@@ -1928,7 +2026,9 @@ viz_symptomatic = function(df, title){
          y = "Prop. Detected Cases with Symptoms", 
          title = title) +
     scale_y_continuous(limits = c(0.4, 0.9), labels = c(0.4, 0.5, 0.6, 0.7, 0.8, 0.9)) + #ylim(0.4, 0.9) +
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   
   return(symptomatic)
 }
@@ -1937,7 +2037,7 @@ viz_treatments = function(df, title){
   df <- df %>% filter(tick > 260)
   treatments <- ggplot(data=df, aes(x=tick / 52, group=RunNumber))+
     geom_line(aes(y = Treatments), size = 0.05, color = "black") +
-    geom_line(aes(y = FailedTreatments), size = 0.05, color = "red")+
+    geom_line(aes(y = FailedTreatments), size = 0.1, color = "red")+
     labs(x = "Year",
          y = "Count Treatments (annually)") +
     ylim(0,16000)+
@@ -1948,42 +2048,48 @@ viz_treatments = function(df, title){
 
 #*
 viz_true_resist_A = function(df, title, yearX){
-  df <- df %>% filter(tick > 520)
+  df <- df %>% filter(tick >= 520)
   amrA <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line( aes(y = ResistAIncidence/Incidence),size = 0.05, color="black") +
+    geom_line( aes(y = ResistAIncidence/Incidence, alpha=resampled),size = 0.1, color="black") +
     labs(x = "Year",
          y = "Proportion cases resistant drug A",
          title = title) +
     coord_cartesian(ylim=c(0.0, 1.0)) +
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(amrA)
 }
 #*
 viz_true_resist_B = function(df, title, yearX){
-  df <- df %>% filter(tick > 520)
+  df <- df %>% filter(tick >= 520)
   amrB <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line( aes(y = ResistBIncidence/Incidence),size = 0.05, color="black") +
+    geom_line( aes(y = ResistBIncidence/Incidence, alpha=resampled),size = 0.1, color="black") +
     labs(x = "Year",
          y = "Proportion cases resistant drug B", 
          title = title) +
     coord_cartesian(ylim=c(0.0, 1.0)) +
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(amrB)
 }
 #*
 viz_true_resist_both = function(df, title, yearX){
-  df <- df %>% filter(tick > 520)
+  df <- df %>% filter(tick >= 520)
   
   amrB <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line( aes(y = ResistBothIncidence/Incidence),size = 0.05, color="black") +
+    geom_line( aes(y = ResistBothIncidence/Incidence, alpha=resampled),size = 0.1, color="black") +
     labs(x = "Year",
          y = "Proportion cases resistant both drugs", 
          title = title) +
     coord_cartesian(ylim=c(0.0, 1.0)) +
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(amrB)
 }
 
@@ -2059,7 +2165,7 @@ viz_success_X_of_X = function(df, title){
   df <- df %>% filter(tick > 520)
   
   plotX <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
-    geom_line(aes(y = SuccessTreatmentsX/AttemptTreatmentsX * 100), size = 0.05, color = "black") +
+    geom_line(aes(y = SuccessTreatmentsX/AttemptTreatmentsX * 100), size = 0.1, color = "black") +
     labs(x = "Year",
          y = "% treatments successful with X", 
          title = title) +
@@ -2074,13 +2180,15 @@ viz_attempts_A = function(df, title, yearX){
   df <- df %>% filter(tick > 520)
   
   plotA <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
-    geom_line(aes(y = AttemptTreatmentsA), size = 0.05, color = "black") +
+    geom_line(aes(y = AttemptTreatmentsA, alpha=resampled), size = 0.1, color = "black") +
     labs(x = "Year",
          y = "Count treatments with A", 
          title = title) +
     coord_cartesian(ylim = c(0, 60000))+
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(plotA)
 }
 #*
@@ -2088,13 +2196,15 @@ viz_attempts_B = function(df, title, yearX){
   df <- df %>% filter(tick > 520)
   
   plotB <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
-    geom_line(aes(y = AttemptTreatmentsB), size = 0.05, color = "black") +
+    geom_line(aes(y = AttemptTreatmentsB, alpha=resampled), size = 0.1, color = "black") +
     labs(x = "Year",
          y = "Count treatments with B", 
          title = title) +
     coord_cartesian(ylim = c(0, 60000))+
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(plotB)
 }
 #*
@@ -2102,13 +2212,15 @@ viz_attempts_X = function(df, title, yearX){
   df <- df %>% filter(tick > 520)
   
   plotX <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
-    geom_line(aes(y = AttemptTreatmentsX ), size = 0.05, color = "black") +
+    geom_line(aes(y = AttemptTreatmentsX, alpha=resampled), size = 0.1, color = "black") +
     labs(x = "Year",
          y = "Count treatments with X", 
          title = title) +
     coord_cartesian(ylim = c(0, 60000))+
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(plotX)
 }
 #*
@@ -2116,13 +2228,15 @@ viz_E = function(df, title, yearX, ylim){
   df <- df %>% filter(tick > 520)
   
   plotX <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
-    geom_line(aes(y = UsageofErtapenem ), size = 0.05, color = "black") +
+    geom_line(aes(y = UsageofErtapenem, alpha=resampled), size = 0.1, color = "black") +
     labs(x = "Year",
          y = "Count treatments with ertapenem", 
          title = title) +
     coord_cartesian(ylim = c(0, ylim))+
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(plotX)
 }
 
@@ -2139,14 +2253,16 @@ viz_cost = function(df, title, yearX){
   df <- df %>% filter(tick > 260)
   
   cost <- ggplot(data=df[df$tick!=0,], aes(x=tick/52, group = RunNumber))+
-    geom_line(aes(y=AnnualMonetaryCost/1000000), size = 0.05, color = "black")+
+    geom_line(aes(y=AnnualMonetaryCost/1000000, alpha=resampled), size = 0.1, color = "black")+
     labs(title = title, 
          x = "Year",
          y = "Cost in Millions of Dollars (annually)") +
     coord_cartesian(ylim= c(0, 15))+
     #xlim(0,25)+
     geom_vline(xintercept=yearX, linetype="dashed")+
-    my_theme
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(cost)
 }
 
@@ -2219,12 +2335,14 @@ viz_all_failed = function(df, title, yearX){
   df$FailureRate <- calc_failure_rate(df)
   
   failed <- ggplot(data = df, aes(x=tick/52, group = RunNumber))+
-    geom_line(aes(y=FailureRate), linewidth = 0.05, color = "black")+
+    geom_line(aes(y=FailureRate, alpha=resampled), linewidth = 0.1, color = "black")+
     my_theme+
     labs(title=title, x= "Year", y = "Failure rate, all treatments")+
     geom_vline(xintercept=yearX, linetype="dashed")+
     
-   coord_cartesian(ylim=c(0, 1))
+   coord_cartesian(ylim=c(0, 1)) +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   return(failed)
 }
 
@@ -2248,12 +2366,14 @@ viz_qaly = function(df, title, yearX){
   
   q <- ggplot(data = df, aes(x = tick / 52, y = AnnualQALYsLost, group = RunNumber))+
     my_theme+
-    geom_line(linewidth = 0.05, color = "black") +
+    geom_line(aes(alpha=resampled),linewidth = 0.1, color = "black") +
     labs(title = title,
          y = "Annual QALYs Lost per 100,000", 
          x = "Year") +
     geom_vline(xintercept=yearX, linetype="dashed")+
-    coord_cartesian(ylim=c(0, 100))
+    coord_cartesian(ylim=c(0, 500)) +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1))
   
   
   return(q)
@@ -2350,71 +2470,83 @@ visualize_resistant_cost = function(df){
 
 visualize_parameters = function(df){
   a <- ggplot(df) + 
-    geom_histogram(aes(x = TransmissionM), color = "black", fill = "darkgrey", binwidth = 0.5) +
-    labs(x = "TransmissionM",
+    geom_histogram(aes(x = TransmissionMSM), color = "black", fill = "darkgrey", binwidth = 0.5) +
+    labs(x = "TransmissionMSM",
          y = "Count", 
          title = "A.") +
     xlim(0, 10)+
     theme_bw()
-  
+
   b <- ggplot(df) + 
-    geom_histogram(aes(x = TransmissionF), color = "black", fill = "darkgrey", binwidth = 0.5) +
-    labs(x = "TransmissionF",
-         y = "Count", 
-         title = "B.") +
-    xlim(0, 10)+
-    theme_bw()
-  
-  
-    
-  c <- ggplot(df) + 
     geom_histogram(aes(x = RecoveryLambda), color = "black", fill = "darkgrey", binwidth = 0.2) +
     labs(x = "RecoveryLambda",
          y = "Count", 
-         title = "C.") +
+         title = "B.") +
     xlim(0, 4)+ 
     theme_bw()
     
-  d <- ggplot(df) + 
-    geom_histogram(aes(x = ProbSymptomaticM), color = "black", fill = "darkgrey", binwidth = 0.05) +
-    labs(x = "ProbSymptomaticM",
+  c <- ggplot(df) + 
+    geom_histogram(aes(x = ProbSymptomaticMSM), color = "black", fill = "darkgrey", binwidth = 0.05) +
+    labs(x = "ProbSymptomaticMSM",
          y = "Count", 
-         title = "D.") +
+         title = "C.") +
     xlim(0, 0.9)+ 
     theme_bw()
     
-  e <- ggplot(df) + 
-    geom_histogram(aes(x = ProbSymptomaticF), color = "black", fill = "darkgrey", binwidth = 0.05) +
-    labs(x = "ProbSymptomaticF",
-         y = "Count", 
-         title = "E.") +
-    xlim(0, 0.9)+ 
-    theme_bw()
-  
-  f <-  ggplot(df) + 
+
+  d <-  ggplot(df) + 
     geom_histogram(aes(x = ScreenIntervalMSM), color = "black", fill = "darkgrey", binwidth = 0.5) +
     labs(x = "ScreenIntervalMSM",
          y = "Count", 
-         title = "F.") +
+         title = "D.") +
     xlim(0, 5.5)+ 
     theme_bw()
   
-  g <-  ggplot(df) + 
-    geom_histogram(aes(x = ScreenIntervalMSW), color = "black", fill = "darkgrey", binwidth = 0.5) +
-    labs(x = "ScreenIntervalMSW",
+  #Delay to Seek Care
+  e <-ggplot(df) + 
+    geom_histogram(aes(x = DelayToSeekCareMSM), color = "black", fill = "darkgrey", binwidth = 0.005) +
+    labs(x = "DelayToSeekCareMSM",
+         y = "Count", 
+         title = "E.") +
+    xlim(0, 2/52)+ 
+    theme_bw()
+  
+  #Delay to Retreatment
+  f<-ggplot(df) + 
+    geom_histogram(aes(x = DelayToRetreatmentMSM), color = "black", fill = "darkgrey", binwidth = 0.005) +
+    labs(x = "DelayToRetreatmentMSM",
+         y = "Count", 
+         title = "F.") +
+    xlim(0, 4/52)+ 
+    theme_bw()
+  
+  #sensitivity
+  g<-ggplot(df) + 
+    geom_histogram(aes(x = DSTsensitivity), color = "black", fill = "darkgrey", binwidth = 0.05) +
+    labs(x = "DSTsensitivity",
          y = "Count", 
          title = "G.") +
-    xlim(0, 5.5)+ 
+    xlim(0, 1.1)+ 
     theme_bw()
   
-  h <-  ggplot(df) + 
-    geom_histogram(aes(x = ScreenIntervalW), color = "black", fill = "darkgrey", binwidth = 0.5) +
-    labs(x = "ScreenIntervalW",
+  #specificity
+  h<-ggplot(df) + 
+    geom_histogram(aes(x = DSTspecificity), color = "black", fill = "darkgrey", binwidth = 0.05) +
+    labs(x = "DSTspecificity",
          y = "Count", 
          title = "H.") +
-    xlim(0, 5.5)+ 
+    xlim(0, 1.1)+ 
     theme_bw()
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
     return(multiplot(a,b,c,d,e,f,g,h, cols = 2))
 }
 
@@ -2811,7 +2943,7 @@ visualize_E_avail_X = function(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31,
                                dfDST10, dfDST15, dfDST20, dfDST25, dfDST31){
   multiplot(
   
-    viz_all(dfGISP10, "A. GISP", 10, 1000), 
+    viz_E(dfGISP10, "A. GISP", 10, 1000), 
     viz_E(dfGISP15, "E.", 15, 1000),
     viz_E(dfGISP20, "I.", 20, 1000),
     viz_E(dfGISP25, "M.", 25, 16000),
@@ -3255,12 +3387,12 @@ visualize_QALYs_all = function(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31,
 
 visualize_calibration_MSM = function(dfcalibrated){
   multiplot(
-    viz_prev_MSM_cal(dfcalibrated, "A. Prevalence in MSM"),
-    viz_incMSM_cal(dfcalibrated, "B. Detected Cases in MSM"),
+    viz_prev_MSM_cal(dfcalibrated, "A."),
+    viz_incMSM_cal(dfcalibrated, "B."),
   
-    viz_sympt_MSM_cal(dfcalibrated, "C. Proportion Symptomatic, MSM"),
+    viz_sympt_MSM_cal(dfcalibrated, "C."),
   
-    cols = 2)
+    cols = 3)
 }
 
 visualize_calibration_subpops = function(dfcalibrated){
@@ -4693,7 +4825,7 @@ dfDST31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_1_all_
 #################
 
 #these are the data
-dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_6_2024_1_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo251combined.csv")
 dfGISP25 <- identify(dfGISP25)
 dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo251combined.csv")
 dfrandom25 <- identify(dfrandom25)
@@ -4837,3 +4969,665 @@ ceadf[ceadf$AdjustedCost<=-100000000,]
 
 ##################
 
+#June 7 ms figures
+###################
+
+#figure 4 - calibrated trajectories. 1000 best of 300,000
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_none_none_10/nonenone101combined.csv")
+visualize_calibration_MSM(dfcalibrated)
+
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25)
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25)
+
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25)
+
+#figure 5
+summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 6
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 7
+multiplot(
+  visualize_cea("A.", dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    geom_segment(aes(x=-100, y =-10, xend=-1300, yend=-85), colour = "gray60")+
+    geom_segment(aes(x=-510, y =5, xend=-1300, yend=-5), colour = "gray60")+
+    theme(legend.position = "bottom", legend.title = element_blank()) + 
+    inset_element(
+      visualize_cea("", dfGISP25, dfrandom25, dfTOC25, dfDST25)+
+        theme(legend.position = "none", axis.title = element_blank(), title = element_blank()) +
+        coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+      left=0.01,
+      bottom = 0.01,
+      right = 0.5,
+      top = 0.5) ,
+
+
+  nmb(cea(dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+# for supplemental materials
+dfGISP10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo101combined.csv")
+dfGISP10 <- identify(dfGISP10)
+dfGISP15 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo151combined.csv")
+dfGISP15 <- identify(dfGISP15)
+dfGISP20 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo201combined.csv")
+dfGISP20 <- identify(dfGISP20)
+dfGISP25 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25)
+dfGISP31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_7_2024_1_all_combo_10/GISP_05combo311combined.csv")
+dfGISP31 <- identify(dfGISP31)
+
+dfrandom10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo101combined.csv")
+dfrandom10 <- identify(dfrandom10)
+dfrandom15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo151combined.csv")
+dfrandom15 <- identify(dfrandom15)
+dfrandom20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo201combined.csv")
+dfrandom20 <- identify(dfrandom20)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25)
+dfrandom31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/randomcombo311combined.csv")
+dfrandom31 <- identify(dfrandom31)
+
+dfTOC10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo101combined.csv")
+dfTOC10 <- identify(dfTOC10)
+dfTOC15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo151combined.csv")
+dfTOC15 <- identify(dfTOC15)
+dfTOC20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo201combined.csv")
+dfTOC20 <- identify(dfTOC20)
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25)
+dfTOC31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/test-of-cure_80combo311combined.csv")
+dfTOC31 <- identify(dfTOC31)
+
+dfDST10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo101combined.csv")
+dfDST10 <- identify(dfDST10)
+dfDST15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo151combined.csv")
+dfDST15 <- identify(dfDST15)
+dfDST20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo201combined.csv")
+dfDST20 <- identify(dfDST20)
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25)
+dfDST31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_3_2024_overnight_all_combo_10/drug_sus_testing_80combo311combined.csv")
+dfDST31 <- identify(dfDST31)
+
+
+
+
+#figure s1
+giant_summary_plot(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s2
+visualize_prev_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s3
+visualize_inc_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                  dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                  dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                  dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s4
+visualize_true_resist_A_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                            dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                            dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                            dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s5
+visualize_true_resist_B_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                            dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                            dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                            dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s6
+visualize_true_resist_both_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                               dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                               dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                               dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s7
+visualize_fail_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s8
+visualize_attempts_A_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s9
+visualize_attempts_B_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s10
+visualize_attempts_X_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s11
+visualize_E_avail_X(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                    dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                    dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                    dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s12
+visualize_cost_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s13
+visualize_QALYs_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                    dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                    dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                    dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+
+
+
+
+#figure s14
+multiplot(
+  visualize_cea("A. Drug X available year 10", dfGISP10, dfrandom10, dfTOC10, dfDST10)+theme(legend.position = "none")+coord_cartesian(ylim=c(-25, 150), xlim = c(-4000, 100)),
+  visualize_cea("D. Drug X available year 15", dfGISP15, dfrandom15, dfTOC15, dfDST15)+theme(legend.position = "none")+coord_cartesian(ylim=c(-25, 150), xlim = c(-4000, 100)),
+  visualize_cea("G. Drug X available year 20", dfGISP20, dfrandom20, dfTOC20, dfDST20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-25, 150), xlim = c(-4000, 100)),  
+  visualize_cea("J. Drug X available year 25", dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-25, 150), xlim = c(-4000, 100)),
+  visualize_cea("M. Drug X never available", dfGISP31, dfrandom31, dfTOC31, dfDST31)+theme(legend.position = "none")+coord_cartesian(ylim=c(-25, 150), xlim = c(-4000, 100)),
+  
+  visualize_cea("B.", dfGISP10, dfrandom10, dfTOC10, dfDST10)+theme(legend.position = "none")+coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  visualize_cea("E.", dfGISP15, dfrandom15, dfTOC15, dfDST15)+theme(legend.position = "none")+coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  visualize_cea("H.", dfGISP20, dfrandom20, dfTOC20, dfDST20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),  
+  visualize_cea("K.", dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  visualize_cea("N.", dfGISP31, dfrandom31, dfTOC31, dfDST31)+theme(legend.position = "none")+coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  
+  nmb(cea(dfGISP10, dfrandom10, dfTOC10, dfDST10), "C."),
+  nmb(cea(dfGISP15, dfrandom15, dfTOC15, dfDST15), "F."),
+  nmb(cea(dfGISP20, dfrandom20, dfTOC20, dfDST20), "I."),
+  nmb(cea(dfGISP25, dfrandom25, dfTOC25, dfDST25), "L."),
+  nmb(cea(dfGISP31, dfrandom31, dfTOC31, dfDST31), "O."),
+  cols = 3
+)
+##################
+
+#resampling again
+###########
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_30_2024_overnight_sweep_none_0/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 1000)
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$seed)
+for (unique_seed in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$seed == unique_seed,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+
+hist(df_best_ends$TransmissionMSM)
+
+write_calibrated(df_best_ends_unique)
+
+length(dfsweep[dfsweep$tick==520,]$seed)
+
+
+
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_11_2024_overnight_none_none_10/nonenone101combined.csv")
+visualize_calibration_MSM(dfcalibrated)
+
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_11_2024_overnight_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_1_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_11_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_1_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25, df_best_ends)
+
+#figure 5
+summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 6
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 7
+multiplot(
+  visualize_cea_weighted("A.", df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    #geom_segment(aes(x=-100, y =-10, xend=-1300, yend=-85), colour = "gray60")+
+    #geom_segment(aes(x=-510, y =5, xend=-1300, yend=-5), colour = "gray60")+
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+    # inset_element(
+    #   visualize_cea_weighted("",df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+
+    #     theme(legend.position = "none", axis.title = element_blank(), title = element_blank()) +
+    #     coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+    #   left=0.01,
+    #   bottom = 0.01,
+    #   right = 0.5,
+    #   top = 0.5) ,
+  
+  
+  nmb(cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+cearesults <- cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+cearesults[cearesults$DSTcumulativeCosts==max(cearesults$DSTcumulativeCosts),]
+
+outlier<-dfDST25[dfDST25$seed==37549,]
+
+
+
+
+
+
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_sweep_none_0/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 1000)
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$seed)
+for (unique_seed in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$seed == unique_seed,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+
+hist(df_best_ends$TransmissionMSM)
+
+write_calibrated(df_best_ends_unique)
+
+#test resampling with narrower parameter sweep
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_none_none_10/nonenone101combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+visualize_calibration_MSM(dfcalibrated)
+
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_2_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25, df_best_ends)
+
+#figure 5
+summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 6
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 7
+multiplot(
+  visualize_cea_weighted("A.", df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    #geom_segment(aes(x=-100, y =-10, xend=-1300, yend=-85), colour = "gray60")+
+    #geom_segment(aes(x=-510, y =5, xend=-1300, yend=-5), colour = "gray60")+
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  # inset_element(
+  #   visualize_cea_weighted("",df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+
+  #     theme(legend.position = "none", axis.title = element_blank(), title = element_blank()) +
+  #     coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  #   left=0.01,
+  #   bottom = 0.01,
+  #   right = 0.5,
+  #   top = 0.5) ,
+  
+  
+  nmb(cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+test <- cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)
+test <- rbind(test, lapply(test[], mean))
+
+test[test$TOCcumulativeCostsAdj == max(test$TOCcumulativeCostsAdj),]$seed
+test[test$RandomcumulativeCostsAdj == max(test$RandomcumulativeCostsAdj),]$seed
+dfGISP25[dfGISP25$seed==90477,]$resampled
+
+sum(df_best_ends$seed==90477)
+sum(df_best_ends$seed==27281)
+
+test2<-test
+for (traj in row.names(test)){
+  dup <- sum(df_best_ends$seed==test$seed[as.numeric(traj)])-1
+  
+  #add that many duplicate rows to ceadf
+  if (dup > 0){
+    test2 <- rbind(test2, test[rep(traj,dup),])
+  }
+}
+
+
+#########
+
+# june 13 larger fixed sweep
+##############
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_12_2024_overnight_sweep_none_0/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 1000)
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$seed)
+for (unique_seed in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$seed == unique_seed,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+
+hist(df_best_ends$TransmissionMSM)
+
+write_calibrated(df_best_ends_unique)
+
+
+
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_none_none_10/nonenone101combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+visualize_calibration_MSM(dfcalibrated)
+
+dfGISP25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25, df_best_ends)
+
+#figure 5
+summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 6
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 7
+multiplot(
+  visualize_cea_weighted("A.", df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    #geom_segment(aes(x=-100, y =-10, xend=-1300, yend=-85), colour = "gray60")+
+    #geom_segment(aes(x=-510, y =5, xend=-1300, yend=-5), colour = "gray60")+
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  # inset_element(
+  #   visualize_cea_weighted("",df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+
+  #     theme(legend.position = "none", axis.title = element_blank(), title = element_blank()) +
+  #     coord_cartesian(ylim=c(-1, 15), xlim = c(-10, 5)),
+  #   left=0.01,
+  #   bottom = 0.01,
+  #   right = 0.5,
+  #   top = 0.5) ,
+  
+  
+  nmb(cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+#double-checking min values for difference in QALYs
+june14cea<- cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+june14cea[june14cea$DSTcumulativeQALYsAdj == max(june14cea$DSTcumulativeQALYsAdj),1]
+june14cea[june14cea$TOCcumulativeQALYsAdj == max(june14cea$TOCcumulativeQALYsAdj),]
+june14cea[june14cea$RandomcumulativeQALYsAdj == max(june14cea$RandomcumulativeQALYsAdj),]
+
+mean(june14cea$DelayToRetreatmentMSM)
+mean(june14cea$DelayToSeekCareMSM)
+
+multiplot(
+viz_qaly(dfGISP25[dfGISP25$seed==27503,], "GISP", 25),
+viz_qaly(dfrandom25[dfrandom25$seed==27503,], "random", 25),
+viz_qaly(dfTOC25[dfTOC25$seed==27503,], "TOC", 25),
+viz_qaly(dfDST25[dfDST25$seed==27503,], "DST", 25),
+
+# viz_all_failed(dfGISP25[dfGISP25$seed==27503,], "GISP", 25),
+# viz_all_failed(dfrandom25[dfrandom25$seed==27503,], "random",25),
+# viz_all_failed(dfTOC25[dfTOC25$seed==27503,], "TOC",25),
+# viz_all_failed(dfDST25[dfDST25$seed==27503,], "DST",25),
+
+cols=4
+)
+
+outlier<-dfGISP25[dfGISP25$seed==27503,]
+
+new_figure_five(dfGISP25[dfGISP25$seed==69955,],dfrandom25[dfrandom25$seed==69955,],dfTOC25[dfTOC25$seed==69955,],dfDST25[dfDST25$seed==69955,])
+new_figure_five(dfGISP25[dfGISP25$seed==30134,],dfrandom25[dfrandom25$seed==30134,],dfTOC25[dfTOC25$seed==30134,],dfDST25[dfDST25$seed==30134,])
+
+
+
+
+
+
+
+
+#MS figures for june 14th
+
+#figure 2
+visualize_calibration_MSM(dfcalibrated)
+
+#figure 3
+summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 4
+new_figure_five(dfGISP25, dfrandom25, dfTOC25, dfDST25)
+
+
+#figure 5
+multiplot(
+  visualize_cea_weighted("A.", df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_weighted(df_best_ends, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+
+# supplemental figures for june 14th 
+
+dfGISP10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo101combined.csv")
+dfGISP10 <- identify(dfGISP10, df_best_ends)
+dfGISP15 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo151combined.csv")
+dfGISP15 <- identify(dfGISP15, df_best_ends)
+dfGISP20 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo201combined.csv")
+dfGISP20 <- identify(dfGISP20, df_best_ends)
+dfGISP25 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo251combined.csv")
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfGISP31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/GISP_05combo311combined.csv")
+dfGISP31 <- identify(dfGISP31, df_best_ends)
+
+dfrandom10 <-   read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo101combined.csv")
+dfrandom10 <- identify(dfrandom10, df_best_ends)
+dfrandom15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo151combined.csv")
+dfrandom15 <- identify(dfrandom15, df_best_ends)
+dfrandom20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo201combined.csv")
+dfrandom20 <- identify(dfrandom20, df_best_ends)
+dfrandom25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo251combined.csv")
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfrandom31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/randomcombo311combined.csv")
+dfrandom31 <- identify(dfrandom31, df_best_ends)
+
+dfTOC10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo101combined.csv")
+dfTOC10 <- identify(dfTOC10, df_best_ends)
+dfTOC15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo151combined.csv")
+dfTOC15 <- identify(dfTOC15, df_best_ends)
+dfTOC20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo201combined.csv")
+dfTOC20 <- identify(dfTOC20, df_best_ends)
+dfTOC25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo251combined.csv")
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfTOC31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/test-of-cure_80combo311combined.csv")
+dfTOC31 <- identify(dfTOC31, df_best_ends)
+
+dfDST10 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo101combined.csv")
+dfDST10 <- identify(dfDST10, df_best_ends)
+dfDST15 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo151combined.csv")
+dfDST15 <- identify(dfDST15, df_best_ends)
+dfDST20 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo201combined.csv")
+dfDST20 <- identify(dfDST20, df_best_ends)
+dfDST25 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo251combined.csv")
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfDST31 <-  read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_13_2024_overnight_all_combo_10/drug_sus_testing_80combo311combined.csv")
+dfDST31 <- identify(dfDST31, df_best_ends)
+
+
+visualize_parameters(df_best_ends)
+
+
+#figure s1
+giant_summary_plot(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s2
+visualize_prev_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s3
+visualize_inc_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                  dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                  dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                  dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s4
+visualize_true_resist_A_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                            dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                            dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                            dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s5
+visualize_true_resist_B_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                            dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                            dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                            dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s6
+visualize_true_resist_both_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                               dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                               dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                               dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s7
+visualize_fail_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s8
+visualize_attempts_A_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s9
+visualize_attempts_B_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s10
+visualize_attempts_X_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                         dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                         dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                         dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s11
+visualize_E_avail_X(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                    dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                    dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                    dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s12
+visualize_cost_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+#figure s13
+visualize_QALYs_all(dfGISP10, dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                    dfrandom10, dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                    dfTOC10, dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                    dfDST10, dfDST15, dfDST20, dfDST25, dfDST31)
+
+
+
+
+
+#figure s14
+multiplot(
+  visualize_cea_weighted("A. Drug X available year 10", df_best_ends,dfGISP10, dfrandom10, dfTOC10, dfDST10)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 50)),
+  visualize_cea_weighted("D. Drug X available year 15", df_best_ends,dfGISP15, dfrandom15, dfTOC15, dfDST15)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 50)),
+  visualize_cea_weighted("G. Drug X available year 20", df_best_ends,dfGISP20, dfrandom20, dfTOC20, dfDST20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 50)),  
+  visualize_cea_weighted("J. Drug X available year 25", df_best_ends,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 50)),
+  visualize_cea_weighted("M. Drug X never available",df_best_ends, dfGISP31, dfrandom31, dfTOC31, dfDST31)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 50)),
+  
+  
+  nmb(cea_weighted(df_best_ends,dfGISP10, dfrandom10, dfTOC10, dfDST10), "C."),
+  nmb(cea_weighted(df_best_ends,dfGISP15, dfrandom15, dfTOC15, dfDST15), "F."),
+  nmb(cea_weighted(df_best_ends,dfGISP20, dfrandom20, dfTOC20, dfDST20), "I."),
+  nmb(cea_weighted(df_best_ends,dfGISP25, dfrandom25, dfTOC25, dfDST25), "L."),
+  nmb(cea_weighted(df_best_ends,dfGISP31, dfrandom31, dfTOC31, dfDST31), "O."),
+  cols = 2
+)
+
+###########
