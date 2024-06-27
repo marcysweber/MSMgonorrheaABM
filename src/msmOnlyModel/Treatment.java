@@ -25,6 +25,11 @@ public class Treatment {
 	private boolean switchToB;
 	private boolean switchToX;
 	private boolean addedX;
+	
+	private int availrDST;
+	private int adhereTOCsympt;
+	private int adhereTOCasympt;
+
 	// both test-of-cure and strain test counterfactuals will happend within
 	// Treatment
 
@@ -33,6 +38,11 @@ public class Treatment {
 		this.addedX = observer.getAddedX();
 		this.indiv = indiv;
 		this.parameters = indiv.getParameters();
+		
+		this.availrDST = parameters.getInteger("availrDST");
+		this.adhereTOCsympt = parameters.getInteger("adhereTOCsympt");
+		this.adhereTOCasympt = parameters.getInteger("adhereTOCasympt");
+		
 		this.infection = indiv.myInfection();
 		this.schedule = indiv.getSchedule();
 		this.randomHelper = indiv.getRandomHelper();
@@ -109,10 +119,9 @@ public class Treatment {
 		} else {
 			//System.out.println("Doing imperfect DST!");
 
-			double adherence = Double.parseDouble(counterfactual.substring(17));
 			//System.out.println(adherence);
 			
-			treatDrugSusTestingImperfect(adherence);
+			treatDrugSusTestingImperfect(availrDST);
 		}
 	}
 	
@@ -191,6 +200,7 @@ public class Treatment {
 
 	public void symptomaticTreatmentFailure(String treatmentAttempted) {
 		indiv.abstain(); // should already be abstaining, but just to confirm
+		indiv.checkForSequelae();
 
 		//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 		Exponential delayToRetreatmentExp = null;
@@ -224,7 +234,7 @@ public class Treatment {
 			nextTreatment = "X";
 		}
 
-		costCalc.addQALYsLost(indiv, thisDelay);
+		costCalc.symptomaticQALYsLost(indiv, thisDelay);
 
 		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
 		schedule.schedule(schparams, this, "retreat", nextTreatment);
@@ -268,7 +278,7 @@ public class Treatment {
 			} else {
 				// schedule retreatment with X
 				schedule.schedule(schparams, this, "retreat", "X");
-				costCalc.addQALYsLost(indiv, thisDelay);
+				costCalc.symptomaticQALYsLost(indiv, thisDelay);
 			}
 		} else if (retreatment.equals("B")) {
 			costCalc.treatmentDrugBCost(indiv);
@@ -278,7 +288,7 @@ public class Treatment {
 			} else {
 				// schedule retreatment with X
 				schedule.schedule(schparams, this, "retreat", "X");
-				costCalc.addQALYsLost(indiv, thisDelay);
+				costCalc.symptomaticQALYsLost(indiv, thisDelay);
 			}
 		} else {
 			tryDrugXorE();
@@ -306,8 +316,11 @@ public class Treatment {
 		if (counterfactual.contains("100")) {
 			treatTestOfCurePerfect();
 		} else {
-			double adherence = Double.parseDouble(counterfactual.substring(13));
-			treatTestOfCureImperfect(adherence);
+			if (indiv.symptoms()){
+				treatTestOfCureImperfect(adhereTOCsympt);
+			} else {
+				treatTestOfCureImperfect(adhereTOCasympt);
+			}
 		}
 	}
 
@@ -344,7 +357,7 @@ public class Treatment {
 			ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
 
 			schedule.schedule(schparams, this, "retreatTestOfCure", "B");
-			costCalc.addQALYsLost(indiv, thisDelay);
+			costCalc.symptomaticQALYsLost(indiv, thisDelay);
 		}
 	}
 
@@ -378,7 +391,7 @@ public class Treatment {
 				ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
 
 				schedule.schedule(schparams, this, "retreatTestOfCure", "X");
-				costCalc.addQALYsLost(indiv, thisDelay);
+				costCalc.symptomaticQALYsLost(indiv, thisDelay);
 			}
 
 		} else if (treatment.equals("X")) {

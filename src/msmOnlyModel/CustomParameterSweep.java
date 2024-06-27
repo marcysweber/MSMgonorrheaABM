@@ -51,20 +51,6 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
 	
-	public List<Double> getTransmissionMSWValues(int samples){
-		double annualContactsMin = 0.0;
-		double annualContactsMax = 10;
-		int seed = (int) System.currentTimeMillis() + 3;
-		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
-	}
-	
-	public List<Double> getTransmissionFValues(int samples){
-		double annualContactsMin = 0.0;
-		double annualContactsMax = 10;
-		int seed = (int) System.currentTimeMillis() + 4;
-		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
-	}
-	
 	
 	//recovery parameter
 	public List<Double> getRecoveryLambdaValues(int samples) {
@@ -82,44 +68,13 @@ public class CustomParameterSweep {
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
-	
-	public List<Double> getProbSymptomaticMSWValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.9;
-		int seed = (int) System.currentTimeMillis() + 7;
-		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
-	}
-
-	public List<Double> getProbSymptomaticFValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.9;
-		int seed = (int) System.currentTimeMillis() + 8;
-		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
-	}
-	
-	
-	
-	
+		
 	
 	//screen interval parameters
 	public List<Double> getScreenIntervalMSMValues(int samples){
 		double screenIntervalMin = 1.75;
 		double screenIntervalMax = 4.5;
 		int seed = (int) System.currentTimeMillis() + 9;
-		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
-	}
-	
-	public List<Double> getScreenIntervalMSWValues(int samples){
-		double screenIntervalMin = 0.3;
-		double screenIntervalMax = 5;
-		int seed = (int) System.currentTimeMillis() + 10;
-		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
-	}
-	
-	public List<Double> getScreenIntervalWValues(int samples){
-		double screenIntervalMin = 0.3;
-		double screenIntervalMax = 5;
-		int seed = (int) System.currentTimeMillis() + 11;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
 	
@@ -132,40 +87,12 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, delayToSeekCareMin, delayToSeekCareMax);
 	}
 	
-	public List<Double> getDelayToSeekCareMSWValues(int samples){
-		double delayToSeekCareMin = 0;
-		double delayToSeekCareMax = 2.0/52.0;
-		int seed = (int) System.currentTimeMillis() + 13;
-		return getUniformSweepValues(seed, samples, delayToSeekCareMin, delayToSeekCareMax);
-	}
-	
-	public List<Double> getDelayToSeekCareFValues(int samples){
-		double delayToSeekCareMin = 0;
-		double delayToSeekCareMax = 2.0/52.0;
-		int seed = (int) System.currentTimeMillis() + 14;
-		return getUniformSweepValues(seed, samples, delayToSeekCareMin, delayToSeekCareMax);
-	}
-
 	
 	//delay to retreatment parameters
 	public List<Double> getDelayToRetreatmentMSMValues(int samples){
 		double delayToRetreatmentMin = 0;
 		double delayToRetreatmentMax = 4.0/52.0;
 		int seed = (int) System.currentTimeMillis() + 15;
-		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
-	}
-	
-	public List<Double> getDelayToRetreatmentMSWValues(int samples){
-		double delayToRetreatmentMin = 0;
-		double delayToRetreatmentMax = 4.0/52.0;
-		int seed = (int) System.currentTimeMillis() + 16;
-		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
-	}
-	
-	public List<Double> getDelayToRetreatmentFValues(int samples){
-		double delayToRetreatmentMin = 0;
-		double delayToRetreatmentMax = 4.0/52.0;
-		int seed = (int) System.currentTimeMillis() + 17;
 		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
 	}
 	

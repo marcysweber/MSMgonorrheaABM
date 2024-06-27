@@ -46,7 +46,8 @@ public class InsertResistance {
 			this.beginImportingBCombo = params.getInteger("begin_importing_B");
 			this.importingBIntervalCombo = params.getDouble("importing_B_interval");
 			this.chanceToDevelopResistance = true;
-		
+			developResistanceUniform = (Uniform) randomHelper.getDistribution("developResistanceUniform");
+
 			this.importingBSchedule = makeImportingBSchedule(importingBIntervalCombo);
 			
 		} else if (resistanceMethod.equals("developWithTreatment")) {

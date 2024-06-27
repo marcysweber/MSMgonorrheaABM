@@ -346,6 +346,12 @@ public class Indiv {
 		this.createInfection(strain, false, recoveryTime);
 		this.changeStateTo(1);
 			
+		if (!this.symptoms()) {
+			String sequelae = checkForSequelae();
+			if (!sequelae.equals("none")) {
+				recordSequelae(sequelae);
+			}
+		}
 			
 		this.recordNewCase();
 		this.scheduleInfectiousActions();
@@ -389,7 +395,7 @@ public class Indiv {
 	public void recoverOrDevelopResistance(String treatment) {
 		String resistance = allParameters.getString("resistance");
 
-		if (resistance.equals("developWithTreatment") && tickNow()>520) {
+		if (resistance.equals("combo") && tickNow()>520) {
 			InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 			resistanceInserter.checkForDevelopResistance(this, treatment);
 						
@@ -397,6 +403,33 @@ public class Indiv {
 			actuallyRecover(treatment);
 		}
 	}
+	
+	public void recordSequelae(String sequelae) {
+
+		observer.getCostCalc().recordSequelae(sequelae);
+		
+	}
+	
+	public String checkForSequelae() {
+		String result = "none";
+		
+		Uniform sequelaeUniform = (Uniform) randomHelper.getDistribution("sequelaeUniform");
+		double randomValue = sequelaeUniform.nextDouble();
+		
+		if (randomValue <= 0.042) {
+			//epididymitis
+			result = "epididymitis";
+		} else if (randomValue <= 0.052) {
+			//DGI
+			result = "dgi";
+		} else if (randomValue <= 0.05242) {
+			//both
+			result = "both";
+		}
+		
+		return result;
+	}
+	
 	
 	public void actuallyRecover(String treatment) {
 		if (infectious()) {

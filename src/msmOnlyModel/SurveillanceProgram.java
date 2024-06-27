@@ -18,6 +18,8 @@ public class SurveillanceProgram {
 	private Observer observer; 
 	private Parameters parameters;
 	
+	private double switchThreshold;
+	
 	private String counterfactual;
 	private int amountToTest;
 	private List<Long> annualListDetectionsA;
@@ -42,6 +44,7 @@ public class SurveillanceProgram {
 		this.counterfactual = counterfactual;
 		this.observer=observer;
 		this.parameters=observer.getParameters();
+		this.switchThreshold=parameters.getDouble("switchThreshold");
 		if (counterfactual.contains("GISP")) {
 			this.amountToTest = 25;
 		} else {
@@ -196,7 +199,7 @@ public class SurveillanceProgram {
 	public boolean checkForSwitch(double surveillanceResult) {
 		boolean shouldSwitch = false;
 		
-		double switchPrev = 5.0 / 100.0;
+		double switchPrev = switchThreshold / 100.0;
 		if (surveillanceResult >= switchPrev) {
 			shouldSwitch = true;
 		}

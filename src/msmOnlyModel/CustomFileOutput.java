@@ -61,10 +61,10 @@ public class CustomFileOutput {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 		
-		//String filename = "MSMonly_output_" + fullDate +"_2_";
-		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug2_";
+		String filename = "MSMonly_output_" + fullDate +"_1_";
+		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug_";
 
-		String filename = "SimpleSIR_custom_output_JUNE_13_2024_overnight_";
+		//String filename = "SimpleSIR_custom_output_JUNE_21_2024_overnight_";
 		
 		filename += counterfactual;
 		
@@ -103,6 +103,15 @@ public class CustomFileOutput {
 	        		"seed",
 	        		"counterfactual",
 	        		"yearX",
+	        		
+	        		"switchThreshold",
+	        		"availrDST",
+	        		"adhereTOCsympt",
+	        		"adhereTOCasympt",
+	        		
+	        		
+	        		
+	        		
 	        		"InitialInfected",
 	        		
 	        		"TransmissionMSM",
@@ -184,6 +193,14 @@ public class CustomFileOutput {
 			int seed,
 			String counterfactual,
 			int yearX,
+			
+			double switchThreshold, 
+			int availrDST,
+			int adhereTOCsympt,
+			int adhereTOCasympt,
+			
+			
+			
 			int initialInfected,
 			
 			double transmissionMSM, 
@@ -260,6 +277,14 @@ public class CustomFileOutput {
 	        		String.valueOf(seed),
 	        		String.valueOf(counterfactual),
 	        		String.valueOf(yearX),
+	        		
+	        		String.valueOf(switchThreshold),
+	        		String.valueOf(availrDST),
+	        		String.valueOf(adhereTOCsympt),
+	        		String.valueOf(adhereTOCasympt),
+
+	        		
+	        		
 	        		String.valueOf(initialInfected),
 	        		
 	        		String.valueOf(transmissionMSM),

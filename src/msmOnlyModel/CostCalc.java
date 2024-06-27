@@ -64,8 +64,8 @@ public class CostCalc {
 		personDaysSymptomaticAnnual ++;
 	}
 	
-	public void addQALYsLost(Indiv indiv, double delay) {
-		double QALYs = (delay * 0.1) / 52.0;
+	public void symptomaticQALYsLost(Indiv indiv, double delay) {
+		double QALYs = (delay * 0.16) / 52.0;
 		
 		if (indiv.infectious() && indiv.symptoms()) {
 		
@@ -204,6 +204,8 @@ public class CostCalc {
 	
 	public void treatmentDrugECost(Indiv indiv) {
 		monetaryCostAnnual += drugEtreatmentCost;
+		double QALYs = (10.5 * 0.3) / 365.0;
+		this.QALYsLost += QALYs;
 		
 		if (indiv.getGender().equals("f")) {
 			//W
@@ -222,6 +224,36 @@ public class CostCalc {
 			this.monetaryCostAnnualMSM+= drugEtreatmentCost;
 		}
 	}
+	
+	
+	public void recordSequelae(String sequelae) {
+		double QALYs = 0; 
+
+		
+		if (sequelae.equals("epididymitis")) {
+			this.monetaryCostAnnual += 522;
+			
+			QALYs = (6.9 * 0.54) / 365.0;
+			this.QALYsLost += QALYs;
+			
+			
+		} else if (sequelae.equals("dgi")) {
+			this.monetaryCostAnnual += 2916;
+			QALYs = (8.8 * 0.37) / 365.0;
+			this.QALYsLost += QALYs;
+			
+			
+			
+		} else if (sequelae.equals("both")) {
+			this.monetaryCostAnnual += 3438;
+			QALYs = ((6.9 + 8.8) * 0.7102) / 365.0;
+			this.QALYsLost += QALYs;
+			
+		}
+	
+	}
+	
+	
 	
 	public void clearAnnualCosts() {
 		monetaryCostAnnual = 0;

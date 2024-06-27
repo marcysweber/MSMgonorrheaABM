@@ -145,6 +145,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
 			
+			Uniform sequelaeUniform = new Uniform(0.0, 1.0, eng);
+			randomHelper.registerDistribution("sequelaeUniform", sequelaeUniform);
 			
 			Uniform adherenceUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("adherenceUniform", adherenceUniform);

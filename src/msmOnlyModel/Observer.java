@@ -196,6 +196,16 @@ public class Observer {
 				this.seed,
 				this.counterfactual,
 				this.parameters.getInteger("yearX"),
+				
+				this.parameters.getDouble("switchThreshold"),
+				this.parameters.getInteger("availrDST"),
+				this.parameters.getInteger("adhereTOCsympt"),
+				this.parameters.getInteger("adhereTOCasympt"),
+
+				
+				
+				
+				
 				this.parameters.getInteger("infected_count_init"),
 				
 				this.parameters.getDouble("transmissionMSM"),

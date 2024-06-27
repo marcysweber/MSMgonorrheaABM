@@ -42,7 +42,7 @@ public class CareSeeking {
 		
 		//System.out.println("delay: ");
 		//System.out.println(thisDelayToSeekCare);
-		observer.getCostCalc().addQALYsLost(indiv, thisDelayToSeekCare);
+		observer.getCostCalc().symptomaticQALYsLost(indiv, thisDelayToSeekCare);
 		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelayToSeekCare + indiv.tickNow());
 		schedule.schedule(schparams, this, "seekCare");
 		return true;
