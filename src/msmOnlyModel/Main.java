@@ -78,11 +78,11 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
 			//executeCounterfactualScenarios(scenariofile);
 
-			executeSensitivityAnalysisBatch(scenariofile);			
+			//executeSensitivityAnalysisBatch(scenariofile);			
 			
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -115,18 +115,18 @@ public class Main {
 	public static void executeCalibratedNoResistanceBatch(File scenario) {
 		BatchRun batchRunner = new BatchRun("none", "none");
 
-		batchRunner.executeCalibratedBatch(scenario, "none");
+		batchRunner.executeCalibratedBatch(scenario, "none", "none", 25, 5, 80, 80, 80);
 
 	}
 	
 	public static void executeSensitivityAnalysisBatch(File scenariofile) {
-		//executeAvailDrugXBatch(scenariofile);
+		executeAvailDrugXBatch(scenariofile);
 		
-		//executeSwitchThresholdBatch(scenariofile);
-		//executeAvailrDSTBatch(scenariofile);
+		executeSwitchThresholdBatch(scenariofile);
+		executeAvailrDSTBatch(scenariofile);
 		executeAdhereTOCsymptomaticBatch(scenariofile);
 		executeAdhereTOCasymptomaticBatch(scenariofile);
-
+		
 	}
 	
 	public static void executeAvailDrugXBatch(File scenario) {
@@ -137,22 +137,22 @@ public class Main {
 		int adhereTOCsympt = 80;
 		int adhereTOCasympt = 80;
 
-		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		//batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		
-		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		//batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		
-		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		//batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "random", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		
-		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		//batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
@@ -170,11 +170,25 @@ public class Main {
 		int adhereTOCsympt = 80;
 		int adhereTOCasympt = 80;
 
-		batchRunner.executeCalibratedBatch(scenario, "GISP_4", resistInsert, yearX, 4, availrDST, adhereTOCsympt, adhereTOCasympt);
-		batchRunner.executeCalibratedBatch(scenario, "GISP_45", resistInsert, yearX, 4.5,  availrDST, adhereTOCsympt, adhereTOCasympt);
-		batchRunner.executeCalibratedBatch(scenario, "GISP_5", resistInsert, yearX, 5,  availrDST, adhereTOCsympt, adhereTOCasympt);
-		batchRunner.executeCalibratedBatch(scenario, "GISP_55", resistInsert, yearX, 5.5, availrDST,  adhereTOCsympt, adhereTOCasympt);
-		batchRunner.executeCalibratedBatch(scenario, "GISP_6", resistInsert, yearX, 6, availrDST,  adhereTOCsympt, adhereTOCasympt);
+		batchRunner.executeCalibratedBatch(scenario, "GISP_3", resistInsert, yearX, 3, availrDST, adhereTOCsympt, adhereTOCasympt);
+		batchRunner.executeCalibratedBatch(scenario, "GISP_7", resistInsert, yearX, 7, availrDST, adhereTOCsympt, adhereTOCasympt);
+		
+		 // batchRunner.executeCalibratedBatch(scenario, "GISP_2", resistInsert, yearX,
+		 // 2, availrDST, adhereTOCsympt, adhereTOCasympt);
+		 // batchRunner.executeCalibratedBatch(scenario, "GISP_8", resistInsert, yearX,
+		  //8, availrDST, adhereTOCsympt, adhereTOCasympt);
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_4", resistInsert, yearX,
+		  4, availrDST, adhereTOCsympt, adhereTOCasympt); //
+		 // batchRunner.executeCalibratedBatch(scenario, "GISP_45", resistInsert, yearX,
+		 // 4.5, availrDST, adhereTOCsympt, adhereTOCasympt);
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_5", resistInsert, yearX,
+		  5, availrDST, adhereTOCsympt, adhereTOCasympt); //
+		 // batchRunner.executeCalibratedBatch(scenario, "GISP_55", resistInsert, yearX,
+		  //5.5, availrDST, adhereTOCsympt, adhereTOCasympt);
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_6", resistInsert, yearX,
+		  6, availrDST, adhereTOCsympt, adhereTOCasympt);
+		 
 	}
 	
 	public static void executeAvailrDSTBatch(File scenario) {
@@ -208,10 +222,10 @@ public class Main {
 		
 //		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_20", resistInsert, yearX, switchThres, availrDST, 20, adhereTOCasympt);
 //		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_40", resistInsert, yearX, switchThres, availrDST, 40, adhereTOCasympt);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_60", resistInsert, yearX, switchThres, availrDST, 60, adhereTOCasympt);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_80", resistInsert, yearX, switchThres, availrDST, 80, adhereTOCasympt);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_100", resistInsert, yearX, switchThres, availrDST, 100, adhereTOCasympt);
-//		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_60", resistInsert, yearX, switchThres, availrDST, 60, adhereTOCasympt);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_80", resistInsert, yearX, switchThres, availrDST, 80, adhereTOCasympt);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_100", resistInsert, yearX, switchThres, availrDST, 100, adhereTOCasympt);
+		
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_70", resistInsert, yearX, switchThres, availrDST, 70, adhereTOCasympt);
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_90", resistInsert, yearX, switchThres, availrDST, 90, adhereTOCasympt);
 
@@ -231,9 +245,9 @@ public class Main {
 		
 //		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_20", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 20);
 //		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_40", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 40);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_60", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 60);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_80", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 80);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_100", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 100);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_60", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 60);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_80", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 80);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_100", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 100);
 
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_70", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 70);
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_90", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 90);

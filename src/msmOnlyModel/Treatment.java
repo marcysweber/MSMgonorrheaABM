@@ -64,24 +64,27 @@ public class Treatment {
 
 		//System.out.println(counterfactual);
 		// determine the appropriate treatment scenario
+		
+		if (schedule.getTickCount() < 520) {
+			tryDrugA();
+		} else {
+			if (switchToX) {
+				treatAfterSwitchX();
+			} else if (switchToB) { // have we switched to drug B?
+				treatAfterSwitchB();
 
-		if (switchToX) {
-			treatAfterSwitchX();
-		} else if (switchToB) { // have we switched to drug B?
-			treatAfterSwitchB();
+			} else if (counterfactual.contains("test-of-cure")) { // test-of-cure?
+				// in test of cure scenario
+				whichTestOfCure();
 
-		} else if (counterfactual.contains("test-of-cure")) { // test-of-cure?
-			// in test of cure scenario
-			whichTestOfCure();
+			} else if (counterfactual.equals("random")) {
+				treatRandom();
+			} else if (counterfactual.contains("drug_sus_testing")) {
 
-		} else if (counterfactual.equals("random")) {
-			treatRandom();
-		} else if (counterfactual.contains("drug_sus_testing")) {
-			
-			treatDrugSusTesting();
-		} else { // GISP pre-switch (default drug A)?
-			treatDefaultBeforeSwitch();
-
+				treatDrugSusTesting();
+			} else { // GISP pre-switch (default drug A)?
+				treatDefaultBeforeSwitch();
+			}
 		}
 	}
 
@@ -313,14 +316,12 @@ public class Treatment {
 	}
 
 	public void whichTestOfCure() {
-		if (counterfactual.contains("100")) {
-			treatTestOfCurePerfect();
-		} else {
+		
 			if (indiv.symptoms()){
 				treatTestOfCureImperfect(adhereTOCsympt);
 			} else {
 				treatTestOfCureImperfect(adhereTOCasympt);
-			}
+			
 		}
 	}
 
