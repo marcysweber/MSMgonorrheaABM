@@ -1866,24 +1866,24 @@ prcc_all = function(df){
 my_theme = theme_bw(base_size = 8)
  #*
 viz_prev_cal = function(df, title){
-  df <- df %>% filter(tick > 260)
-  prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line(aes(y = prevMSM),size = 0.05, color = "black") +
-    geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
-    geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 7), color = "red")+
-    geom_point(aes(y=4.5, x = 8), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 8), color = "red")+
-    geom_point(aes(y=4.5, x = 9), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 9), color = "red")+
-    geom_point(aes(y=4.5, x = 10), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 10), color = "red")+
+  #df <- df %>% filter(tick > 260)
+  prev <- ggplot(data = df, aes(x = tick / 52, group = uniqueID)) + 
+    geom_line(aes(y = Prevalence),size = 0.01, color = "black") +
+    # geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
+    # geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 7), color = "red")+
+    # geom_point(aes(y=4.5, x = 8), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 8), color = "red")+
+    # geom_point(aes(y=4.5, x = 9), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 9), color = "red")+
+    # geom_point(aes(y=4.5, x = 10), color="red", size = 1) +
+    # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 10), color = "red")+
     labs(title = title,
          x = "Year",
          y = "Prevalence (%) in MSM") +
     theme(plot.title = element_text(size=8)) +
-    coord_cartesian(ylim=c(0,20), xlim=c(5, 30))+
+    coord_cartesian(ylim=c(0,11), xlim=c(0, 10))+
     my_theme
   return(prev)
 }
@@ -6983,6 +6983,8 @@ dfcalibrated <- identify(dfcalibrated, df_best_ends)
 
 #figure 2
 visualize_calibration_MSM(dfcalibrated)
+
+visualize_calibration_MSM(dfsweep)
 
 
 #main results

@@ -59,7 +59,7 @@ public class Treatment {
 		indiv.recordTreatment();
 
 		if (indiv.symptoms()) {
-			indiv.abstain();
+			//indiv.abstain();
 		}
 
 		//System.out.println(counterfactual);
@@ -202,7 +202,7 @@ public class Treatment {
 	
 
 	public void symptomaticTreatmentFailure(String treatmentAttempted) {
-		indiv.abstain(); // should already be abstaining, but just to confirm
+		//indiv.abstain(); // should already be abstaining, but just to confirm
 		indiv.checkForSequelae();
 
 		//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
@@ -251,7 +251,7 @@ public class Treatment {
 
 	public void retreat(String retreatment) {
 		if (indiv.infectious()){//confirm still infectious
-		indiv.abstain(); // should already be abstaining, but just to confirm
+		//indiv.abstain(); // should already be abstaining, but just to confirm
 
 		// check that indiv is still infectious, bc there is chance of natural recovery
 
@@ -327,7 +327,7 @@ public class Treatment {
 
 	// 1-17 i think this still needs some updating! delays to retreatment!
 	public void treatTestOfCurePerfect() {
-		indiv.abstain();
+		//indiv.abstain();
 
 		costCalc.treatmentDrugACost(indiv);
 		observer.recordNewAttemptedTreatmentA(indiv);
@@ -364,7 +364,7 @@ public class Treatment {
 
 	public void retreatTestOfCure(String treatment) {
 		costCalc.testCost(indiv);
-		indiv.abstain();
+		//indiv.abstain();
 
 		if (treatment.equals("B")) {
 			costCalc.treatmentDrugBCost(indiv);

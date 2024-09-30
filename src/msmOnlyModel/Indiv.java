@@ -211,7 +211,8 @@ public class Indiv {
 			if(screenings.contains(roundedTick)) {
 				Screener screener = new Screener();
 				screener.screen(this, getObserver());
-			} else if (!abstaining) { //if i pass symptoms check and screen...
+			} else //if (!abstaining) 
+				{ //if i pass symptoms check and screen...
 				if (attemptContact()) {//stochastic logic gate from annualContacts param
 					Indiv partner = partnerSelect(); //find a partner
 					if (this != partner) {//doublecheck that it's not myself
@@ -565,7 +566,7 @@ public class Indiv {
 	
 
 	public void abstain() {
-		this.abstaining = true;
+		//this.abstaining = true;
 	}
 	
 	public void stopAbstaining() {

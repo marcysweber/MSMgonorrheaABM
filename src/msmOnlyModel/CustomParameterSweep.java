@@ -54,8 +54,8 @@ public class CustomParameterSweep {
 	
 	//recovery parameter
 	public List<Double> getRecoveryLambdaValues(int samples) {
-		double recoveryLambdaMin = 0.3;
-		double recoveryLambdaMax = 4.0;
+		double recoveryLambdaMin = 0.05769231;
+		double recoveryLambdaMax = 0.38461538;
 		int seed = (int) System.currentTimeMillis() + 5;
 		return getUniformSweepValues(seed, samples, recoveryLambdaMin, recoveryLambdaMax);
 	}
