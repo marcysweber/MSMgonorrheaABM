@@ -140,11 +140,11 @@ public class BatchRun {
 	
 	public void executeCalibratedBatch(File scenariofile, String counterfactual) {
 		//contains constants for default runs
-		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 80);
+		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 80, 0.33, 0.33, 0.34);
 	}
 		
 		
-	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt) {
+	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST) {
 		int reps = 0;
 		
 		this.counterfactual=counterfactual;
@@ -367,7 +367,7 @@ public class BatchRun {
 
 		comboStream.
 		parallel().
-		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt));
+		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST));
 		System.out.println("completed " + reps + " runs!");
 		
 		
@@ -381,10 +381,20 @@ public class BatchRun {
 	}
 	
 	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime) {
-		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 80);
+		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 80, 0.33, 0.33, 0.34);
 	}
 
-	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt) {
+	public void eachRun(String batchDirPath, 
+			int reps, 
+			ParamConfig paramConfig, 
+			int endTime, 
+			double switchThreshold, 
+			int availrDST, 
+			int adhereTOCsympt, 
+			int adhereTOCasympt, 
+			double realisticRandom,
+			double realisticTOC,
+			double realisticDST) {
 //		try {
 //			runner.load(scenariofile); // load the repast scenario
 //		} catch (Exception e) {
@@ -395,7 +405,7 @@ public class BatchRun {
 
 		
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
-				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, paramConfig.getInitialInfected(), 
+				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), 
 				paramConfig.getTransmissionMSM(),
 				paramConfig.getRecoveryLambda(), 
 				paramConfig.getProbSymptomaticMSM(), 
@@ -435,7 +445,7 @@ public class BatchRun {
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
-		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 
+		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
 				initialInfected, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, 
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
@@ -443,6 +453,7 @@ public class BatchRun {
 
 	public Parameters setParameters(int runNumber, int endTime, int seed, 
 			String resistance, String counterfactual, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt,
+			double realisticRandom, double realisticTOC, double realisticDST,
 			int initialInfected, 
 			double transmissionMSM,  
 			double recoveryLambda, 
@@ -466,8 +477,10 @@ public class BatchRun {
 		params.addParameter("adhereTOCsympt", "adhereTOCsympt", int.class, adhereTOCsympt, false);
 		params.addParameter("adhereTOCasympt", "adhereTOCasympt", int.class, adhereTOCasympt, false);
 
-		
-		
+		params.addParameter("realisticRandom", "realisticRandom", double.class, realisticRandom, false);
+		params.addParameter("realisticTOC", "realisticTOC", double.class, realisticTOC, false);
+		params.addParameter("realisticDST", "realisticDST", double.class, realisticDST, false);
+
 		
 		params.addParameter("transmissionMSM", "TransmissionMSM", double.class, transmissionMSM, false);
 		params.addParameter("recovery_lambda", "RecoveryLambda", double.class, recoveryLambda, false);
@@ -511,9 +524,9 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_1_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_1_";
 		
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_JULY_25_2024_overnight_";
+		String dirname = "/Users/me597/Documents/MSMoutput/output_OCTOBER_2_2024_overnight_";
 		
 		dirname += counterfactual;
 		

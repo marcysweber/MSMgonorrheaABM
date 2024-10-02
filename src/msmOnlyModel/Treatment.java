@@ -29,6 +29,10 @@ public class Treatment {
 	private int availrDST;
 	private int adhereTOCsympt;
 	private int adhereTOCasympt;
+	
+	private double realisticRandom; //prob of random treatment under realistic combo scenario
+	private double realisticTOC;//prob of TOC treatment under realistic combo scenario
+	private double realisticDST;//prob of DST treatment under realistic combo scenario
 
 	// both test-of-cure and strain test counterfactuals will happend within
 	// Treatment
@@ -42,6 +46,11 @@ public class Treatment {
 		this.availrDST = parameters.getInteger("availrDST");
 		this.adhereTOCsympt = parameters.getInteger("adhereTOCsympt");
 		this.adhereTOCasympt = parameters.getInteger("adhereTOCasympt");
+		
+		this.realisticRandom = parameters.getDouble("realisticRandom");
+		this.realisticTOC = parameters.getDouble("realisticTOC");
+		this.realisticDST = parameters.getDouble("realisticDST");
+
 		
 		this.infection = indiv.myInfection();
 		this.schedule = indiv.getSchedule();
@@ -82,6 +91,14 @@ public class Treatment {
 			} else if (counterfactual.contains("drug_sus_testing")) {
 
 				treatDrugSusTesting();
+				
+			} else if (counterfactual.contains("realistic_combo")) {
+				try {
+					treatRealisticCombo();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else { // GISP pre-switch (default drug A)?
 				treatDefaultBeforeSwitch();
 			}
@@ -418,9 +435,35 @@ public class Treatment {
 	}
 
 	public void fail(Indiv indiv) {
+
 		// true, unknown failed treatment
 		indiv.recordFailedTreatment();
 		indiv.stopAbstaining();
 	}
+	
+	
+	
 
+	public void treatRealisticCombo() throws Exception {
+		Uniform realisticUniform = (Uniform) randomHelper.getDistribution("realisticComboUniform");
+		
+		double randomCutOff = realisticRandom;
+		double TOCCutOff = realisticRandom + realisticTOC;
+		double DSTCutOff = TOCCutOff + realisticDST; //should always be 1.0
+		
+		double newValue = realisticUniform.nextDouble();
+		
+		if (newValue <= randomCutOff) {
+			treatRandom();
+		} else if (newValue <= TOCCutOff) {
+			whichTestOfCure();
+		} else if (newValue <= DSTCutOff) {
+			treatDrugSusTesting();
+		} else {
+			throw new Exception("the realistic combo counterfactual had invalid probabilities");		}
+		
+		
+	}
+	
+	
 }

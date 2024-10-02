@@ -46,7 +46,7 @@ public class CustomParameterSweep {
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
 		double annualContactsMin = 1.5;
-		double annualContactsMax = 5.5;
+		double annualContactsMax = 15;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}

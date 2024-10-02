@@ -171,7 +171,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("delayToSeekCareMSMExp", delayToSeekCareMSMExp);
 			
 
-	
+			Uniform realisticComboUniform = new Uniform(0.0, 1.0, eng);
+			randomHelper.registerDistribution("realisticComboUniform", realisticComboUniform);
 			
 			
 			
