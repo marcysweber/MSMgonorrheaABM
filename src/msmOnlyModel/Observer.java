@@ -202,7 +202,9 @@ public class Observer {
 				this.parameters.getInteger("adhereTOCsympt"),
 				this.parameters.getInteger("adhereTOCasympt"),
 
-				
+				this.parameters.getDouble("realisticRandom"),
+				this.parameters.getDouble("realisticTOC"),
+				this.parameters.getDouble("realisticDST"),
 				
 				
 				

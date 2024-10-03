@@ -458,7 +458,7 @@ public class Treatment {
 		} else if (newValue <= TOCCutOff) {
 			whichTestOfCure();
 		} else if (newValue <= DSTCutOff) {
-			treatDrugSusTesting();
+			treatDrugSusTestingPerfect();
 		} else {
 			throw new Exception("the realistic combo counterfactual had invalid probabilities");		}
 		

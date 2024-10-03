@@ -109,7 +109,10 @@ public class CustomFileOutput {
 	        		"adhereTOCsympt",
 	        		"adhereTOCasympt",
 	        		
-	        		
+	        		"realisticRandom",
+	        		"realisticTOC",
+	        		"realisticDST",
+
 	        		
 	        		
 	        		"InitialInfected",
@@ -199,7 +202,10 @@ public class CustomFileOutput {
 			int adhereTOCsympt,
 			int adhereTOCasympt,
 			
-			
+			double realisticRandom,
+			double realisticTOC,
+			double realisticDST,
+
 			
 			int initialInfected,
 			
@@ -283,7 +289,9 @@ public class CustomFileOutput {
 	        		String.valueOf(adhereTOCsympt),
 	        		String.valueOf(adhereTOCasympt),
 
-	        		
+	        		String.valueOf(realisticRandom),
+	        		String.valueOf(realisticTOC),
+	        		String.valueOf(realisticDST),
 	        		
 	        		String.valueOf(initialInfected),
 	        		

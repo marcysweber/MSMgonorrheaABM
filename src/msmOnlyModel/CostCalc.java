@@ -65,7 +65,7 @@ public class CostCalc {
 	}
 	
 	public void symptomaticQALYsLost(Indiv indiv, double delay) {
-		double QALYs = (delay * 0.16) / 52.0;
+		double QALYs = (delay * 0.006) / 52.0;
 		
 		if (indiv.infectious() && indiv.symptoms()) {
 		
@@ -233,7 +233,7 @@ public class CostCalc {
 		if (sequelae.equals("epididymitis")) {
 			this.monetaryCostAnnual += 522;
 			
-			QALYs = (6.9 * 0.54) / 365.0;
+			QALYs = (6.9 * 0.128) / 365.0;
 			this.QALYsLost += QALYs;
 			
 			
