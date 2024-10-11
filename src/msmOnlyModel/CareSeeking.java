@@ -61,7 +61,12 @@ public class CareSeeking {
 			observer.recordNewDetectedAndSymptoms(indiv);
 
 			Treatment treatment = new Treatment(indiv, observer);
-			treatment.treat();
+			try {
+				treatment.treat();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}

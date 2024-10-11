@@ -45,7 +45,7 @@ public class CustomParameterSweep {
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
-		double annualContactsMin = 1.5;
+		double annualContactsMin = 3.5;
 		double annualContactsMax = 15;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
@@ -63,8 +63,8 @@ public class CustomParameterSweep {
 	
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
-		double probSymptomaticMin = 0.15;
-		double probSymptomaticMax = 0.55;
+		double probSymptomaticMin = 0.1;
+		double probSymptomaticMax = 0.3;
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
@@ -72,8 +72,8 @@ public class CustomParameterSweep {
 	
 	//screen interval parameters
 	public List<Double> getScreenIntervalMSMValues(int samples){
-		double screenIntervalMin = 1.75;
-		double screenIntervalMax = 4.5;
+		double screenIntervalMin = 1.5;
+		double screenIntervalMax = 3.0;
 		int seed = (int) System.currentTimeMillis() + 9;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
