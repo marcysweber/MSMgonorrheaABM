@@ -146,7 +146,7 @@ public class CustomParameterSweep {
 	public List<Double> getCareCostValues(int samples){
 		//short clinic visit + treatment of urethritis
 		double careCostMean = 41+92;
-		double careCostSD = 61 + 136 - careCostMean;
+		double careCostSD = ((61 - 21) + (136 - 48))/ 4;
 		int seed = (int) System.currentTimeMillis() + 23;
 		return getGammaSweepValues(seed, samples, careCostMean, careCostSD);
 
@@ -155,7 +155,7 @@ public class CustomParameterSweep {
 	public List<Double> getTestCostValues(int samples){
 		//cost of diagnosis
 		double testCostMean = 68;
-		double testCostSD = 100 - testCostMean;
+		double testCostSD = (100 - 35) / 4;
 		int seed = (int) System.currentTimeMillis() + 24;
 		return getGammaSweepValues(seed, samples, testCostMean, testCostSD);
 
@@ -164,7 +164,7 @@ public class CustomParameterSweep {
 	public List<Double> getStrainTestCostValues(int samples){
 		//cost of drug susceptibility testing
 		double strainTestMean = 150;
-		double strainTestSD = 50;
+		double strainTestSD = (200-100) / 4;
 		int seed = (int) System.currentTimeMillis() + 25;
 		return getGammaSweepValues(seed, samples, strainTestMean, strainTestSD);
 
@@ -173,7 +173,7 @@ public class CustomParameterSweep {
 	public List<Double> getTreatmentACostValues(int samples){
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
-		double FLcostSD = 12;
+		double FLcostSD = 12 / 4;
 		int seed = (int) System.currentTimeMillis() + 26;
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
@@ -181,7 +181,7 @@ public class CustomParameterSweep {
 	public List<Double> getTreatmentBCostValues(int samples){
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
-		double FLcostSD = 12;
+		double FLcostSD = 12 / 4;
 		int seed = (int) System.currentTimeMillis() + 27;
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
@@ -190,7 +190,7 @@ public class CustomParameterSweep {
 	public List<Double> getTreatmentXCostValues(int samples){
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
-		double FLcostSD = 12;
+		double FLcostSD = 12 / 4;
 		int seed = (int) System.currentTimeMillis() + 28;
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
@@ -199,7 +199,7 @@ public class CustomParameterSweep {
 	public List<Double> getTreatmentECostValues(int samples){
 		//cost of treatment with drug M (ertapenem)
 		double SLCostMean = 537;
-		double SLCostSD = 782 - SLCostMean;
+		double SLCostSD = (782 - 291) / 4;
 		int seed = (int) System.currentTimeMillis() + 29;
 		return getGammaSweepValues(seed, samples, SLCostMean, SLCostSD);
 

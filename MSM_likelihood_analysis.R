@@ -720,8 +720,90 @@ cumulative_everything = function(df){
   dfends$cumulativeFailure <- cumulative_failure(df)
   dfends$cumulativeE <- cumulative_E(df)
   
-  return(dfends)
+  #weight with resampled
+  newdf <- dfends
+  for (traj in row.names(dfends)){
+    #how many times does traj appear in resampled df?
+    dup <- dfends[traj,]$resampled-1
+    
+    #add that many duplicate rows to ceadf
+    if (dup > 0){
+      newdf <- rbind(newdf, dfends[rep(traj,dup),])
+    }
+  }
+  
+  return(newdf)
 }
+
+new_summary_plot = function(df1, df2, df3, df4, df5){ 
+  df1ends <- cumulative_everything(df1)
+  df2ends <- cumulative_everything(df2)
+  df3ends <- cumulative_everything(df3)
+  df4ends <- cumulative_everything(df4)
+  df5ends <- cumulative_everything(df5)
+  
+  
+  allends <- rbind(df1ends,
+                   df2ends,
+                   df3ends, 
+                   df4ends,
+                   df5ends)
+  
+  
+  counter_levels <- c("realistic_combo_33_33_34", "drug_sus_testing_80","test-of-cure_80", "random","GISP")
+  counter_labels <- c("RC", "DST", "TOC", "RT", "GISP")
+  
+  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
+   # geom_point() +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "A.",
+      y = "",
+      x="Cumulative incidence over 20 years\nper 100,000 (thousands)"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 1500))
+  
+  failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "B.",
+      y = "",
+      x="% failures per treatment attempt\ncumulative over 20 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels) +
+    coord_cartesian(xlim=c(0, 100))
+  
+  x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "C.",
+      y = "",
+      x="Cumulative treatments with ertapenem\nper 100,000 over 20 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 40000))
+  
+  
+  summary <- ggarrange(inc +
+                         theme(axis.text.y = element_text(size = 8),axis.text.x = element_text(size = 8),axis.title.x = element_text(size = 8)), failure + 
+                         theme(axis.text.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.title.y = element_blank(),
+                               axis.text.x = element_text(size = 8),
+                               axis.title.x = element_text(size = 8)), x + 
+                         theme(axis.text.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.title.y = element_blank() ,
+                               axis.text.x = element_text(size = 8),
+                               axis.title.x = element_text(size = 8)), nrow = 1)
+  return(summary)
+   
+  
+  }
 
 summary_plot = function(df1, df2, df3, df4, df5){
   df1ends <- cumulative_everything(df1)
@@ -742,7 +824,7 @@ summary_plot = function(df1, df2, df3, df4, df5){
   counter_labels <- c("RC", "DST", "TOC", "RT", "GISP")
   
   inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    geom_bar(outlier.shape = NA) +
     labs(
       title = "A.",
       y = "",
@@ -849,22 +931,24 @@ summary_plot_isemph = function(df1, df2, df3){
   return(summary)
 }
 
-summary_plot_smdm = function(df1, df2, df3){
+summary_plot_smdm = function(df1, df2, df3, df4){
   df1ends <- cumulative_everything(df1)
   df2ends <- cumulative_everything(df2)
   df3ends <- cumulative_everything(df3)
+  df4ends <- cumulative_everything(df4)
   
   
   allends <- rbind(df1ends,
                    df2ends,
-                   df3ends)
+                   df3ends,
+                   df4ends)
   
   
-  counter_levels <- c("drug_sus_testing_80", "test-of-cure_80", "GISP_05")
-  counter_labels <- c("DST", "TOC", "GISP")
+  counter_levels <- c("realistic_combo_33_33_34", "drug_sus_testing_80", "test-of-cure_80", "GISP_05")
+  counter_labels <- c("RC", "DST", "TOC", "GISP")
   
-  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels), fill = counterfactual)) +
-    geom_boxplot(outlier.shape = NA, show.legend = FALSE) +
+  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels), color = counterfactual)) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)}, show.legend = FALSE)+
     labs(
       title = "A.",
       y = "",
@@ -872,10 +956,10 @@ summary_plot_smdm = function(df1, df2, df3){
     )+
     my_theme +    scale_fill_brewer(palette = "Set2", direction=-1)+
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 1000))
+    coord_cartesian(xlim=c(0, 1500))
   
-  failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels), fill = counterfactual)) +
-    geom_boxplot(outlier.shape = NA, show.legend = FALSE) +
+  failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels), color = counterfactual)) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)}, show.legend = FALSE)+
     labs(
       title = "B.",
       y = "",
@@ -885,8 +969,8 @@ summary_plot_smdm = function(df1, df2, df3){
     scale_y_discrete(labels=counter_labels) +
     coord_cartesian(xlim=c(0, 100))
   
-  x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels), fill = counterfactual)) +
-    geom_boxplot(outlier.shape = NA, show.legend = FALSE) +
+  x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels), color = counterfactual)) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)}, show.legend = FALSE)+
     labs(
       title = "C.",
       y = "",
@@ -894,7 +978,7 @@ summary_plot_smdm = function(df1, df2, df3){
     )+
     my_theme +    scale_fill_brewer(palette = "Set2", direction=-1)+
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 20000))
+    coord_cartesian(xlim=c(0, 40000))
   
   
   summary <- ggarrange(inc, failure + 
@@ -924,7 +1008,7 @@ summary_plot_sa = function(df1, df2, df3, df4, df5, counter_levels, counter_labe
   
   
   inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "A.",
       y = "",
@@ -935,7 +1019,7 @@ summary_plot_sa = function(df1, df2, df3, df4, df5, counter_levels, counter_labe
     coord_cartesian(xlim=c(0, 1500))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "B.",
       y = "",
@@ -946,7 +1030,7 @@ summary_plot_sa = function(df1, df2, df3, df4, df5, counter_levels, counter_labe
     coord_cartesian(xlim=c(0, failure_max))
   
   x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "C.",
       y = "",
@@ -990,7 +1074,7 @@ summary_plot_sa_seven = function(df1, df2, df3, df4, df5, df6, df7, counter_leve
   
   
   inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "A.",
       y = "",
@@ -1001,7 +1085,7 @@ summary_plot_sa_seven = function(df1, df2, df3, df4, df5, df6, df7, counter_leve
     coord_cartesian(xlim=c(0, 1500))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "B.",
       y = "",
@@ -1012,7 +1096,7 @@ summary_plot_sa_seven = function(df1, df2, df3, df4, df5, df6, df7, counter_leve
     coord_cartesian(xlim=c(0, failure_max))
   
   x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "C.",
       y = "",
@@ -1172,7 +1256,7 @@ giant_inc_box = function(df, title){
   counter_labels <- c("RC", "DST", "TOC", "RT", "GISP")
   
   inc <- ggplot(data = df, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = title,
       y = "",
@@ -1191,7 +1275,7 @@ giant_failure_box = function(df, title){
   counter_labels <- c("RC","DST", "TOC", "RT", "GISP")
   
   failure <- ggplot(data = df, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = title,
       y = "",
@@ -1205,12 +1289,12 @@ giant_failure_box = function(df, title){
   
 }
 
-giant_e_box = function(df, title, xlim=100000){
+giant_e_box = function(df, title, xlim=150000){
   counter_levels <- c("realistic_combo","drug_sus_testing_80","test-of-cure_80", "random","GISP")
   counter_labels <- c("RC","DST", "TOC", "RT", "GISP")
   
   e <- ggplot(data = df, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
-    geom_boxplot(outlier.shape = NA) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = title,
       y = "",
@@ -1619,7 +1703,7 @@ cea_weighted = function(resampledf, dfGISP, dfRandom, dfTOC, dfDST){
 
 cea_real_weighted = function(resampledf, dfReal, dfGISP, dfRandom, dfTOC, dfDST){
   #new df which contains the cumulative outcomes for cost and QALYs, relative to GISP
-  ceadf <- data.frame(matrix(ncol = 26, nrow = length(unique(dfGISP$seed))))
+  ceadf <- data.frame(matrix(ncol = 26, nrow = length(unique(dfGISP$uniqueID))))
   colnames(ceadf) <- c("seed", 
                        # "InitialInfected",
                        "TransmissionMSM",
@@ -1651,11 +1735,11 @@ cea_real_weighted = function(resampledf, dfReal, dfGISP, dfRandom, dfTOC, dfDST)
                        "DSTcumulativeCosts", 
                        "DSTcumulativeQALYs")
   
-  dfReal <- dfReal[order(dfReal$seed),]
-  dfGISP <- dfGISP[order(dfGISP$seed),]
-  dfRandom <- dfRandom[order(dfRandom$seed),]
-  dfTOC <- dfTOC[order(dfTOC$seed),]
-  dfDST <- dfDST[order(dfDST$seed),]
+  dfReal <- dfReal[order(dfReal$uniqueID),]
+  dfGISP <- dfGISP[order(dfGISP$uniqueID),]
+  dfRandom <- dfRandom[order(dfRandom$uniqueID),]
+  dfTOC <- dfTOC[order(dfTOC$uniqueID),]
+  dfDST <- dfDST[order(dfDST$uniqueID),]
   
   
   ceadf$seed <- unique(dfReal$seed)
@@ -1997,6 +2081,8 @@ visualize_cea_MSM = function(title, df1, df2, df3, df4){
 }
 
 nmb = function(cea_df, title){
+  #y = (x * QALYs) - costs
+  
   random_intercepts <- t.test(cea_df$RandomcumulativeCostsAdj)
   random_mean_intercept <- random_intercepts$estimate
   random_lower_intercept <- random_intercepts$conf.int[1]
@@ -2039,25 +2125,25 @@ nmb = function(cea_df, title){
   ggplot(data = cea_df) + 
    # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000), labels = c("0", "50", "100", "150"))+
-    scale_y_continuous(expand = c(0,0), limits = c(-10000000, 30000000), breaks = c(-10000000, -5000000, 0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000), labels = c("-10", "-5", "0", "5", "10", "15", "20", "25", "30"))+
+    scale_y_continuous(expand = c(0,0), limits = c(-10000000, 10000000), breaks = c(-10000000, -5000000, 0, 5000000, 10000000), labels = c("-10", "-5", "0", "5", "10"))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
     
-    geom_abline(aes(slope = -GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
-    geom_abline(aes(slope = -GISP_lower_slope, intercept=-GISP_lower_intercept),linetype=2,color="#377EB8") +
-    geom_abline(aes(slope = -GISP_upper_slope, intercept=-GISP_upper_intercept),linetype=2,color="#377EB8") +
+    geom_abline(aes(slope = GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
+    geom_abline(aes(slope = GISP_lower_slope, intercept=-GISP_mean_intercept),linetype=2,color="#377EB8") +
+    geom_abline(aes(slope = GISP_upper_slope, intercept=-GISP_mean_intercept),linetype=2,color="#377EB8") +
     
     
     geom_abline(aes(slope = -random_mean_slope, intercept=-random_mean_intercept),color="#4DAF4A") +
-    geom_abline(aes(slope = -random_lower_slope, intercept=-random_lower_intercept),linetype=2,color="#4DAF4A") +
-    geom_abline(aes(slope = -random_upper_slope, intercept=-random_upper_intercept),linetype=2,color="#4DAF4A") +
+    geom_abline(aes(slope = -random_lower_slope, intercept=-random_mean_intercept),linetype=2,color="#4DAF4A") +
+    geom_abline(aes(slope = -random_upper_slope, intercept=-random_mean_intercept),linetype=2,color="#4DAF4A") +
     
     geom_abline(aes(slope = -TOC_mean_slope, intercept=-TOC_mean_intercept), color = "#984EA3") +
-    geom_abline(aes(slope = -TOC_lower_slope, intercept=-TOC_lower_intercept),linetype=2, color = "#984EA3") +
-    geom_abline(aes(slope = -TOC_upper_slope, intercept=-TOC_upper_intercept),linetype=2, color = "#984EA3") +
+    geom_abline(aes(slope = -TOC_lower_slope, intercept=-TOC_mean_intercept),linetype=2, color = "#984EA3") +
+    geom_abline(aes(slope = -TOC_upper_slope, intercept=-TOC_mean_intercept),linetype=2, color = "#984EA3") +
     
-    geom_abline(aes(slope = -DST_mean_slope, intercept=-DST_mean_intercept), color = "#FF7F00") +
-    geom_abline(aes(slope = -DST_lower_slope, intercept=-DST_lower_intercept),linetype=2, color = "#FF7F00") +
-    geom_abline(aes(slope = -DST_upper_slope, intercept=-DST_upper_intercept),linetype=2, color = "#FF7F00") +
+    geom_abline(aes(slope = DST_mean_slope, intercept=-DST_mean_intercept), color = "#FF7F00") +
+    geom_abline(aes(slope = DST_lower_slope, intercept=-DST_mean_intercept),linetype=2, color = "#FF7F00") +
+    geom_abline(aes(slope = DST_upper_slope, intercept=-DST_mean_intercept),linetype=2, color = "#FF7F00") +
     my_theme+
     labs(
       title=title,
@@ -3316,23 +3402,27 @@ resist_zoom_isemph = function(df1, df2, df3){
 }
 
 
-resist_smdm = function(df1, df2, df3){
+resist_smdm = function(df1, df2, df3, df4){
   yearX <- NA
-  e<-viz_true_resist_A(df1, "A. GISP", yearX)+ theme(axis.title.x = element_blank()) 
-  i<-viz_true_resist_B(df1, "D.", yearX)+ theme(axis.title.x = element_blank())
-  m<-viz_true_resist_both(df1, "G.", yearX)+ theme(axis.title.x = element_blank())
+  a<-viz_true_resist_A(df1, "A. GISP", yearX)+ theme(axis.title.x = element_blank()) 
+  e<-viz_true_resist_B(df1, "E.", yearX)+ theme(axis.title.x = element_blank())
+  i<-viz_true_resist_both(df1, "I.", yearX)+ theme(axis.title.x = element_blank())
   
   
-  f<-viz_true_resist_A(df2, "B. TOC", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
-  j<-viz_true_resist_B(df2, "E.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank())
-  n<-viz_true_resist_both(df2, "H.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
+  b<-viz_true_resist_A(df2, "B. TOC", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
+  f<-viz_true_resist_B(df2, "F.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank())
+  j<-viz_true_resist_both(df2, "J.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
   
-  g<-viz_true_resist_A(df3, "C. DST", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
-  k<-viz_true_resist_B(df3, "F.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
-  o<-viz_true_resist_both(df3, "I.", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.x = element_blank())
+  c<-viz_true_resist_A(df3, "C. DST", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  g<-viz_true_resist_B(df3, "G.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  k<-viz_true_resist_both(df3, "K.", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.x = element_blank())
+  
+  d <- viz_true_resist_A(df4, "D. RC", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  h<-viz_true_resist_B(df4, "H.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  l<-viz_true_resist_both(df4, "L.", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.x = element_blank())
   
   gg<- ggarrange(
-    e, f, g, i, j, k, m, n, o,
+    a, b, c, d, e, f, g, h, i, j, k, l,
     nrow = 3)
   
   return(gg)
@@ -7688,7 +7778,7 @@ dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.c
 dfreal25<-identify(dfreal25, df_best_ends)
 
 #figure 3
-summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+new_summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
 
 
 summary_plot_smdm(dfGISP25, dfTOC25, dfDST25)
@@ -7701,20 +7791,64 @@ summary_DST <-cumulative_everything(dfDST25)
 summary_real <-cumulative_everything(dfreal25)
 
 
-median(summary_GISP$cumulativeFailure) *100
-median(summary_random$cumulativeFailure)*100
-median(summary_TOC$cumulativeFailure)*100
-median(summary_DST$cumulativeFailure)*100
-median(summary_real$cumulativeFailure)*100
+mean(summary_GISP$cumulativeFailure *100)
+quantile(summary_GISP$cumulativeFailure *100, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeFailure*100)
+quantile(summary_random$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeFailure*100)
+quantile(summary_TOC$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeFailure*100)
+quantile(summary_DST$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeFailure*100)
+quantile(summary_real$cumulativeFailure*100, probs = c(0.025, 0.975))
 
 
-median(summary_GISP$cumulativeE)
-median(summary_random$cumulativeE)
-median(summary_TOC$cumulativeE)
-median(summary_DST$cumulativeE)
-median(summary_real$cumulativeE)
+mean(summary_GISP$cumulativeE)
+quantile(summary_GISP$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeE)
+quantile(summary_random$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeE)
+quantile(summary_TOC$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeE)
+quantile(summary_DST$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeE)
+quantile(summary_real$cumulativeE, probs = c(0.025, 0.975))
 
 
+mean(summary_GISP$cumulativeCosts)
+quantile(summary_GISP$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeCosts)
+quantile(summary_TOC$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeCosts)
+quantile(summary_DST$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeCosts)
+quantile(summary_real$cumulativeCosts, probs = c(0.025, 0.975))
+
+
+
+all_summary<- rbind(summary_GISP, summary_random, summary_TOC, summary_DST, summary_real)
+
+ggplot(all_summary, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+  geom_boxplot(outlier.shape = NA) +
+  labs(
+    title = "C.",
+    y = "",
+    x="Cumulative treatments with ertapenem\nper 100,000 over 20 years"
+  )+
+  my_theme +
+  scale_y_discrete(labels=counter_labels)+
+  coord_cartesian(xlim=c(0, 5000))
 
 
 #figure 4
@@ -7837,7 +7971,7 @@ dfGISP7 <- identify(dfGISP7, df_best_ends)
 summary_plot_sa(dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7, 
                 c("GISP_3", "GISP_4", "GISP_5", "GISP_6", "GISP_7"), 
                 c("GISP 3%", "GISP 4%", "GISP 5%", "GISP 6%", "GISP 7%"), 
-                20, 40000)
+                20, 60000)
 
 multiplot(
   
@@ -7876,7 +8010,7 @@ dfDST100 <- identify(dfDST100, df_best_ends)
 summary_plot_sa(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100, 
                 c("drug_sus_testing_60", "drug_sus_testing_70", "drug_sus_testing_80", "drug_sus_testing_90", "drug_sus_testing_100"), 
                 c("DST 60%", "DST 70%", "DST 80%", "DST 90%", "DST 100%"), 
-                30, 800)
+                30, 2500)
 
 multiplot(
   
@@ -7919,7 +8053,7 @@ dfTOCadsympt100 <- identify(dfTOCadsympt100, df_best_ends)
 summary_plot_sa(dfTOCadsympt60, dfTOCadsympt70, dfTOCadsympt80, dfTOCadsympt90, dfTOCadsympt100, 
                 c("test-of-cure_sympt_60", "test-of-cure_sympt_70", "test-of-cure_sympt_80", "test-of-cure_sympt_90", "test-of-cure_sympt_100"), 
                 c("TOC symptomatic 60%", "TOC symptomatic 70%", "TOC symptomatic 80%", "TOC symptomatic 90%", "TOC symptomatic 100%"), 
-                100, 1000)
+                100, 40000)
 multiplot(
   
   visualize_cea_weighted_real("A. TOC symptomatic 60%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt60, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 300)),
@@ -7962,7 +8096,7 @@ dfTOCadasympt100 <- identify(dfTOCadasympt100, df_best_ends)
 summary_plot_sa(dfTOCadasympt60, dfTOCadasympt70, dfTOCadasympt80, dfTOCadasympt90, dfTOCadasympt100, 
                 c("test-of-cure_asympt_60", "test-of-cure_asympt_70", "test-of-cure_asympt_80", "test-of-cure_asympt_90", "test-of-cure_asympt_100"), 
                 c("TOC asymptomatic 60%", "TOC asymptomatic 70%", "TOC asymptomatic 80%", "TOC asymptomatic 90%", "TOC asymptomatic 100%"), 
-                100, 1000)
+                100, 40000)
 multiplot(
   
   visualize_cea_weighted_real("A. TOC asymptomatic 60%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt60, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 300)),
@@ -8007,7 +8141,7 @@ dfRC33_33_34 <- dfreal25
 summary_plot_sa_seven(dfRC33_33_34, dfRC20_20_60, dfRC20_40_40, dfRC20_60_20, dfRC40_20_40, dfRC40_40_20, dfRC60_20_20,
                 c("realistic_combo_20_20_60", "realistic_combo_20_40_40", "realistic_combo_20_60_20", "realistic_combo_40_20_40", "realistic_combo_40_40_20", "realistic_combo_60_20_20", "realistic_combo_33_33_34"), 
                 c("RC 20-20-60", "RC 20-40-40", "RC 20-60-20", "RC 40-20-40", "RC 40-40-20", "RC 60-20-20", "RC 33-33-34"),  
-                50, 400)
+                70, 11000)
 
 multiplot(
   
@@ -8032,3 +8166,12 @@ multiplot(
 )
 
 ########
+
+
+
+#sdmd
+#####
+
+resist_smdm(dfGISP25, dfTOC25, dfDST25, dfreal25)
+summary_plot_smdm(dfGISP25, dfTOC25, dfDST25, dfreal25)
+######
