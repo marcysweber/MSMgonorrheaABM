@@ -33,6 +33,10 @@ public class ParamConfig {
 
 	private double delayToRetreatmentMSM;
 	
+	private double riskGroupTransferProp;
+	private double riskGroupTransmissionRatio;
+
+	
 	private double percentResistantA;
 	private int beginImportingB;
 	private double importingBInterval;
@@ -65,6 +69,9 @@ public class ParamConfig {
 			double delayToSeekCareMSM,
 
 			double delayToRetreatmentMSM,
+			double riskGroupTransferProp,
+			double riskGroupTransmissionRatio,
+
 			
 			double amountResistantA,
 			int beginImportingB,
@@ -96,6 +103,9 @@ public class ParamConfig {
 		
 		
 		this.delayToRetreatmentMSM = delayToRetreatmentMSM;
+		
+		this.riskGroupTransferProp = riskGroupTransferProp;
+		this.riskGroupTransmissionRatio = riskGroupTransmissionRatio;
 		
 		this.percentResistantA = amountResistantA;
 		this.beginImportingB = beginImportingB;
@@ -159,6 +169,14 @@ public class ParamConfig {
 	
 	public double getDelayToRetreatmentMSM() {
 		return this.delayToRetreatmentMSM;
+	}
+	
+	public double getRiskGroupTransferProp() {
+		return this.riskGroupTransferProp;
+	}
+	
+	public double getRiskGroupTransmissionRatio() {
+		return this.riskGroupTransmissionRatio;
 	}
 	
 	public double getPercentResistantA() {

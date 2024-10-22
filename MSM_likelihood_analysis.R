@@ -1960,7 +1960,7 @@ rearrange_cea_real = function(ceadf){
                       "AdjustedQALYs")
   
   newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("RC", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$RCcumulativeCostsAdj, AdjustedQALYs = ceadf$RCcumulativeQALYsAdj) )
-  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("GISP", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$GISPcumulativeCostsAdj, AdjustedQALYs = ceadf$GISPcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("GISP", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$GISPcumulativeCostsAdj, AdjustedQALYs = -ceadf$GISPcumulativeQALYsAdj))
   newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("Random", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$RandomcumulativeCostsAdj, AdjustedQALYs = -ceadf$RandomcumulativeQALYsAdj))
   newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("TOC", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$TOCcumulativeCostsAdj, AdjustedQALYs = -ceadf$TOCcumulativeQALYsAdj))
   newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("DST", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$DSTcumulativeCostsAdj, AdjustedQALYs = -ceadf$DSTcumulativeQALYsAdj))
@@ -2080,45 +2080,62 @@ visualize_cea_MSM = function(title, df1, df2, df3, df4){
     my_theme 
 }
 
+equation_five_lower = function(wtp, cost, effect){
+  n <- length(cost)
+  estimate <- wtp * mean(effect) - mean(cost)
+  error <- qt(0.025, n-1) * sqrt(equation_six(wtp, cost, effect)/n)
+  return(estimate + error)
+}
+
+equation_five_upper = function(wtp, cost, effect){
+  n <- length(cost)
+  estimate <- wtp * mean(effect) - mean(cost)
+  error<- qt(0.975, n-1) * sqrt(equation_six(wtp, cost, effect)/n)
+  return(estimate + error)
+}
+
+
+equation_six = function(wtp, cost, effect){
+  return((wtp^2 * var(effect)) + var(cost) - cov((wtp * effect), cost))
+}
+
+
 nmb = function(cea_df, title){
   #y = (x * QALYs) - costs
   
-  random_intercepts <- t.test(cea_df$RandomcumulativeCostsAdj)
-  random_mean_intercept <- random_intercepts$estimate
-  random_lower_intercept <- random_intercepts$conf.int[1]
-  random_upper_intercept <- random_intercepts$conf.int[2]
-  
-  random_slopes <- t.test(cea_df$RandomcumulativeQALYsAdj)
-  random_mean_slope <- random_slopes$estimate
-  random_lower_slope <- random_slopes$conf.int[1]
-  random_upper_slope <- random_slopes$conf.int[2]
+  random_mean_intercept <- mean(cea_df$RandomcumulativeCostsAdj)
+  random_mean_slope <- mean(cea_df$RandomcumulativeQALYsAdj)
+  random_lower_begin <- equation_five_lower(1, cea_df$RandomcumulativeCostsAdj, cea_df$RandomcumulativeQALYsAdj)
+  random_lower_end <- equation_five_lower(160000, cea_df$RandomcumulativeCostsAdj, cea_df$RandomcumulativeQALYsAdj)
+  random_upper_begin <- equation_five_upper(1, cea_df$RandomcumulativeCostsAdj, cea_df$RandomcumulativeQALYsAdj)
+  random_upper_end <- equation_five_upper(160000, cea_df$RandomcumulativeCostsAdj, cea_df$RandomcumulativeQALYsAdj)
   
   TOC_intercepts<- t.test(cea_df$TOCcumulativeCostsAdj)
   TOC_mean_intercept <- TOC_intercepts$estimate
-  TOC_lower_intercept <- TOC_intercepts$conf.int[1]
-  TOC_upper_intercept <- TOC_intercepts$conf.int[2]
+  
   TOC_slopes <- t.test(cea_df$TOCcumulativeQALYsAdj)
   TOC_mean_slope <- TOC_slopes$estimate
-  TOC_lower_slope <- TOC_slopes$conf.int[1]
-  TOC_upper_slope <- TOC_slopes$conf.int[2]
+  TOC_lower_begin <- equation_five_lower(1, cea_df$TOCcumulativeCostsAdj, cea_df$TOCcumulativeQALYsAdj)
+  TOC_lower_end <- equation_five_lower(160000, cea_df$TOCcumulativeCostsAdj, cea_df$TOCcumulativeQALYsAdj)
+  TOC_upper_begin <- equation_five_upper(1, cea_df$TOCcumulativeCostsAdj, cea_df$TOCcumulativeQALYsAdj)
+  TOC_upper_end <- equation_five_upper(160000, cea_df$TOCcumulativeCostsAdj, cea_df$TOCcumulativeQALYsAdj)
   
   DST_intercepts<- t.test(cea_df$DSTcumulativeCostsAdj)
   DST_mean_intercept <- DST_intercepts$estimate
-  DST_lower_intercept <- DST_intercepts$conf.int[1]
-  DST_upper_intercept <- DST_intercepts$conf.int[2]
+  
   DST_slopes <- t.test(cea_df$DSTcumulativeQALYsAdj)
   DST_mean_slope <- DST_slopes$estimate
-  DST_lower_slope <- DST_slopes$conf.int[1]
-  DST_upper_slope <- DST_slopes$conf.int[2]
+  DST_lower_begin <- equation_five_lower(1, cea_df$DSTcumulativeCostsAdj, cea_df$DSTcumulativeQALYsAdj)
+  DST_lower_end <- equation_five_lower(160000, cea_df$DSTcumulativeCostsAdj, cea_df$DSTcumulativeQALYsAdj)
+  DST_upper_begin <- equation_five_upper(1, cea_df$DSTcumulativeCostsAdj, cea_df$DSTcumulativeQALYsAdj)
+  DST_upper_end <- equation_five_upper(160000, cea_df$DSTcumulativeCostsAdj, cea_df$DSTcumulativeQALYsAdj)
   
-  GISP_intercepts<- t.test(cea_df$GISPcumulativeCostsAdj)
-  GISP_mean_intercept <- GISP_intercepts$estimate
-  GISP_lower_intercept <- GISP_intercepts$conf.int[1]
-  GISP_upper_intercept <- GISP_intercepts$conf.int[2]
-  GISP_slopes <- t.test(cea_df$GISPcumulativeQALYsAdj)
-  GISP_mean_slope <- GISP_slopes$estimate
-  GISP_lower_slope <- GISP_slopes$conf.int[1]
-  GISP_upper_slope <- GISP_slopes$conf.int[2]
+  GISP_mean_intercept <- mean(cea_df$GISPcumulativeCostsAdj)
+  GISP_mean_slope <- mean(cea_df$GISPcumulativeQALYsAdj)
+  GISP_lower_begin <- equation_five_lower(1, cea_df$GISPcumulativeCostsAdj, cea_df$GISPcumulativeQALYsAdj)
+  GISP_lower_end <- equation_five_lower(160000, cea_df$GISPcumulativeCostsAdj, cea_df$GISPcumulativeQALYsAdj)
+  GISP_upper_begin <- equation_five_upper(1, cea_df$GISPcumulativeCostsAdj, cea_df$GISPcumulativeQALYsAdj)
+  GISP_upper_end <- equation_five_upper(160000, cea_df$GISPcumulativeCostsAdj, cea_df$GISPcumulativeQALYsAdj)
   
   
   
@@ -2129,25 +2146,32 @@ nmb = function(cea_df, title){
     geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
     
     geom_abline(aes(slope = GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
-    geom_abline(aes(slope = GISP_lower_slope, intercept=-GISP_mean_intercept),linetype=2,color="#377EB8") +
-    geom_abline(aes(slope = GISP_upper_slope, intercept=-GISP_mean_intercept),linetype=2,color="#377EB8") +
+    geom_segment(aes(x = 1, y = GISP_lower_begin, xend = 160000, yend = GISP_lower_end), colour = "#377EB8", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = GISP_upper_begin, xend = 160000, yend = GISP_upper_end), colour = "#377EB8", linetype= 'dashed')+
+    
+    geom_abline(aes(slope = random_mean_slope, intercept=-random_mean_intercept),color="#4DAF4A") +
+    geom_segment(aes(x = 1, y = random_lower_begin, xend = 160000, yend = random_lower_end), colour = "#4DAF4A", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = random_upper_begin, xend = 160000, yend = random_upper_end), colour = "#4DAF4A", linetype= 'dashed')+
     
     
-    geom_abline(aes(slope = -random_mean_slope, intercept=-random_mean_intercept),color="#4DAF4A") +
-    geom_abline(aes(slope = -random_lower_slope, intercept=-random_mean_intercept),linetype=2,color="#4DAF4A") +
-    geom_abline(aes(slope = -random_upper_slope, intercept=-random_mean_intercept),linetype=2,color="#4DAF4A") +
     
-    geom_abline(aes(slope = -TOC_mean_slope, intercept=-TOC_mean_intercept), color = "#984EA3") +
-    geom_abline(aes(slope = -TOC_lower_slope, intercept=-TOC_mean_intercept),linetype=2, color = "#984EA3") +
-    geom_abline(aes(slope = -TOC_upper_slope, intercept=-TOC_mean_intercept),linetype=2, color = "#984EA3") +
+    geom_abline(aes(slope = TOC_mean_slope, intercept=-TOC_mean_intercept), color = "#984EA3") +
+    geom_segment(aes(x = 1, y = TOC_lower_begin, xend = 160000, yend = TOC_lower_end), colour = "#984EA3", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = TOC_upper_begin, xend = 160000, yend = TOC_upper_end), colour = "#984EA3", linetype= 'dashed')+
+    
+    
     
     geom_abline(aes(slope = DST_mean_slope, intercept=-DST_mean_intercept), color = "#FF7F00") +
-    geom_abline(aes(slope = DST_lower_slope, intercept=-DST_mean_intercept),linetype=2, color = "#FF7F00") +
-    geom_abline(aes(slope = DST_upper_slope, intercept=-DST_mean_intercept),linetype=2, color = "#FF7F00") +
+    geom_segment(aes(x = 1, y = DST_lower_begin, xend = 160000, yend = DST_lower_end), colour = "#FF7F00", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = DST_upper_begin, xend = 160000, yend = DST_upper_end), colour = "#FF7F00", linetype= 'dashed')+
+    
+    
+    
+    
     my_theme+
     labs(
       title=title,
-      x = "Willingness-to-Pay per QALY (1000s USD)",
+      x = "Cost-effectiveness Threshold (1000s USD)",
       y = "Incremental\nNMB (millions USD)"
     )
     
@@ -7863,8 +7887,32 @@ multiplot(
 )
 
 
+ceadf<-cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)
 
+ceadf
 
+(150000 * mean(ceadf$GISPcumulativeQALYsAdj)) - mean(ceadf$GISPcumulativeCostsAdj)
+
+(50000 * mean(ceadf$DSTcumulativeQALYsAdj)) - mean(ceadf$DSTcumulativeCostsAdj)
+
+(150000 * mean(ceadf$TOCcumulativeQALYsAdj)) - mean(ceadf$TOCcumulativeCostsAdj)
+
+(0000 * mean(ceadf$RandomcumulativeQALYsAdj)) - mean(ceadf$RandomcumulativeCostsAdj)
+
+mean(ceadf$RandomcumulativeQALYs)
+mean(ceadf$RandomcumulativeCosts)
+
+mean(ceadf$GISPcumulativeQALYs)
+mean(ceadf$GISPcumulativeCosts)
+
+mean(ceadf$DSTcumulativeQALYs)
+mean(ceadf$DSTcumulativeCosts)
+
+mean(ceadf$TOCcumulativeQALYs)
+mean(ceadf$TOCcumulativeCosts)
+
+mean(ceadf$RCcumulativeQALYs)
+mean(ceadf$RCcumulativeCosts)
 
 
 #supplement sensitivity analysis

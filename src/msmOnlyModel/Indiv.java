@@ -24,7 +24,7 @@ public class Indiv {
 	//private double genderPref; //0.0 is strictly same-gender; 1.0 is strictly different-gender
 	
 	private String subPop; //discrete category of gender/sexuality
-	private boolean LTR; //if true, excluded from sexual pool
+	private String riskGroup; //if true, excluded from sexual pool
 
 	private int state;
 	private boolean abstaining;
@@ -85,10 +85,10 @@ public class Indiv {
 		this.observer = observer;
 		this.schedule = schedule;
 		
-		Uniform LTRUniform = (Uniform) randomHelper.getDistribution("genderUniform");
-		double randomLTR = LTRUniform.nextDouble();
-		if (randomLTR < 0.5) {this.LTR=true;}
-		else {this.LTR=false;}
+		Uniform riskGroupUniform = (Uniform) randomHelper.getDistribution("riskGroupUniform");
+		double randomRiskGroup = riskGroupUniform.nextDouble();
+		if (randomRiskGroup < 0.5) {this.riskGroup="low";}
+		else {this.riskGroup="high";}
 		
 		this.state = 0;
 		this.abstaining = false;
@@ -279,7 +279,7 @@ public class Indiv {
 		
 		Uniform partnerSelectUniform = randomHelper.getUniform();
 
-		while (partner == this || partner.getLTR() == true) {
+		while (partner == this || !partner.getRiskGroup().equals(this.riskGroup)) {
 				int toSkip = partnerSelectUniform.nextIntFromTo(0, potentialPartners.size()-1);
 				partner = (Indiv) potentialPartners.get(toSkip);
 			}
@@ -634,8 +634,8 @@ public class Indiv {
 		return this.subPop;
 	}
 	
-	public boolean getLTR() {
-		return this.LTR;
+	public String getRiskGroup() {
+		return this.riskGroup;
 	}
 	
 	
