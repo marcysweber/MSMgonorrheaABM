@@ -99,8 +99,8 @@ public class CustomParameterSweep {
 	
 	
 	public List<Double> getRiskGroupTransferPropValues(int samples){
-		double RiskGroupTransferPropMin = 1;
-		double RiskGroupTransferPropMax = 10;
+		double RiskGroupTransferPropMin = 0.01;
+		double RiskGroupTransferPropMax = 0.1;
 		int seed = (int) System.currentTimeMillis() + 30;
 		return getUniformSweepValues(seed, samples, RiskGroupTransferPropMin, RiskGroupTransferPropMax);
 	}
@@ -108,8 +108,8 @@ public class CustomParameterSweep {
 
 	
 	public List<Double> getRiskGroupTransmissionRatioValues(int samples){
-		double RiskGroupTransmissionRatioMin = 1;
-		double RiskGroupTransmissionRatioMax = 20;
+		double RiskGroupTransmissionRatioMin = 0.05;
+		double RiskGroupTransmissionRatioMax = 0.5;
 		int seed = (int) System.currentTimeMillis() + 30;
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}

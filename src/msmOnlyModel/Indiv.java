@@ -27,7 +27,7 @@ public class Indiv {
 	private String riskGroup; //if true, excluded from sexual pool
 
 	private int state;
-	private boolean abstaining;
+	//private boolean abstaining;
 	private Infection infection;
 	private List<Integer> screenings;
 	private boolean seekCareScheduled;
@@ -50,7 +50,7 @@ public class Indiv {
 		this.subPop = assignSubPop();
 		
 		this.state = 0;
-		this.abstaining = false;
+		//this.abstaining = false;
 		this.seekCareScheduled = false;
 		// state = 0 means susceptible
 		// state = 1 means infectious
@@ -91,7 +91,7 @@ public class Indiv {
 		else {this.riskGroup="high";}
 		
 		this.state = 0;
-		this.abstaining = false;
+		//this.abstaining = false;
 		this.seekCareScheduled = false;
 		// state = 0 means susceptible
 		// state = 1 means infectious
@@ -126,7 +126,7 @@ public class Indiv {
 
 		
 		this.state = 0;
-		this.abstaining = false;
+		//this.abstaining = false;
 		this.seekCareScheduled = false;
 		// state = 0 means susceptible
 		// state = 1 means infectious
@@ -244,6 +244,10 @@ public class Indiv {
 			
 		double weeklyProb = 1 - Math.exp(-transmission * 1/52);
 		
+		if (riskGroup.equals("low")) {
+			weeklyProb = weeklyProb * allParameters.getDouble("risk_group_transmission_ratios");
+		}
+		
 		if (weeklyProb > randomValue) { //50% chance of seeking a contact this timestep
 			result = true;
 		}
@@ -265,7 +269,13 @@ public class Indiv {
 		List<Indiv> potentialPartners = null;
 		
 		if (this.subPop.equals("msm")) {
-			potentialPartners = population.msmList;
+			if (this.riskGroup.equals("low")) {
+				potentialPartners = population.lowRiskGroup();
+
+			} else {
+				potentialPartners = population.highRiskGroup();
+
+			}
 		} else {
 			System.out.println("this was supposed to be an MSM only run but there was an Indiv of a different subPop!");
 			System.exit(state);
@@ -473,7 +483,15 @@ public class Indiv {
 	
 	public void changeStateTo(int newState) {
 		this.state = newState;
-		this.stopAbstaining();
+		//this.stopAbstaining();
+	}
+	
+	public void changeRiskGroup() {
+		if (this.riskGroup.equals("low")){
+			this.riskGroup = "high";
+		} else if (this.riskGroup.equals("high")) {
+			this.riskGroup = "low";
+		}
 	}
 	
 	
@@ -565,13 +583,13 @@ public class Indiv {
 	}
 	
 
-	public void abstain() {
-		//this.abstaining = true;
-	}
-	
-	public void stopAbstaining() {
-		this.abstaining = false;
-	}
+//	public void abstain() {
+//		//this.abstaining = true;
+//	}
+//	
+//	public void stopAbstaining() {
+//		this.abstaining = false;
+//	}
 	
 	public void clearSeekCareScheduled() {
 		this.seekCareScheduled = false;

@@ -440,7 +440,7 @@ public class Treatment {
 
 		// true, unknown failed treatment
 		indiv.recordFailedTreatment();
-		indiv.stopAbstaining();
+		//indiv.stopAbstaining();
 	}
 	
 	

@@ -9,6 +9,7 @@ import cern.jet.random.Exponential;
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import cern.jet.random.engine.RandomEngine;
+import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.parameter.Parameters;
 
@@ -25,6 +26,7 @@ public class SingleRun {
 	private InsertResistance resistanceInserter;
 	private ThreadSafeRandomHelper randomHelper;
 	private CustomFileOutput fileOutputter;
+	private ChangeRiskGroups riskGroupChanger;
 	
 	private double endTime;
 	private boolean finishing;
@@ -67,6 +69,7 @@ public void setUp(double endTime) {
 		
 		infectInitialInfected(params.getInteger("infected_count_init"), params.getInteger("population_size"), population);
 		
+		scheduleRiskGroupChanges(parameters, randomHelper, schedule, population);
 		 
 		if (!resistance.equals("none")) {
 			scheduleInsertResistance(resistance);
@@ -216,6 +219,16 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 
 }
 
+
+public ChangeRiskGroups scheduleRiskGroupChanges(Parameters parameters, ThreadSafeRandomHelper randomHelper, ISchedule schedule, Population population) {
+	ChangeRiskGroups riskGroupChanger = new ChangeRiskGroups(parameters, randomHelper, schedule, population);
+
+	ScheduleParameters schparams = ScheduleParameters.createRepeating(0.0, 52.0);
+	schedule.schedule(schparams, riskGroupChanger, "changeRiskGroups");
+	
+	return riskGroupChanger;
+}
+
 public void createSurveillance(String counterfactual) {
 	surveillanceProgram = new SurveillanceProgram(counterfactual, observer);
 	observer.setSurveillance(surveillanceProgram);
@@ -305,6 +318,7 @@ public CustomFileOutput createOutputter() {
 	
 	return fileOutputter;
 }
+
 
 
 public ThreadSafeSchedule schedule() {

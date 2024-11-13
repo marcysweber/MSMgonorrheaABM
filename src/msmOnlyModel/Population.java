@@ -47,6 +47,58 @@ public class Population {
 		
 	}
 	
+	public List<Indiv> lowRiskGroup(){
+		List<Indiv> lowRiskGroup = indivs.stream().
+				filter(indiv -> 
+				//((Indiv) indiv).getGenderPref() < 0.25 && 
+				indiv.getRiskGroup().equals("low")).
+				collect(Collectors.toList());
+		
+		return lowRiskGroup;
+	}
+	
+	public List<Indiv> highRiskGroup(){
+		List<Indiv> highRiskGroup = indivs.stream().
+				filter(indiv -> 
+				//((Indiv) indiv).getGenderPref() < 0.25 && 
+				indiv.getRiskGroup().equals("high")).
+				collect(Collectors.toList());
+		
+		return highRiskGroup;
+	}
+	
+
+	public Stream<Indiv> lowRiskGroupStream(){
+		Stream<Indiv> lowRiskGroup = indivs.stream().
+				filter(indiv -> 
+				//((Indiv) indiv).getGenderPref() < 0.25 && 
+				indiv.getRiskGroup().equals("low")).
+				collect(Collectors.toList()).stream();
+		
+		return lowRiskGroup;
+	}
+
+	public long lowRiskCount() {
+		return lowRiskGroupStream().count();
+	}
+
+
+	public Stream <Indiv> highRiskGroupStream(){
+		Stream<Indiv> highRiskGroup = indivs.stream().
+				filter(indiv -> 
+				//((Indiv) indiv).getGenderPref() < 0.25 && 
+				indiv.getRiskGroup().equals("high")).
+				collect(Collectors.toList()).stream();
+		
+		return highRiskGroup;
+	}
+	
+
+	public long highRiskCount() {
+		return highRiskGroupStream().count();
+	}
+
+	
 	public int totalSize() {
 		return indivs.size();
 	}
