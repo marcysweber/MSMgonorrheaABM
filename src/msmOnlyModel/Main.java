@@ -143,54 +143,75 @@ public class Main {
 		double realisticTOC = 0.33;
 		double realisticDST = 0.34;
 
-		/*
-		 * //batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 10,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 * batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST); batchRunner.executeCalibratedBatch(scenario,
-		 * "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-		 * adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		 * batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST);
-		 * 
-		 * //batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo",
-		 * 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 * batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 15,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST); batchRunner.executeCalibratedBatch(scenario,
-		 * "test-of-cure_80", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-		 * adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		 * batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 31,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST);
-		 * 
-		 * //batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 * batchRunner.executeCalibratedBatch(scenario, "random", "combo", 15,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST); batchRunner.executeCalibratedBatch(scenario,
-		 * "random", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-		 * adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		 * batchRunner.executeCalibratedBatch(scenario, "random", "combo", 31,
-		 * switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST);
-		 * 
-		 * //batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80",
-		 * "combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 * batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo",
-		 * 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST); batchRunner.executeCalibratedBatch(scenario,
-		 * "drug_sus_testing_80", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-		 * adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		 * batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo",
-		 * 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		 * realisticTOC, realisticDST);
-		 */
-		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
+		  //batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 10,switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST); 
+		  
+		  batchRunner.executeCalibratedBatch(scenario,
+		  "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		 
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST);
+		  
+		  
+		  
+		  //batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo",10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		 
+		  batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 15,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST); 
+		  
+		  batchRunner.executeCalibratedBatch(scenario,
+		  "test-of-cure_80", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		 
+		  batchRunner.executeCalibratedBatch(scenario, "test-of-cure_80", "combo", 31,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST);
+		  
+		  
+		  
+		 // batchRunner.executeCalibratedBatch(scenario, "random", "combo", 10,switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "random", "combo", 15,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST); 
+		  
+		  batchRunner.executeCalibratedBatch(scenario,
+		  "random", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "random", "combo", 31,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST);
+		  
+		  
+		  
+		  //batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80","combo", 10, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt);
+		 
+		  batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo",
+		  15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST); 
+		  
+		  batchRunner.executeCalibratedBatch(scenario,
+		  "drug_sus_testing_80", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		  
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "drug_sus_testing_80", "combo",
+		  31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST);
+		 
+		  
+		  
+		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 
 	}
 	

@@ -99,7 +99,7 @@ public class Treatment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else if (counterfactual.contains("GISP")){ // GISP pre-switch (default drug A)?
+			} else if (counterfactual.contains("GISP") || counterfactual.contains("sweep") || counterfactual.contains("none")){ // GISP pre-switch (default drug A)?
 				treatDefaultBeforeSwitch();
 			} else {
 				throw new Exception("No valid counterfactual argument supplied!");
