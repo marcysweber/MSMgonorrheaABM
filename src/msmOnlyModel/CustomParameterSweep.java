@@ -96,6 +96,25 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
 	}
 	
+	
+	
+	public List<Double> getRiskGroupTransferPropValues(int samples){
+		double RiskGroupTransferPropMin = 1;
+		double RiskGroupTransferPropMax = 10;
+		int seed = (int) System.currentTimeMillis() + 30;
+		return getUniformSweepValues(seed, samples, RiskGroupTransferPropMin, RiskGroupTransferPropMax);
+	}
+	
+
+	
+	public List<Double> getRiskGroupTransmissionRatioValues(int samples){
+		double RiskGroupTransmissionRatioMin = 1;
+		double RiskGroupTransmissionRatioMax = 20;
+		int seed = (int) System.currentTimeMillis() + 30;
+		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
+	}
+	
+	
 	//resistance parameters
 	public List<Double> getPercentResistantA(int samples){
 		double min = 0.001;

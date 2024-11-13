@@ -192,6 +192,29 @@ public class CalibratedParameters {
 	}
 	
 	
+	public List<Double> getRiskGroupTransferPropValues() throws IOException{
+		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
+		
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get("/Users/me597/Documents/MSM_calibrated_params/risk_group_transfer_freq_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+		
+	}
+	
+	public List<Double> getRiskGroupTransmissionRatioValues() throws IOException{
+		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
+		
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get("/Users/me597/Documents/MSM_calibrated_params/risk_group_transmission_ratio_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+		
+	}
+	
+	
+	
+	
 	public List<Double> getPercentResistantAValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		

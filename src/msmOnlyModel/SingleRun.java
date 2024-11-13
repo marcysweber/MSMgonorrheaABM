@@ -119,8 +119,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			//randomHelper.setSeed(seed);
 			RandomEngine eng = randomHelper.registerGenerator(uniqueGeneratorName, seed);
 			
-			Uniform genderUniform = new Uniform(0.0, 1.0, eng);
-			randomHelper.registerDistribution("genderUniform", genderUniform);
+			Uniform RiskGroupUniform = new Uniform(0.0, 1.0, eng);
+			randomHelper.registerDistribution("riskGroupUniform", RiskGroupUniform);
 			
 			Beta genderPrefBeta = new Beta(0.5, 0.05, eng);
 			randomHelper.registerDistribution("genderPrefBeta", genderPrefBeta);
@@ -144,6 +144,10 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("screenIntervalMSMNormal", screenIntervalMSMNormal);
 			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
+			
+			Normal riskGroupTransferPropNormal = new Normal(parameters.getDouble("risk_group_transfer_prop"), parameters.getDouble("risk_group_transfer_prop")/10, eng);
+			randomHelper.registerDistribution("riskGroupTransferPropNormal", riskGroupTransferPropNormal);
+		
 			
 			Uniform sequelaeUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("sequelaeUniform", sequelaeUniform);

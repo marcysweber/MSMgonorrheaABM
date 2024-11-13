@@ -60,6 +60,10 @@ public class BatchRun {
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
 		List<Double> delayToRetreatmentMSMValuesList = sweeper.getDelayToRetreatmentMSMValues(reps);
+		
+		List<Double> riskGroupTransferPropValuesList = sweeper.getRiskGroupTransferPropValues(reps);
+		
+		List<Double> riskGroupTransmissionRatioValuesList = sweeper.getRiskGroupTransmissionRatioValues(reps);
 
 		List<Double> percentResistantAValuesList = sweeper.getPercentResistantA(reps);
 		List<Integer> beginImportingBValuesList = sweeper.getBeginImportingB(reps);
@@ -90,6 +94,8 @@ public class BatchRun {
 							screenIntervalMSMValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
+							riskGroupTransferPropValuesList.get(i),
+							riskGroupTransmissionRatioValuesList.get(i),
 							percentResistantAValuesList.get(i),
 							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
 							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
@@ -168,6 +174,9 @@ public class BatchRun {
 
 		
 		List<Double> delayToRetreatmentMSMValuesList = new ArrayList<Double>();
+		List<Double> riskGroupTransferPropValuesList = new ArrayList<Double>();
+		List<Double> riskGroupTransmissionRatioValuesList = new ArrayList<Double>();
+
 
 		
 		List<Double> percentResistantAValuesList = new ArrayList<Double>();
@@ -250,7 +259,19 @@ public class BatchRun {
 			e.printStackTrace();
 		}
 
+		try {
+			riskGroupTransferPropValuesList = calibrated.getRiskGroupTransferPropValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		try {
+			riskGroupTransmissionRatioValuesList = calibrated.getRiskGroupTransmissionRatioValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		
@@ -357,6 +378,8 @@ public class BatchRun {
 							screenIntervalMSMValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
+							riskGroupTransferPropValuesList.get(i),
+							riskGroupTransmissionRatioValuesList.get(i),
 							percentResistantAValuesList.get(i),
 							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
 							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
@@ -412,6 +435,7 @@ public class BatchRun {
 				paramConfig.getScreenIntervalMSM(),
 				paramConfig.getDelayToSeekCareMSM(), 
 				paramConfig.getDelayToRetreatmentMSM(),
+				paramConfig.getRiskGroupTransferProp(), paramConfig.getRiskGroupTransmissionRatio(),
 				paramConfig.getPercentResistantA(), paramConfig.getBeginImportingB(),
 				paramConfig.getImportingBInterval(), paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
 				paramConfig.getcareCost(), paramConfig.getTestCost(),
@@ -442,11 +466,13 @@ public class BatchRun {
 			double screenIntervalMSM,  
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
+			double riskGrouptransferProp,
+			double riskGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
-				initialInfected, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, 
+				initialInfected, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, riskGrouptransferProp, riskGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
 	
@@ -461,6 +487,8 @@ public class BatchRun {
 			double screenIntervalMSM,  
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
+			double riskGroupTransferProp,
+			double riskGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
@@ -488,6 +516,9 @@ public class BatchRun {
 		params.addParameter("screen_interval_MSM", "ScreenIntervalMSM", double.class, screenIntervalMSM, false);
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
 		params.addParameter("delay_to_retreatment_msm", "DelayToRetreatmentMSM", double.class, delayToRetreatmentMSM, false);
+		params.addParameter("risk_group_transfer_prop", "RiskGroupTransferProp", double.class, riskGroupTransferProp, false);
+		params.addParameter("risk_group_transmission_ratio", "RiskGroupTransmissionRatio", double.class, riskGroupTransmissionRatio, false);
+
 
 		params.addParameter("percent_resistant_A", "percent_resistant_A", double.class, percentResistantA, false);
 		params.addParameter("begin_importing_B", "begin_importing_B", int.class, beginImportingB, false);
