@@ -1,5 +1,7 @@
 package msmOnlyModel;
 
+import java.util.stream.Stream;
+
 import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.parameter.Parameters;
 
@@ -24,14 +26,22 @@ public class ChangeRiskGroups {
 		
 		//process low risk to high risk
 		
-		long numberToTransfer = Math.round(population.lowRiskCount() * prop);
-		population.lowRiskGroupStream().limit(numberToTransfer).forEach(indiv -> indiv.changeRiskGroup());
+		long numberToTransferLow = Math.round(population.lowRiskCount() * prop);
+		System.out.println("Transfering " + numberToTransferLow + " from low to high.");
+		
+		Stream <Indiv> lowToTransfer = population.lowRiskGroupStream().limit(numberToTransferLow);
+
 		
 		//process high risk to low risk
 
-		numberToTransfer = Math.round(population.highRiskCount() * prop);
-		population.highRiskGroupStream().limit(numberToTransfer).forEach(indiv -> indiv.changeRiskGroup());
-		
+		long numberToTransferHigh = Math.round(population.highRiskCount() * prop);
+		System.out.println("Transfering " + numberToTransferHigh + " from high to low.");
+
+		Stream <Indiv> highToTransfer = population.highRiskGroupStream().limit(numberToTransferHigh);
+				
+		Stream.concat(lowToTransfer, highToTransfer).forEach(indiv -> indiv.changeRiskGroup());
+		System.out.println("New high risk count: " + population.highRiskCount());
+
 	}
 	
 }

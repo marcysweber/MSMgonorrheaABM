@@ -245,7 +245,7 @@ public class Indiv {
 		double weeklyProb = 1 - Math.exp(-transmission * 1/52);
 		
 		if (riskGroup.equals("low")) {
-			weeklyProb = weeklyProb * allParameters.getDouble("risk_group_transmission_ratios");
+			weeklyProb = weeklyProb * allParameters.getDouble("risk_group_transmission_ratio");
 		}
 		
 		if (weeklyProb > randomValue) { //50% chance of seeking a contact this timestep

@@ -226,6 +226,8 @@ public ChangeRiskGroups scheduleRiskGroupChanges(Parameters parameters, ThreadSa
 	ScheduleParameters schparams = ScheduleParameters.createRepeating(0.0, 52.0);
 	schedule.schedule(schparams, riskGroupChanger, "changeRiskGroups");
 	
+	this.riskGroupChanger = riskGroupChanger;
+	
 	return riskGroupChanger;
 }
 
@@ -339,6 +341,10 @@ public SurveillanceProgram surveillanceProgram() {
 
 public InsertResistance resistanceInserter() {
 	return resistanceInserter;
+}
+
+public ChangeRiskGroups riskGroupChanger() {
+	return riskGroupChanger;
 }
 
 public void assignSchedule(ThreadSafeSchedule schedule) {

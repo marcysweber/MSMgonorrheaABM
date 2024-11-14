@@ -52,7 +52,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void RandomTest() {
-		BatchRun testBatch = new BatchRun("random", "combo", 10);
+		BatchRun testBatch = new BatchRun("random", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -67,6 +67,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -94,7 +96,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void TOCsymptSusAllTest() {
-		BatchRun testBatch = new BatchRun("test-of-cure", "combo", 10);
+		BatchRun testBatch = new BatchRun("test-of-cure", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -109,6 +111,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -137,7 +141,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void TOCasymptSusAllTest() {
-		BatchRun testBatch = new BatchRun("test-of-cure", "combo", 10);
+		BatchRun testBatch = new BatchRun("test-of-cure", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -152,6 +156,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -180,7 +186,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void TOCasymptResistASusBTest() {
-		BatchRun testBatch = new BatchRun("test-of-cure", "combo", 10);
+		BatchRun testBatch = new BatchRun("test-of-cure", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -195,6 +201,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -223,7 +231,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void TOCasymptResistABTest() {
-		BatchRun testBatch = new BatchRun("test-of-cure_100", "combo", 10);
+		BatchRun testBatch = new BatchRun("test-of-cure_100", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -238,6 +246,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -267,7 +277,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void DSTtest() {
-		BatchRun testBatch = new BatchRun("DST_100", "combo", 10);
+		BatchRun testBatch = new BatchRun("DST_100", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -282,6 +292,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval
@@ -306,7 +318,7 @@ public class CounterfactualCostsTest {
 	
 	@Test
 	public void GISPtest() {
-		BatchRun testBatch = new BatchRun("GISP", "combo", 10);
+		BatchRun testBatch = new BatchRun("GISP", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
@@ -321,6 +333,8 @@ public class CounterfactualCostsTest {
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
 				53, //begin importing B
 				1.0, //importing B interval

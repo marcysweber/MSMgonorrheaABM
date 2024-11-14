@@ -31,8 +31,34 @@ public class IndivTest {
 	}
 
 	public SingleRun setUpIndivTest() {
-		BatchRun testBatch = new BatchRun("GISP", "combo", 10);
-		Parameters params = testBatch.setParameters(0,52, 1, "combo", "GISP", 10, 100, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.05, 53, 1.0, 0.95, 0.95, 1, 2, 3, 4, 5, 6, 7);
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(1,//runNumber
+				1000,//endtime
+				1, //seed
+				"none", //resistance
+				"none", //counterfactual
+				10, //yearX
+				10, //initial infected
+				10, //transmission
+				1 , //recoveryLambda
+				0.5, //probSymptomatic
+				2, //screenInterval
+				1, //delaytoseekcare
+				2, //delaytoretreatment
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
+				25, //amount resistant A
+				10, //being importing B
+				10,//importing B interval
+				95, //sensitivity
+				97,//specificity
+				1, //care cost
+				2,//testcost
+				3,//straintestcost
+				4, //treatmentAcost
+				5, //treatmentBcost
+				6, //treatmentXcost
+				7);//treatmentEcost);
 		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
 		testRun.setUp(52);
 		

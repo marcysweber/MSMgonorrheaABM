@@ -37,7 +37,7 @@ public class Population {
 
 
 	public List<Indiv> msm() {
-		List<Indiv> msmList = indivs.stream().
+		List<Indiv> msmList = indivs.stream().unordered().
 				filter(indiv -> 
 				//((Indiv) indiv).getGenderPref() < 0.25 && 
 				indiv.getSubPop().equals("msm")).
@@ -48,7 +48,7 @@ public class Population {
 	}
 	
 	public List<Indiv> lowRiskGroup(){
-		List<Indiv> lowRiskGroup = indivs.stream().
+		List<Indiv> lowRiskGroup = indivs.stream().unordered().
 				filter(indiv -> 
 				//((Indiv) indiv).getGenderPref() < 0.25 && 
 				indiv.getRiskGroup().equals("low")).
@@ -58,7 +58,7 @@ public class Population {
 	}
 	
 	public List<Indiv> highRiskGroup(){
-		List<Indiv> highRiskGroup = indivs.stream().
+		List<Indiv> highRiskGroup = indivs.stream().unordered().
 				filter(indiv -> 
 				//((Indiv) indiv).getGenderPref() < 0.25 && 
 				indiv.getRiskGroup().equals("high")).
@@ -75,7 +75,7 @@ public class Population {
 				indiv.getRiskGroup().equals("low")).
 				collect(Collectors.toList()).stream();
 		
-		return lowRiskGroup;
+		return lowRiskGroup.unordered();
 	}
 
 	public long lowRiskCount() {
@@ -90,7 +90,7 @@ public class Population {
 				indiv.getRiskGroup().equals("high")).
 				collect(Collectors.toList()).stream();
 		
-		return highRiskGroup;
+		return highRiskGroup.unordered();
 	}
 	
 
@@ -108,7 +108,7 @@ public class Population {
 	}
 	
 	public Stream <Indiv> allInfectious(){
-		return allIndivs().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream();
+		return allIndivs().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 	}
 	
 	public long infectiousCount(){
@@ -120,7 +120,7 @@ public class Population {
 	}
 	
 	public Stream<Indiv> msmInfected(){
-		return msmList.stream().filter(indiv -> indiv.infectious()).collect(Collectors.toList()).stream();
+		return msmList.stream().filter(indiv -> indiv.infectious()).collect(Collectors.toList()).stream().unordered();
 	}
 	
 	public void add(Indiv indiv) {
