@@ -41,12 +41,19 @@ public class CustomParameterSweep {
 		return getUniformIntSweepValues(seed, samples, infectedMin, infectedMax);
 		
 	}
+	
+	public List<Double> getPropHighRiskValues(int samples){
+		double min = 0.01;
+		double max = 0.4;
+		int seed = (int) System.currentTimeMillis() + 25;
+		return getUniformSweepValues(seed, samples, min, max);
+	}
 		
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
 		double annualContactsMin = 3.5;
-		double annualContactsMax = 15;
+		double annualContactsMax = 30;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
@@ -64,7 +71,7 @@ public class CustomParameterSweep {
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
 		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.3;
+		double probSymptomaticMax = 0.6;
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
@@ -72,7 +79,7 @@ public class CustomParameterSweep {
 	
 	//screen interval parameters
 	public List<Double> getScreenIntervalMSMValues(int samples){
-		double screenIntervalMin = 1.5;
+		double screenIntervalMin = 0.5;
 		double screenIntervalMax = 3.0;
 		int seed = (int) System.currentTimeMillis() + 9;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
@@ -100,7 +107,7 @@ public class CustomParameterSweep {
 	
 	public List<Double> getRiskGroupTransferPropValues(int samples){
 		double RiskGroupTransferPropMin = 0.01;
-		double RiskGroupTransferPropMax = 0.1;
+		double RiskGroupTransferPropMax = 0.3;
 		int seed = (int) System.currentTimeMillis() + 30;
 		return getUniformSweepValues(seed, samples, RiskGroupTransferPropMin, RiskGroupTransferPropMax);
 	}
@@ -110,7 +117,7 @@ public class CustomParameterSweep {
 	public List<Double> getRiskGroupTransmissionRatioValues(int samples){
 		double RiskGroupTransmissionRatioMin = 0.05;
 		double RiskGroupTransmissionRatioMax = 0.5;
-		int seed = (int) System.currentTimeMillis() + 30;
+		int seed = (int) System.currentTimeMillis() + 31;
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}
 	

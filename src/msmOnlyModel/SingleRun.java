@@ -268,9 +268,19 @@ public void createIndivs(int IndivCount) {
 public void infectInitialInfected(int InfectiousCount, int IndivCount, Population population) {
 	List<Object> indivToInfectList = new ArrayList<Object>();
 	
-	double amountToInfectMSM = (InfectiousCount/(double)IndivCount) * population.msmCount();
-	List <Object> MSMtoInfect = population.msmList.stream().limit((long) amountToInfectMSM).collect(Collectors.toList());
-	indivToInfectList.addAll(MSMtoInfect);
+	//we want to start the high risk group with 3x higher prevalence than general pop.
+	double initialPrev = InfectiousCount/population.totalSize();
+	double desiredHighRiskPrev = initialPrev * 3.0;
+	
+	
+	double amountToInfectHighRisk = desiredHighRiskPrev * population.highRiskCount();  
+	double amountToInfectLowRisk = InfectiousCount - amountToInfectHighRisk;
+	
+	List <Object> highRisktoInfect = population.highRiskGroupStream().limit((long) amountToInfectHighRisk).collect(Collectors.toList());
+	indivToInfectList.addAll(highRisktoInfect);
+	
+	List <Object> lowRisktoInfect = population.lowRiskGroupStream().limit((long) amountToInfectLowRisk).collect(Collectors.toList());
+	indivToInfectList.addAll(lowRisktoInfect);
 	
 	//infect the infectious indivs
 	ScheduleParameters schparams = ScheduleParameters.createOneTime(-0.5);
@@ -352,6 +362,36 @@ public void assignSchedule(ThreadSafeSchedule schedule) {
 }
 
 
+
+
+public void testSetUp(double endTime) {
+	//creates the basic skeleton of a run without setting up the population,
+	//so that more unique populations for testing purposes can be created
+	this.endTime = endTime;
+
+	schedule = new ThreadSafeSchedule();
+     
+		//access parameters
+     Parameters params = this.parameters;
+		int seed = params.getInteger("seed");
+		String counterfactual = params.getString("counterfactual");
+		String resistance = params.getString("resistance");
+		int yearX = params.getInteger("yearX");
+		
+		randomHelper = registerDistributions();
+		//context.add(randomHelper);	 
+		
+		this.fileOutputter = createOutputter();
+		createObserver(seed, counterfactual, resistance, yearX);
+		//context.add(observer);
+		
+		createSurveillance(counterfactual);
+		
+		ChangeRiskGroups riskGroupChanger = new ChangeRiskGroups(parameters, randomHelper, schedule, population);
+		this.riskGroupChanger = riskGroupChanger;
+
+			
+}
 
 
 }

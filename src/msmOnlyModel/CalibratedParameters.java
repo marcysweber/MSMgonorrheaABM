@@ -27,6 +27,18 @@ public class CalibratedParameters {
 		return dataAsInts;
 	}
 	
+	public List<Double> getPropHighRiskValues() throws IOException {
+		//reads the resampled Annual Contacts values from file, and gives them back as a list of doubles
+
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get("/Users/me597/Documents/MSM_calibrated_params/propHighRisk_resample.txt"));
+		//System.out.println(dataAsStrings);
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		//System.out.println(dataAsDoubles);
+		return dataAsDoubles;
+	}
+	
+	
 	public List<Double> getTransmissionMSMValues() throws IOException {
 		//reads the resampled Annual Contacts values from file, and gives them back as a list of doubles
 

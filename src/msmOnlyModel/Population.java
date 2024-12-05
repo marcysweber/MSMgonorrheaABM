@@ -22,11 +22,21 @@ public class Population {
 	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		indivs = new ArrayList<Indiv>();
 		
+		String subPop = "msm";
 		//all MSM
 		
-		for ( int i = 0; i < IndivCount; i ++) {
+		double propHighRisk = parameters.getDouble("propHighRisk");
+		int countHighRisk = (int) (propHighRisk * IndivCount);
+		int countLowRisk = IndivCount - countHighRisk;
+		
+		for ( int i = 0; i < countHighRisk; i ++) {
 			//initialize as susceptible, to start
-			indivs.add(new Indiv(parameters, "msm", randomHelper, observer, schedule));
+			indivs.add(new Indiv(parameters, subPop, "high", randomHelper, observer, schedule));
+		}
+		
+		for ( int i = 0; i < countLowRisk; i ++) {
+			//initialize as susceptible, to start
+			indivs.add(new Indiv(parameters, subPop, "low", randomHelper, observer, schedule));
 		}
 		
 		msmList = msm();
@@ -104,12 +114,24 @@ public class Population {
 	}
 	
 	public Stream <Indiv> allIndivs(){
-		return indivs.stream();
+		return indivs.stream().unordered();
 	}
 	
 	public Stream <Indiv> allInfectious(){
 		return allIndivs().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 	}
+	
+	
+	public Stream <Indiv> lowRiskInfected(){
+		return allIndivs().filter(indiv -> indiv.getState()==1 && indiv.getRiskGroup().equals("low")).collect(Collectors.toList()).stream().unordered();
+
+	}
+	
+	public Stream <Indiv> highRiskInfected(){
+		return allIndivs().filter(indiv -> indiv.getState()==1 && indiv.getRiskGroup().equals("high")).collect(Collectors.toList()).stream().unordered();
+
+	}
+	
 	
 	public long infectiousCount(){
 		return allIndivs().filter(indiv -> indiv.getState()==1).count();

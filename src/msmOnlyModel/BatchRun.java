@@ -49,6 +49,8 @@ public class BatchRun {
 
 		List<Integer> initialInfectedValuesList = sweeper.getInitialInfectedValues(reps);
 		
+		List<Double> propHighRiskValuesList = sweeper.getPropHighRiskValues(reps);
+		
 		List<Double> transmissionMSMValuesList = sweeper.getTransmissionMSMValues(reps);
 		
 		List<Double> recoveryLambdaValuesList = sweeper.getRecoveryLambdaValues(reps);
@@ -88,6 +90,7 @@ public class BatchRun {
 			comboStream = Stream.concat(comboStream,
 					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, 31,
 							initialInfectedValuesList.get(i), 
+							propHighRiskValuesList.get(i),
 							transmissionMSMValuesList.get(i),
 							recoveryLambdaValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
@@ -161,6 +164,7 @@ public class BatchRun {
 		
 		
 		List<Integer> initialInfectedValuesList = new ArrayList<Integer>();
+		List <Double> propHighRiskValuesList = new ArrayList<Double>();
 		
 		List<Double> transmissionMSMValuesList = new ArrayList<Double>();
 		
@@ -201,6 +205,15 @@ public class BatchRun {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+		try {
+			propHighRiskValuesList = calibrated.getPropHighRiskValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		//transmission parameters
 		try {
@@ -372,6 +385,7 @@ public class BatchRun {
 			comboStream = Stream.concat(comboStream,
 					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
 							initialInfectedValuesList.get(i), 
+							propHighRiskValuesList.get(i),
 							transmissionMSMValuesList.get(i),
 							recoveryLambdaValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
@@ -428,7 +442,7 @@ public class BatchRun {
 
 		
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
-				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), 
+				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), paramConfig.getPropHighRisk(),
 				paramConfig.getTransmissionMSM(),
 				paramConfig.getRecoveryLambda(), 
 				paramConfig.getProbSymptomaticMSM(), 
@@ -460,6 +474,7 @@ public class BatchRun {
 	public Parameters setParameters(int runNumber, int endTime, int seed, 
 			String resistance, String counterfactual, int yearX, 
 			int initialInfected, 
+			double propHighRisk,
 			double transmissionMSM,  
 			double recoveryLambda, 
 			double probSymptomaticMSM, 
@@ -472,7 +487,7 @@ public class BatchRun {
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
-				initialInfected, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, riskGrouptransferProp, riskGroupTransmissionRatio,
+				initialInfected, propHighRisk, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, riskGrouptransferProp, riskGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
 	
@@ -481,6 +496,7 @@ public class BatchRun {
 			String resistance, String counterfactual, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt,
 			double realisticRandom, double realisticTOC, double realisticDST,
 			int initialInfected, 
+			double propHighRisk,
 			double transmissionMSM,  
 			double recoveryLambda, 
 			double probSymptomaticMSM, 
@@ -530,6 +546,7 @@ public class BatchRun {
 
 		params.addParameter("population_size", "Pop Size", int.class, 100000, false);
 		params.addParameter("infected_count_init", "Initial Infected", int.class, initialInfected, false);
+		params.addParameter("propHighRisk", "propHighRisk", double.class, propHighRisk, false);
 		params.addParameter("end_time", "EndTime", int.class, endTime, false);
 
 	
@@ -555,9 +572,9 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_1_";
+		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_1_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/output_OCTOBER_25_2024_overnight_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/output_OCTOBER_25_2024_overnight_";
 		
 		dirname += counterfactual;
 		

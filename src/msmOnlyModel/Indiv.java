@@ -68,8 +68,9 @@ public class Indiv {
 		Screener screenScheduler = new Screener();
 		this.screenings = screenScheduler.makeScreenSchedule(randomHelper, subPop);
 	}
-	
-	public Indiv(Parameters allParameters, String subPop, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	 
+	//this is the version that is actually getting used currently
+	public Indiv(Parameters allParameters, String subPop, String riskGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
 		this.subPop = subPop;
 
 		if (subPop.startsWith("m")) {
@@ -85,10 +86,7 @@ public class Indiv {
 		this.observer = observer;
 		this.schedule = schedule;
 		
-		Uniform riskGroupUniform = (Uniform) randomHelper.getDistribution("riskGroupUniform");
-		double randomRiskGroup = riskGroupUniform.nextDouble();
-		if (randomRiskGroup < 0.5) {this.riskGroup="low";}
-		else {this.riskGroup="high";}
+		this.riskGroup = riskGroup;
 		
 		this.state = 0;
 		//this.abstaining = false;

@@ -17,6 +17,8 @@ public class ParamConfig {
 	private int yearX;
 	private int initialInfected;
 	
+	private double propHighRisk;
+	
 	private double TransmissionMSM;
 
 	
@@ -59,6 +61,7 @@ public class ParamConfig {
 			String counterfactual,
 			int yearX,
 			int initialInfected,
+			double propHighRisk,
 			double TransmissionMSM, 
 		
 			double RecoveryLambda, 
@@ -92,6 +95,7 @@ public class ParamConfig {
 		this.counterfactual = counterfactual;
 		this.yearX = yearX;
 		this.initialInfected = initialInfected;
+		this.propHighRisk = propHighRisk;
 		this.TransmissionMSM = TransmissionMSM;
 
 		this.RecoveryLambda = RecoveryLambda;
@@ -144,6 +148,10 @@ public class ParamConfig {
 	
 	public int getInitialInfected() {
 		return this.initialInfected;
+	}
+	
+	public double getPropHighRisk() {
+		return this.propHighRisk;
 	}
 	
 	public double getTransmissionMSM() {

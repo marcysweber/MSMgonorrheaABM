@@ -9,7 +9,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import msmOnlyModel.BatchRun;
+import msmOnlyModel.CustomParameterSweep;
 import msmOnlyModel.SingleRun;
+import msmOnlyModel.ThreadSafeSchedule;
 import repast.simphony.parameter.Parameters;
 
 public class RiskGroupTest {
@@ -39,13 +41,14 @@ public class RiskGroupTest {
 				"none", //counterfactual
 				10, //yearX
 				10, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
-				0.6,//riskGroupTransferProp
+				0.1,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
 				10, //being importing B
@@ -71,21 +74,260 @@ public class RiskGroupTest {
 	public void test() {
 		SingleRun testRun = setUpRiskGroupTest();
 		
-		//System.out.println("high: " + testRun.population().highRiskCount());
-		//System.out.println("low: " + testRun.population().lowRiskCount());
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
 		
 		testRun.riskGroupChanger().changeRiskGroups();
 		
-		//System.out.println("high: " + testRun.population().highRiskCount());
-		//System.out.println("low: " + testRun.population().lowRiskCount());
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
 
 		testRun.riskGroupChanger().changeRiskGroups();
 		
-		//System.out.println("high: " + testRun.population().highRiskCount());
-		//System.out.println("low: " + testRun.population().lowRiskCount());
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
+
+		testRun.riskGroupChanger().changeRiskGroups();
+		
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
+
+		testRun.riskGroupChanger().changeRiskGroups();
+		
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
 
 		
 		assertTrue("riskGroup1", testRun.population().highRiskCount()+ testRun.population().lowRiskCount() == 100000);		
+		
+	}
+	
+	
+	
+	@Test
+	public void testSweepPropHighRisk() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		
+		for (int i = 0; i < 100; i++) {
+
+			CustomParameterSweep sweeper = new CustomParameterSweep();
+			Parameters params = testBatch.setParameters(1,//runNumber
+					1000,//endtime
+					1, //seed
+					"combo", //resistance
+					"none", //counterfactual
+					10, //yearX
+					10, //initial infected
+					sweeper.getPropHighRiskValues(1).get(0), //propHighRisk
+					100, //transmission
+					1 , //recoveryLambda
+					0.5, //probSymptomatic
+					2, //screenInterval
+					1, //delaytoseekcare
+					2, //delaytoretreatment
+					0.1,//riskGroupTransferProp
+					0.1,//riskGroupTransmissionRatio
+					25, //amount resistant A
+					10, //being importing B
+					10,//importing B interval
+					95, //sensitivity
+					97,//specificity
+					1, //care cost
+					2,//testcost
+					3,//straintestcost
+					4, //treatmentAcost
+					5, //treatmentBcost
+					6, //treatmentXcost
+					7);//treatmentEcost);
+			SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+
+			testRun.testSetUp(52);
+
+			testRun.createIndivs(100);
+			testRun.observer().setPopulation(testRun.population());
+
+			System.out.println("high: " + testRun.population().highRiskCount());
+			System.out.println("low: " + testRun.population().lowRiskCount());
+		}
+		
+		
+		
+	}
+	
+
+	@Test
+	public void testSweepRiskGroupTransfer() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		
+		for (int i = 0; i < 10; i++) {
+
+			CustomParameterSweep sweeper = new CustomParameterSweep();
+			Parameters params = testBatch.setParameters(1,//runNumber
+					1000,//endtime
+					1, //seed
+					"combo", //resistance
+					"none", //counterfactual
+					10, //yearX
+					10, //initial infected
+					0.2, //propHighRisk
+					100, //transmission
+					1 , //recoveryLambda
+					0.5, //probSymptomatic
+					2, //screenInterval
+					1, //delaytoseekcare
+					2, //delaytoretreatment
+					sweeper.getRiskGroupTransferPropValues(1).get(0),//riskGroupTransferProp
+					0.1,//riskGroupTransmissionRatio
+					25, //amount resistant A
+					10, //being importing B
+					10,//importing B interval
+					95, //sensitivity
+					97,//specificity
+					1, //care cost
+					2,//testcost
+					3,//straintestcost
+					4, //treatmentAcost
+					5, //treatmentBcost
+					6, //treatmentXcost
+					7);//treatmentEcost);
+			SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+
+			testRun.testSetUp(52);
+
+			testRun.createIndivs(100);
+			testRun.observer().setPopulation(testRun.population());
+			testRun.riskGroupChanger().setPopulation(testRun.population());
+
+			System.out.println("RiskGroupTransferProp: " + params.getDouble("risk_group_transfer_prop"));
+			System.out.println("high: " + testRun.population().highRiskCount());
+			System.out.println("low: " + testRun.population().lowRiskCount());
+			
+			testRun.riskGroupChanger().changeRiskGroups();
+
+			System.out.println("high: " + testRun.population().highRiskCount());
+			System.out.println("low: " + testRun.population().lowRiskCount());
+			
+			
+			System.out.println("\n");
+		}
+		
+		
+		
+	}
+	
+	
+	@Test 
+	public void testLow() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(1,//runNumber
+				1000,//endtime
+				1, //seed
+				"combo", //resistance
+				"none", //counterfactual
+				10, //yearX
+				10, //initial infected
+				0.1, //propHighRisk
+				100, //transmission
+				1 , //recoveryLambda
+				0.5, //probSymptomatic
+				2, //screenInterval
+				1, //delaytoseekcare
+				2, //delaytoretreatment
+				0.1,//riskGroupTransferProp
+				0.1,//riskGroupTransmissionRatio
+				25, //amount resistant A
+				10, //being importing B
+				10,//importing B interval
+				95, //sensitivity
+				97,//specificity
+				1, //care cost
+				2,//testcost
+				3,//straintestcost
+				4, //treatmentAcost
+				5, //treatmentBcost
+				6, //treatmentXcost
+				7);//treatmentEcost);
+		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+
+		testRun.testSetUp(52);
+		
+		testRun.createIndivs(100);
+		testRun.observer().setPopulation(testRun.population());
+				
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
+				
+		testRun.population().lowRiskGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
+		
+		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
+		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
+		
+		for (int i=0; i<10; i++) {
+			testRun.schedule().execute();
+		}
+		
+		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
+		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
+		
+		
+		
+	}
+
+	
+	@Test 
+	public void testHigh() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(1,//runNumber
+				1000,//endtime
+				1, //seed
+				"combo", //resistance
+				"none", //counterfactual
+				10, //yearX
+				10, //initial infected
+				0.1, //propHihgeRisk
+				100, //transmission
+				1 , //recoveryLambda
+				0.5, //probSymptomatic
+				2, //screenInterval
+				1, //delaytoseekcare
+				2, //delaytoretreatment
+				0.1,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
+				25, //amount resistant A
+				10, //being importing B
+				10,//importing B interval
+				95, //sensitivity
+				97,//specificity
+				1, //care cost
+				2,//testcost
+				3,//straintestcost
+				4, //treatmentAcost
+				5, //treatmentBcost
+				6, //treatmentXcost
+				7);//treatmentEcost);
+		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+
+		testRun.testSetUp(52);
+		
+		testRun.createIndivs(100);
+		testRun.observer().setPopulation(testRun.population());
+				
+		System.out.println("high: " + testRun.population().highRiskCount());
+		System.out.println("low: " + testRun.population().lowRiskCount());
+				
+		testRun.population().highRiskGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
+		
+		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
+		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
+		
+		for (int i=0; i<10; i++) {
+			testRun.schedule().execute();
+		}
+		
+		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
+		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
+		
+		
 		
 	}
 

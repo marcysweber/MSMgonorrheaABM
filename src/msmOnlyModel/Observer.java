@@ -209,6 +209,7 @@ public class Observer {
 				
 				
 				this.parameters.getInteger("infected_count_init"),
+				this.parameters.getDouble("propHighRisk"),
 				
 				this.parameters.getDouble("transmissionMSM"),
 				
@@ -226,6 +227,9 @@ public class Observer {
 
 				this.parameters.getDouble("delay_to_retreatment_msm"),
 				
+				this.parameters.getDouble("risk_group_transfer_prop"),
+				this.parameters.getDouble("risk_group_transmission_ratio"),
+
 
 				this.parameters.getDouble("percent_resistant_A"),
 				this.parameters.getInteger("begin_importing_B"), 
@@ -270,10 +274,11 @@ public class Observer {
 				surveillance.getSwitchToB(),
 				surveillance.getSwitchToX(),
 				costCalc.getMonetaryCost(),
-				costCalc.getQALYsLost()
+				costCalc.getQALYsLost(),
 				
-				
-
+				calcLowRiskPrev(), 
+				calcHighRiskPrev(),
+				(int) population.highRiskCount()
 				
 				);
 		
@@ -339,6 +344,16 @@ public class Observer {
 		
 		return newPrev;
 	}
+	
+	public double calcLowRiskPrev() {
+		return 100.0 * population.lowRiskInfected().count() / population.lowRiskCount();
+ 	}
+	
+	public double calcHighRiskPrev() {
+		return 100.0 * population.highRiskInfected().count() / population.highRiskCount();
+	}
+	
+	
 	
 	public double calcPrevMSM() {
 		//ideally we would define MSM behaviorally within the model. for now i am using a preference threshold
@@ -513,16 +528,37 @@ public class Observer {
 //				.filter(indiv -> ((Indiv) indiv).getState()==1)
 //				.count();
 		double prev = calcPrev();
+		double lowRiskPrev = calcLowRiskPrev();
+		double highRiskPrev = calcHighRiskPrev();
 		
-		if ((prev > 10.0 || prev < 0.05) && counterfactual.equals("sweep")) {
-			System.out.print("I should stop now!!! ");
-			//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-			schedule.setFinishing(true);
-		} else if (prev > 99.0) {
-			System.out.print("I should stop now!!! ");
-			//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-			schedule.setFinishing(true);
-		}
+		if (counterfactual.equals("sweep")){ //strict constraints for sweeps
+			if (prev > 10.0 || prev < 0.05) {
+				System.out.print("I should stop now!!! Overall prev was too extreme.");
+				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+				schedule.setFinishing(true);
+			
+			} else if (lowRiskPrev > 4.0) {
+				System.out.print("I should stop now!!! Low risk prev was too high.");
+				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+				schedule.setFinishing(true);
+			} else if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
+				System.out.print("I should stop now!!! High Risk prev was too extreme.");
+				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+				schedule.setFinishing(true);
+			}
+				
+				
+				
+				
+		} else if (prev > 99.0) {		//if it's not a sweep, only exclude most extreme trajectories.
+
+				System.out.print("I should stop now!!! ");
+				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+				schedule.setFinishing(true);
+			}
+		
+		
+	
 	}
 
 	

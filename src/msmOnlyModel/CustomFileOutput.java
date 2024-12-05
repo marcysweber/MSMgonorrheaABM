@@ -62,9 +62,9 @@ public class CustomFileOutput {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		//String filename = "MSMonly_output_" + fullDate +"_1_";
-		//String filename = "SimpleSIR_custom_output_" + fullDate +"_debug_";
+		String filename = "MSMonly_output_" + fullDate +"_debug_1_";
 
-		String filename = "MSMonly_output_OCTOBER_25_2024_overnight_";
+		//String filename = "MSMonly_output_OCTOBER_25_2024_overnight_";
 		
 		filename += counterfactual;
 		
@@ -116,6 +116,7 @@ public class CustomFileOutput {
 	        		
 	        		
 	        		"InitialInfected",
+	        		"propHighRisk",
 	        		
 	        		"TransmissionMSM",
 	        		
@@ -132,6 +133,9 @@ public class CustomFileOutput {
 	        		"DelayToSeekCareMSM",
 
 	        		"DelayToRetreatmentMSM",
+	        		
+	        		"riskGroupTransferProp",
+	        		"riskGroupTransmissionRatio",
 
 	        		"PercentResistantA",
 	        		"BeginImportingB",
@@ -174,7 +178,10 @@ public class CustomFileOutput {
 	        		"SwitchedToB",
 	        		"SwitchedToX",
 	        		"AnnualMonetaryCost",
-	        		"AnnualQALYsLost"
+	        		"AnnualQALYsLost",
+	        		"LowRiskPrev",
+	        		"HighRiskPrev",
+	        		"CountHighRisk"
 	        		
 	        		
 	        }; 
@@ -208,6 +215,7 @@ public class CustomFileOutput {
 
 			
 			int initialInfected,
+			double propHighRisk,
 			
 			double transmissionMSM, 
 			
@@ -223,6 +231,9 @@ public class CustomFileOutput {
 	
 
 			double delayToRetreatmentMSM,
+			
+			double riskGroupTransferProp,
+			double riskGroupTransmissionRatio,
 			
 			
 			double percentResistantA,
@@ -267,7 +278,10 @@ public class CustomFileOutput {
 			boolean switchedToB,
 			boolean switchedToX,
 			double monetaryCost,
-			double QALYcost
+			double QALYcost,
+			double lowRiskPrev,
+			double highRiskPrev,
+			int countHighRisk
 			) {
 		
 		if (isTest == false) {
@@ -294,6 +308,7 @@ public class CustomFileOutput {
 	        		String.valueOf(realisticDST),
 	        		
 	        		String.valueOf(initialInfected),
+	        		String.valueOf(propHighRisk),
 	        		
 	        		String.valueOf(transmissionMSM),
 	        		
@@ -306,6 +321,11 @@ public class CustomFileOutput {
 	        		String.valueOf(delayToSeekCareMSM),
 	        		
 	        		String.valueOf(delayToRetreatmentMSM),
+	        		
+	        		String.valueOf(riskGroupTransferProp),
+	        		String.valueOf(riskGroupTransmissionRatio),
+
+	        		
 	        		String.valueOf(percentResistantA),
 	        		String.valueOf(beginImportingB),
 	        		String.valueOf(importingBInterval),
@@ -346,8 +366,10 @@ public class CustomFileOutput {
 	        		String.valueOf(switchedToB),
 	        		String.valueOf(switchedToX),
 	        		String.valueOf(monetaryCost),
-	        		String.valueOf(QALYcost)
-	        		
+	        		String.valueOf(QALYcost),
+	        		String.valueOf(lowRiskPrev),
+	        		String.valueOf(highRiskPrev),
+	        		String.valueOf(countHighRisk)
 	        		
 
 	        
