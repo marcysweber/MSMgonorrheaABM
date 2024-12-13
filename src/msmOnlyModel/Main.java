@@ -78,11 +78,11 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
 			//executeCounterfactualScenarios(scenariofile);
 
-			executeSensitivityAnalysisBatch(scenariofile);			
+			//executeSensitivityAnalysisBatch(scenariofile);			
 			
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -124,11 +124,11 @@ public class Main {
 	public static void executeSensitivityAnalysisBatch(File scenariofile) {
 		executeAvailDrugXBatch(scenariofile);
 		
-		//executeSwitchThresholdBatch(scenariofile);
-		//executeAvailrDSTBatch(scenariofile);
-		//executeAdhereTOCsymptomaticBatch(scenariofile);
-		//executeAdhereTOCasymptomaticBatch(scenariofile);
-		//executeRealisticComboBatch(scenariofile);
+		executeSwitchThresholdBatch(scenariofile);
+		executeAvailrDSTBatch(scenariofile);
+		executeAdhereTOCsymptomaticBatch(scenariofile);
+		executeAdhereTOCasymptomaticBatch(scenariofile);
+		executeRealisticComboBatch(scenariofile);
 		
 	}
 	

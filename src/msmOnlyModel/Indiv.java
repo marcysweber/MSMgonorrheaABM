@@ -267,13 +267,35 @@ public class Indiv {
 		List<Indiv> potentialPartners = null;
 		
 		if (this.subPop.equals("msm")) {
-			if (this.riskGroup.equals("low")) {
-				potentialPartners = population.lowRiskGroup();
+			
+			//choose same risk group or different risk group
+			double assort = this.allParameters.getDouble("assortativity");
+			//greater than 0.5 means more likely to choose same risk group
+			//so the random number should be less than assort for the indiv to look in their own risk group
+			Uniform uniformDist = (Uniform) randomHelper.getDistribution("partnerRiskGroupUniform");
+			
+			double value = uniformDist.nextDouble();
+			
+			if (value <= assort) {
+				if (this.riskGroup.equals("low")) {
+					potentialPartners = population.lowRiskGroup;
 
+				} else {
+					potentialPartners = population.highRiskGroup;
+
+				}
 			} else {
-				potentialPartners = population.highRiskGroup();
+				if (this.riskGroup.equals("high")) {
+					potentialPartners = population.lowRiskGroup;
 
+				} else {
+					potentialPartners = population.highRiskGroup;
+
+				}
 			}
+			
+			
+			
 		} else {
 			System.out.println("this was supposed to be an MSM only run but there was an Indiv of a different subPop!");
 			System.exit(state);
@@ -287,7 +309,7 @@ public class Indiv {
 		
 		Uniform partnerSelectUniform = randomHelper.getUniform();
 
-		while (partner == this || !partner.getRiskGroup().equals(this.riskGroup)) {
+		while (partner == this) {
 				int toSkip = partnerSelectUniform.nextIntFromTo(0, potentialPartners.size()-1);
 				partner = (Indiv) potentialPartners.get(toSkip);
 			}

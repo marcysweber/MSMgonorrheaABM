@@ -122,8 +122,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			//randomHelper.setSeed(seed);
 			RandomEngine eng = randomHelper.registerGenerator(uniqueGeneratorName, seed);
 			
-			Uniform RiskGroupUniform = new Uniform(0.0, 1.0, eng);
-			randomHelper.registerDistribution("riskGroupUniform", RiskGroupUniform);
+			Uniform partnerRiskGroupUniform = new Uniform(0.0, 1.0, eng);
+			randomHelper.registerDistribution("partnerRiskGroupUniform", partnerRiskGroupUniform);
 			
 			Beta genderPrefBeta = new Beta(0.5, 0.05, eng);
 			randomHelper.registerDistribution("genderPrefBeta", genderPrefBeta);
@@ -269,11 +269,16 @@ public void infectInitialInfected(int InfectiousCount, int IndivCount, Populatio
 	List<Object> indivToInfectList = new ArrayList<Object>();
 	
 	//we want to start the high risk group with 3x higher prevalence than general pop.
-	double initialPrev = InfectiousCount/population.totalSize();
+	double initialPrev = (double) InfectiousCount/ (double) population.totalSize();
 	double desiredHighRiskPrev = initialPrev * 3.0;
 	
 	
 	double amountToInfectHighRisk = desiredHighRiskPrev * population.highRiskCount();  
+	
+	if (amountToInfectHighRisk > InfectiousCount) {
+		amountToInfectHighRisk = InfectiousCount;
+	}
+	
 	double amountToInfectLowRisk = InfectiousCount - amountToInfectHighRisk;
 	
 	List <Object> highRisktoInfect = population.highRiskGroupStream().limit((long) amountToInfectHighRisk).collect(Collectors.toList());

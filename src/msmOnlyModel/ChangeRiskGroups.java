@@ -48,6 +48,9 @@ public class ChangeRiskGroups {
 		Stream.concat(lowToTransfer, highToTransfer).forEach(indiv -> indiv.changeRiskGroup());
 		//System.out.println("New high risk count: " + population.highRiskCount());
 
+		population.updateRiskGroups();
+		
+		
 	}
 	
 	public void setPopulation(Population pop) {

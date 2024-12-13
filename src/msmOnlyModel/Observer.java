@@ -227,6 +227,7 @@ public class Observer {
 
 				this.parameters.getDouble("delay_to_retreatment_msm"),
 				
+				this.parameters.getDouble("assortativity"),
 				this.parameters.getDouble("risk_group_transfer_prop"),
 				this.parameters.getDouble("risk_group_transmission_ratio"),
 

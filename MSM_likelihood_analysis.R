@@ -763,7 +763,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 1500))
+    coord_cartesian(xlim=c(0, 2000))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -774,7 +774,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 100))
+    coord_cartesian(xlim=c(0, 25))
   
   x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -785,7 +785,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 40000))
+    coord_cartesian(xlim=c(0, 1000))
   
   
   summary <- ggarrange(inc +
@@ -4450,6 +4450,55 @@ visualize_calibration_MSM = function(dfcalibrated){
     cols = 3)
 }
 
+
+visualize_calibration_risk = function(dfcalibrated){
+  multiplot(
+    viz_prev_lowrisk(dfcalibrated, "A."),
+    viz_prev_highrisk(dfcalibrated, "B."),
+    
+    
+    cols = 2)
+}
+
+viz_prev_lowrisk = function(df, title){
+  df <- df %>% filter(tick >= 260)
+  prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
+    geom_line(aes(y = LowRiskPrev, alpha = resampled),linewidth = 0.05, color = "black") +
+   
+    labs(title = title,
+         x = "Year",
+         y = "Prevalence (%) in MSM") +
+    theme(plot.title = element_text(size=8)) +
+    #geom_vline(xintercept=yearX, linetype="dashed")+
+    coord_cartesian(ylim=c(0,10), xlim=c(0, 25))+
+    my_theme+
+    theme(legend.position = "none") +
+    scale_alpha(range=c(0.25, 1))+
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(prev)
+}
+
+
+viz_prev_highrisk = function(df, title){
+  df <- df %>% filter(tick >= 260)
+  prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
+    geom_line(aes(y = HighRiskPrev, alpha = resampled),linewidth = 0.05, color = "black") +
+    
+    labs(title = title,
+         x = "Year",
+         y = "Prevalence (%) in MSM") +
+    theme(plot.title = element_text(size=8)) +
+    #geom_vline(xintercept=yearX, linetype="dashed")+
+    coord_cartesian(ylim=c(0,10), xlim=c(0, 25))+
+    my_theme+
+    theme(legend.position = "none") +
+    scale_alpha(range=c(0.25, 1))+
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(prev)
+}
+
+
+
 visualize_calibration_subpops = function(dfcalibrated){
   multiplot(
   viz_prev_MSM_cal(dfcalibrated, "A. Prevalence in MSM"),
@@ -4471,6 +4520,7 @@ write_calibrated = function(df){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
+  resamplePropHighRisk <- df$propHighRisk
   resampleTransmissionMSM <- df$TransmissionMSM
  
   resampleRecoveryLambda <- df$RecoveryLambda
@@ -4478,11 +4528,14 @@ write_calibrated = function(df){
  
   resampleScreenIntervalMSM <- df$ScreenIntervalMSM
   
+  resampleAssortativity <- df$Assortativity
   
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
  
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-
+  resampleRiskGroupTransferProp <- df$riskGroupTransferProp
+  resampleRiskGroupTransmissionRatio <- df$riskGroupTransmissionRatio
+   
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
   resampleImportingBInterval <- df$ImportingBInterval
@@ -4499,12 +4552,17 @@ write_calibrated = function(df){
   
   fwrite(list(resampleSeed), file = "/Users/me597/Documents/MSM_calibrated_params/seed_resample.txt")
   fwrite(list(resampleInitialInfected), file = "/Users/me597/Documents/MSM_calibrated_params/initial_infected_resample.txt")
+  fwrite(list(resamplePropHighRisk), file = "/Users/me597/Documents/MSM_calibrated_params/propHighRisk_resample.txt")
   fwrite(list(resampleTransmissionMSM), file = "/Users/me597/Documents/MSM_calibrated_params/transmissionMSM_resample.txt")
   fwrite(list(resampleRecoveryLambda), file = "/Users/me597/Documents/MSM_calibrated_params/recovery_lambda_resample.txt")
   fwrite(list(resampleProbSymptomaticMSM), file = "/Users/me597/Documents/MSM_calibrated_params/prob_symptomatic_MSM_resample.txt")
   fwrite(list(resampleScreenIntervalMSM), file = "/Users/me597/Documents/MSM_calibrated_params/screen_interval_MSM_resample.txt")
   fwrite(list(resampleDelayToSeekCareMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_seek_care_MSM_resample.txt")
   fwrite(list(resampleDelayToRetreatmentMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_retreatment_MSM_resample.txt")
+  fwrite(list(resampleRiskGroupTransferProp), file = "/Users/me597/Documents/MSM_calibrated_params/risk_group_transfer_prop_resample.txt")
+  fwrite(list(resampleRiskGroupTransmissionRatio), file = "/Users/me597/Documents/MSM_calibrated_params/risk_group_transmission_ratio_resample.txt")
+  fwrite(list(resampleAssortativity), file = "/Users/me597/Documents/MSM_calibrated_params/assortativity_resample.txt")
+  
   fwrite(list(resamplePercentResistantA), file = "/Users/me597/Documents/MSM_calibrated_params/percent_resistant_A_resample.txt")
   fwrite(list(resampleBeginImportingB), file = "/Users/me597/Documents/MSM_calibrated_params/begin_importing_B_resample.txt")
   fwrite(list(resampleImportingBInterval), file = "/Users/me597/Documents/MSM_calibrated_params/importing_B_interval_resample.txt")
@@ -8421,13 +8479,13 @@ visualize_cea_weighted_real_nort("", df_best_ends, dfreal25, dfGISP25, dfrandom2
 
 ######### december 2024
 
-dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_DECEMBER_3_2024_debug_sweep_none/sweepnone0supercombined.csv")
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_DECEMBER_12_2024_debug_2_sweep_none/sweepnone0supercombined.csv")
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 df_ends <- calc_weights(dfsweep)
 df_best_ends <- resample(df_ends, 1000)
 
 #save the resample including the replicates
-write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicatesdec24.csv")
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates12dec24.csv")
 
 df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
 colnames(df_best_ends_unique) <- colnames(df_best_ends)
@@ -8450,7 +8508,117 @@ write_calibrated(df_best_ends_unique)
 
 
 
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicatesdec24.csv")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates12dec24.csv")
+
+
+#calibration runs
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_DECEMBER_7_2024_overnight_none_none/nonenone251combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+
+#figure 2
+visualize_calibration_MSM(dfcalibrated)
+
+
+
+
+
+directory <- "/Users/me597/Documents/MSMoutput/output_DECEMBER_7_2024_overnight_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+new_summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+
+
+#summary data
+summary_GISP <- cumulative_everything(dfGISP25)
+summary_random <-cumulative_everything(dfrandom25)
+summary_TOC <-cumulative_everything(dfTOC25)
+summary_DST <-cumulative_everything(dfDST25)
+summary_real <-cumulative_everything(dfreal25)
+
+
+mean(summary_GISP$cumulativeFailure *100)
+quantile(summary_GISP$cumulativeFailure *100, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeFailure*100)
+quantile(summary_random$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeFailure*100)
+quantile(summary_TOC$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeFailure*100)
+quantile(summary_DST$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeFailure*100)
+quantile(summary_real$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeE)
+quantile(summary_GISP$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeE)
+quantile(summary_random$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeE)
+quantile(summary_TOC$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeE)
+quantile(summary_DST$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeE)
+quantile(summary_real$cumulativeE, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeCosts)
+quantile(summary_GISP$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeCosts)
+quantile(summary_TOC$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeCosts)
+quantile(summary_DST$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeCosts)
+quantile(summary_real$cumulativeCosts, probs = c(0.025, 0.975))
+
+
+
+all_summary<- rbind(summary_GISP, summary_random, summary_TOC, summary_DST, summary_real)
+
+ggplot(all_summary, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+  geom_boxplot(outlier.shape = NA) +
+  labs(
+    title = "C.",
+    y = "",
+    x="Cumulative treatments with ertapenem\nper 100,000 over 20 years"
+  )+
+  my_theme +
+  scale_y_discrete(labels=counter_labels)+
+  coord_cartesian(xlim=c(0, 5000))
+
+
+#figure 4
+new_figure_four(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25, 25)
+
+#figure 5
+multiplot(
+  visualize_cea_weighted_real("A.", df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
 
 
 

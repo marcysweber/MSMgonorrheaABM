@@ -62,9 +62,9 @@ public class CustomFileOutput {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		//String filename = "MSMonly_output_" + fullDate +"_1_";
-		String filename = "MSMonly_output_" + fullDate +"_debug_1_";
+		String filename = "MSMonly_output_" + fullDate +"_debug_2_";
 
-		//String filename = "MSMonly_output_OCTOBER_25_2024_overnight_";
+		//String filename = "MSMonly_output_DECEMBER_7_2024_overnight_";
 		
 		filename += counterfactual;
 		
@@ -134,6 +134,7 @@ public class CustomFileOutput {
 
 	        		"DelayToRetreatmentMSM",
 	        		
+	        		"Assortativity",
 	        		"riskGroupTransferProp",
 	        		"riskGroupTransmissionRatio",
 
@@ -232,6 +233,7 @@ public class CustomFileOutput {
 
 			double delayToRetreatmentMSM,
 			
+			double assortativity,
 			double riskGroupTransferProp,
 			double riskGroupTransmissionRatio,
 			
@@ -321,6 +323,7 @@ public class CustomFileOutput {
 	        		String.valueOf(delayToSeekCareMSM),
 	        		
 	        		String.valueOf(delayToRetreatmentMSM),
+	        		String.valueOf(assortativity),
 	        		
 	        		String.valueOf(riskGroupTransferProp),
 	        		String.valueOf(riskGroupTransmissionRatio),

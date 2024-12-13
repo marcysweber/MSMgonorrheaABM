@@ -35,6 +35,7 @@ public class ParamConfig {
 
 	private double delayToRetreatmentMSM;
 	
+	private double assortativity;
 	private double riskGroupTransferProp;
 	private double riskGroupTransmissionRatio;
 
@@ -72,6 +73,7 @@ public class ParamConfig {
 			double delayToSeekCareMSM,
 
 			double delayToRetreatmentMSM,
+			double assortativity,
 			double riskGroupTransferProp,
 			double riskGroupTransmissionRatio,
 
@@ -108,6 +110,7 @@ public class ParamConfig {
 		
 		this.delayToRetreatmentMSM = delayToRetreatmentMSM;
 		
+		this.assortativity = assortativity;
 		this.riskGroupTransferProp = riskGroupTransferProp;
 		this.riskGroupTransmissionRatio = riskGroupTransmissionRatio;
 		
@@ -178,6 +181,11 @@ public class ParamConfig {
 	public double getDelayToRetreatmentMSM() {
 		return this.delayToRetreatmentMSM;
 	}
+	
+	public double getAssortativity() {
+		return this.assortativity;
+	}
+	
 	
 	public double getRiskGroupTransferProp() {
 		return this.riskGroupTransferProp;

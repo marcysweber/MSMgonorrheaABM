@@ -19,6 +19,10 @@ public class Population {
 //	public List<Indiv> msmwList;
 //	public List<Indiv> nbList;
 	
+	public List <Indiv> highRiskGroup;
+	public List <Indiv> lowRiskGroup;
+	
+	
 	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		indivs = new ArrayList<Indiv>();
 		
@@ -40,6 +44,13 @@ public class Population {
 		}
 		
 		msmList = msm();
+		
+		highRiskGroup = highRiskGroup();
+		lowRiskGroup = lowRiskGroup();
+		
+
+		
+		
 		//mswList = msw();
 		//wList = w();
 		
@@ -54,6 +65,13 @@ public class Population {
 				collect(Collectors.toList());
 		
 		return msmList;
+		
+	}
+	
+	public void updateRiskGroups() {
+		highRiskGroup = highRiskGroup();
+		lowRiskGroup = lowRiskGroup();
+
 		
 	}
 	
@@ -79,33 +97,23 @@ public class Population {
 	
 
 	public Stream<Indiv> lowRiskGroupStream(){
-		Stream<Indiv> lowRiskGroup = indivs.stream().
-				filter(indiv -> 
-				//((Indiv) indiv).getGenderPref() < 0.25 && 
-				indiv.getRiskGroup().equals("low")).
-				collect(Collectors.toList()).stream();
-		
-		return lowRiskGroup.unordered();
+		return lowRiskGroup.stream().unordered();
 	}
 
-	public long lowRiskCount() {
-		return lowRiskGroupStream().count();
+	public int lowRiskCount() {
+		return lowRiskGroup.size();
 	}
 
 
 	public Stream <Indiv> highRiskGroupStream(){
-		Stream<Indiv> highRiskGroup = indivs.stream().
-				filter(indiv -> 
-				//((Indiv) indiv).getGenderPref() < 0.25 && 
-				indiv.getRiskGroup().equals("high")).
-				collect(Collectors.toList()).stream();
 		
-		return highRiskGroup.unordered();
+		
+		return highRiskGroup.stream().unordered();
 	}
 	
 
-	public long highRiskCount() {
-		return highRiskGroupStream().count();
+	public int highRiskCount() {
+		return highRiskGroup.size();
 	}
 
 	
@@ -123,12 +131,12 @@ public class Population {
 	
 	
 	public Stream <Indiv> lowRiskInfected(){
-		return allIndivs().filter(indiv -> indiv.getState()==1 && indiv.getRiskGroup().equals("low")).collect(Collectors.toList()).stream().unordered();
+		return lowRiskGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 
 	}
 	
 	public Stream <Indiv> highRiskInfected(){
-		return allIndivs().filter(indiv -> indiv.getState()==1 && indiv.getRiskGroup().equals("high")).collect(Collectors.toList()).stream().unordered();
+		return highRiskGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 
 	}
 	

@@ -104,6 +104,13 @@ public class CustomParameterSweep {
 	}
 	
 	
+	public List<Double> getAssortativityValues(int samples){
+		double min = 0.01;
+		double max = 1.0;
+		int seed = (int) System.currentTimeMillis() + 35;
+		return getUniformSweepValues(seed, samples, min, max);
+	}
+	
 	
 	public List<Double> getRiskGroupTransferPropValues(int samples){
 		double RiskGroupTransferPropMin = 0.01;
