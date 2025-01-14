@@ -19,10 +19,11 @@ public class Screener {
 	public Screener() {}
 	
 	public void screen(Indiv indiv, Observer observer) {
-		if (indiv.infectious()) {
+		if (indiv.infectious() && !indiv.myInfection().isDetected()) {
 			observer.recordNewDetectedThruScreen(indiv);
+			indiv.myInfection().detect();
 			
-			if (indiv.symptoms()) {observer.recordNewDetectedAndSymptoms(indiv);}
+			//if (indiv.symptoms()) {observer.recordNewDetectedAndSymptoms(indiv);}
 			
 			Treatment treatment = new Treatment(indiv, observer);
 			try {

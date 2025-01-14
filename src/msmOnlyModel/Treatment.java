@@ -61,11 +61,106 @@ public class Treatment {
 		this.switchToB = observer.getSurveillance().getSwitchToB();
 		this.switchToX = observer.getSurveillance().getSwitchToX();
 	}
+	
+	
+	public boolean administerA() {
+		boolean success = false;
+		indiv.recordTreatment();
+
+		costCalc.treatmentDrugACost(indiv);
+		observer.recordNewAttemptedTreatmentA(indiv);
+
+		if (infection.susceptibleToA()) {
+			success = true;
+		} else {
+			success = false;
+		}
+		
+		return success;
+	}
+	
+	public void tryDrugA() {
+		boolean success = administerA();
+		
+		if (success) {
+			indiv.recoverOrDevelopResistance("A");
+		} else if (infection.symptoms()) {
+			symptomaticTreatmentFailure("A");
+		} else { // if asymptomatic, true fail
+			fail(indiv);
+		}
+	}
+	
+	public boolean administerB() {
+		boolean success = false;
+		indiv.recordTreatment();
+
+		costCalc.treatmentDrugBCost(indiv);
+		observer.recordNewAttemptedTreatmentB(indiv);
+		
+		if (infection.susceptibleToB()) {
+			success = true;
+		} else {
+			success = false;
+		}
+		
+		return success;
+	}
+
+	public void tryDrugB() {
+		boolean success = administerB();
+
+		if (success) {
+			indiv.recoverOrDevelopResistance("B");
+		} else if (infection.symptoms()) { // if symptomatic, known failure, try again
+			symptomaticTreatmentFailure("B");
+		} else { // if asymptomatic, true fail
+			fail(indiv);
+		}
+	}
+	
+	public boolean treatWithX() {
+		boolean success = true;
+		indiv.recordTreatment();
+		costCalc.treatmentDrugXCost(indiv);
+		observer.recordNewAttemptedTreatmentX(indiv);
+		indiv.actuallyRecover("X");
+		
+		return success;
+	}
+	
+	public boolean treatWithE() {
+		boolean success = true;
+		indiv.recordTreatment();
+		costCalc.treatmentDrugECost(indiv);
+		observer.recordUseE(indiv);
+		indiv.actuallyRecover("E");
+		
+		return success;
+	}
+	
+
+
+	public void tryDrugXorE() {
+		
+		addedX = observer.getAddedX();
+		
+		if (addedX) {
+			treatWithX();
+		} else {
+			//if no X, what do?
+			treatWithE();
+
+			}
+			
+	}
+	
 
 	public void treat() throws Exception {
+		
+		indiv.recordInTreatment();
 
 		// record treatment at all
-		indiv.recordTreatment();
 
 		if (indiv.symptoms()) {
 			//indiv.abstain();
@@ -77,21 +172,36 @@ public class Treatment {
 		if (schedule.getTickCount() < 520) {
 			tryDrugA();
 		} else {
-			if (switchToX) {
-				treatAfterSwitchX();
-			} else if (switchToB) { // have we switched to drug B?
-				treatAfterSwitchB();
-
+			
+			//sweeps and non-AMR runs
+			if (counterfactual.contains("sweep") || counterfactual.contains("none")){ // GISP pre-switch (default drug A)?
+				treatDefaultBeforeSwitch();
+			
+			
+			//GISP possibilities
+			} else if (counterfactual.contains("GISP")){
+				if (!switchToB && !switchToX) {
+					treatDefaultBeforeSwitch();
+				} else if (switchToB) { // have we switched to drug B?
+					treatAfterSwitchB();
+				} else if (switchToX) {
+					treatAfterSwitchX();
+				} 
+				
+			// TOC
 			} else if (counterfactual.contains("test-of-cure")) { // test-of-cure?
 				// in test of cure scenario
 				whichTestOfCure();
 
+			//RT
 			} else if (counterfactual.equals("random")) {
 				treatRandom();
+				
+			//DST
 			} else if (counterfactual.contains("drug_sus_testing")) {
-
 				treatDrugSusTesting();
 				
+			//RC
 			} else if (counterfactual.contains("realistic_combo")) {
 				try {
 					treatRealisticCombo();
@@ -99,9 +209,7 @@ public class Treatment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else if (counterfactual.contains("GISP") || counterfactual.contains("sweep") || counterfactual.contains("none")){ // GISP pre-switch (default drug A)?
-				treatDefaultBeforeSwitch();
-			} else {
+			}  else {
 				throw new Exception("No valid counterfactual argument supplied!");
 			}
 		}
@@ -178,47 +286,7 @@ public class Treatment {
 
 	}
 
-	public void tryDrugA() {
-		costCalc.treatmentDrugACost(indiv);
-		observer.recordNewAttemptedTreatmentA(indiv);
 
-		if (infection.susceptibleToA()) {
-			indiv.recoverOrDevelopResistance("A");
-		} else if (infection.resistantToA() && infection.symptoms()) {
-			symptomaticTreatmentFailure("A");
-		} else { // if asymptomatic, true fail
-			fail(indiv);
-		}
-	}
-
-	public void tryDrugB() {
-		costCalc.treatmentDrugBCost(indiv);
-		observer.recordNewAttemptedTreatmentB(indiv);
-
-		if (infection.susceptibleToB()) {
-			indiv.recoverOrDevelopResistance("B");
-		} else if (infection.resistantToB() && infection.symptoms()) { // if symptomatic, known failure, try again
-			symptomaticTreatmentFailure("B");
-		} else { // if asymptomatic, true fail
-			fail(indiv);
-		}
-	}
-
-	public void tryDrugXorE() {
-		if (addedX) {
-			costCalc.treatmentDrugXCost(indiv);
-			observer.recordNewAttemptedTreatmentX(indiv);
-			indiv.recoverOrDevelopResistance("X");
-		} else {
-			//if no X, what do?
-			costCalc.treatmentDrugECost(indiv);
-			observer.recordUseE(indiv);
-			indiv.recoverOrDevelopResistance("E");
-
-			}
-			
-	}
-	
 
 	public void symptomaticTreatmentFailure(String treatmentAttempted) {
 		//indiv.abstain(); // should already be abstaining, but just to confirm
@@ -227,20 +295,7 @@ public class Treatment {
 		//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 		Exponential delayToRetreatmentExp = null;
 		
-		if (indiv.getGender().equals("w")) {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-		} else if (indiv.getSubPop().equals("msm")) {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
-		} else if (indiv.getSubPop().equals("msw")) {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSWExp");
-		} else {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-		}
-		
-		
-		
-		
-		
+		delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
 		
 		double thisDelay = delayToRetreatmentExp.nextDouble();
 		// System.out.println("Second delay:");
@@ -270,55 +325,46 @@ public class Treatment {
 
 	public void retreat(String retreatment) {
 		if (indiv.infectious()){//confirm still infectious
-		//indiv.abstain(); // should already be abstaining, but just to confirm
+			// check that indiv is still infectious, bc there is chance of natural recovery
 
-		// check that indiv is still infectious, bc there is chance of natural recovery
-
-		//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-		Exponential delayToRetreatmentExp = null;
-		
-		if (indiv.getGender().equals("w")) {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-		} else if (indiv.getSubPop().equals("msm")) {
+			//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+			Exponential delayToRetreatmentExp = null;
 			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
-		} else if (indiv.getSubPop().equals("msw")) {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSWExp");
-		} else {
-			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-		}
+			double thisDelay = delayToRetreatmentExp.nextDouble();
+			ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
+
+			String success = null;
+
+			if (retreatment.equals("A")) {
+				costCalc.treatmentDrugACost(indiv);
+				observer.recordNewAttemptedTreatmentA(indiv);
+				if (infection.susceptibleToA()) {
+					success = "A";
+					indiv.recoverOrDevelopResistance(success);
+
+				} else {
+					// schedule retreatment with X
+					schedule.schedule(schparams, this, "retreat", "X");
+					costCalc.symptomaticQALYsLost(indiv, thisDelay);
+				}
+			} else if (retreatment.equals("B")) {
+				costCalc.treatmentDrugBCost(indiv);
+				observer.recordNewAttemptedTreatmentB(indiv);
+				if (infection.susceptibleToB()) {
+					success = "B";
+					indiv.recoverOrDevelopResistance(success);
+
+				} else {
+					// schedule retreatment with X
+					schedule.schedule(schparams, this, "retreat", "X");
+					costCalc.symptomaticQALYsLost(indiv, thisDelay);
+				}
+			} else {
+				tryDrugXorE();
+				
+			}
+
 		
-		double thisDelay = delayToRetreatmentExp.nextDouble();
-		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
-
-		String success = null;
-
-		if (retreatment.equals("A")) {
-			costCalc.treatmentDrugACost(indiv);
-			observer.recordNewAttemptedTreatmentA(indiv);
-			if (infection.susceptibleToA()) {
-				success = "A";
-			} else {
-				// schedule retreatment with X
-				schedule.schedule(schparams, this, "retreat", "X");
-				costCalc.symptomaticQALYsLost(indiv, thisDelay);
-			}
-		} else if (retreatment.equals("B")) {
-			costCalc.treatmentDrugBCost(indiv);
-			observer.recordNewAttemptedTreatmentB(indiv);
-			if (infection.susceptibleToB()) {
-				success = "B";
-			} else {
-				// schedule retreatment with X
-				schedule.schedule(schparams, this, "retreat", "X");
-				costCalc.symptomaticQALYsLost(indiv, thisDelay);
-			}
-		} else {
-			tryDrugXorE();
-		}
-
-		if (success != null) {
-			indiv.recoverOrDevelopResistance(success);
-		}
 		}
 	}
 
@@ -344,7 +390,6 @@ public class Treatment {
 		}
 	}
 
-	// 1-17 i think this still needs some updating! delays to retreatment!
 	public void treatTestOfCurePerfect() {
 		//indiv.abstain();
 
@@ -362,16 +407,7 @@ public class Treatment {
 			//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 			Exponential delayToRetreatmentExp = null;
 			
-			if (indiv.getGender().equals("w")) {
-				delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-			} else if (indiv.getSubPop().equals("msm")) {
-				delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
-			} else if (indiv.getSubPop().equals("msw")) {
-				delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSWExp");
-			} else {
-				delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-			}			
-			
+			delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
 			
 			double thisDelay = delayToRetreatmentExp.nextDouble();
 			ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
@@ -385,38 +421,33 @@ public class Treatment {
 		costCalc.testCost(indiv);
 		//indiv.abstain();
 
-		if (treatment.equals("B")) {
-			costCalc.treatmentDrugBCost(indiv);
-			observer.recordNewAttemptedTreatmentB(indiv);
+		if (indiv.infectious()) {
 
-			if (infection.susceptibleToB()) {
-				indiv.recoverOrDevelopResistance("B");
-				costCalc.testCost(indiv);// test confirming negative
-			} else {
-				// schedule another retreatment
-				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-				Exponential delayToRetreatmentExp = null;
-				
-				if (indiv.getGender().equals("w")) {
-					delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-				} else if (indiv.getSubPop().equals("msm")) {
-					delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
-				} else if (indiv.getSubPop().equals("msw")) {
-					delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSWExp");
+			if (treatment.equals("B")) {
+				costCalc.treatmentDrugBCost(indiv);
+				observer.recordNewAttemptedTreatmentB(indiv);
+
+				if (infection.susceptibleToB()) {
+					indiv.recoverOrDevelopResistance("B");
+					costCalc.testCost(indiv);// test confirming negative
 				} else {
-					delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentFExp");
-				}				
-				
-				double thisDelay = delayToRetreatmentExp.nextDouble();
-				ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
+					// schedule another retreatment
+					//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+					Exponential delayToRetreatmentExp = null;
 
-				schedule.schedule(schparams, this, "retreatTestOfCure", "X");
-				costCalc.symptomaticQALYsLost(indiv, thisDelay);
+					delayToRetreatmentExp = (Exponential) randomHelper.getDistribution("delayToRetreatmentMSMExp");
+
+					double thisDelay = delayToRetreatmentExp.nextDouble();
+					ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
+
+					schedule.schedule(schparams, this, "retreatTestOfCure", "X");
+					costCalc.symptomaticQALYsLost(indiv, thisDelay);
+				}
+
+			} else if (treatment.equals("X")) {
+				tryDrugXorE();
+				costCalc.testCost(indiv);
 			}
-
-		} else if (treatment.equals("X")) {
-			tryDrugXorE();
-			costCalc.testCost(indiv);
 		}
 	}
 
@@ -440,6 +471,7 @@ public class Treatment {
 
 		// true, unknown failed treatment
 		indiv.recordFailedTreatment();
+		indiv.recordEndTreatment();
 		//indiv.stopAbstaining();
 	}
 	

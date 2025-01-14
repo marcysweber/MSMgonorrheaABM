@@ -184,6 +184,8 @@ public class InsertResistance {
 		
 		if (randomValue <= chanceDevelopResistance && (!treatment.equals("X"))) {
 			indiv.infect(treatment);
+			indiv.recordEndTreatment();
+			indiv.recordDevelopedResistance();
 		} else {
 			indiv.actuallyRecover(treatment);
 		}

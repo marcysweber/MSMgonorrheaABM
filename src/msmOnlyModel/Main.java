@@ -33,14 +33,7 @@ public class Main {
 			reps = scanner.nextInt();
 		} else {
 			with_calibrated = true;
-			System.out.println("Include resistance? (String)");
-			resistance = scanner.nextLine();
-			scanner.nextLine();
-
-			if (!resistance.equals("all")) {
-				System.out.print("Include counterfactuals? (boolean)");
-			} else {
-			}
+			resistance = "combo";
 		}
 		
 		scanner.close();
@@ -78,9 +71,9 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			executeCalibratedNoResistanceBatch(scenariofile);
+			//executeCalibratedNoResistanceBatch(scenariofile);
 
-			//executeCounterfactualScenarios(scenariofile);
+			executeCounterfactualScenarios(scenariofile);
 
 			//executeSensitivityAnalysisBatch(scenariofile);			
 			
@@ -122,12 +115,16 @@ public class Main {
 	}
 	
 	public static void executeSensitivityAnalysisBatch(File scenariofile) {
-		executeAvailDrugXBatch(scenariofile);
 		
-		executeSwitchThresholdBatch(scenariofile);
+		//executeAvailDrugXBatchRC(scenariofile);
+
+//		
+		executeAvailDrugXBatch(scenariofile);
+//		
+    	executeSwitchThresholdBatch(scenariofile);
 		executeAvailrDSTBatch(scenariofile);
-		executeAdhereTOCsymptomaticBatch(scenariofile);
-		executeAdhereTOCasymptomaticBatch(scenariofile);
+	    executeAdhereTOCsymptomaticBatch(scenariofile);
+	    executeAdhereTOCasymptomaticBatch(scenariofile);
 		executeRealisticComboBatch(scenariofile);
 		
 	}
@@ -209,9 +206,27 @@ public class Main {
 		 
 		  
 		  
-		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		//batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+
+	}
+	
+	public static void executeAvailDrugXBatchRC(File scenario) {
+		BatchRun batchRunner = new BatchRun("all", "combo");
+
+		int switchThres = 5;
+		int availrDST = 80;
+		int adhereTOCsympt = 80;
+		int adhereTOCasympt = 80;
+		double realisticRandom = 0.33;
+		double realisticTOC = 0.33;
+		double realisticDST = 0.34;
+
+		  
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 
 	}
 	

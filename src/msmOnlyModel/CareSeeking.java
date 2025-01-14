@@ -25,6 +25,7 @@ public class CareSeeking {
 	}
 	
 	public boolean scheduleSeekCare() {
+		
 		//schedule the careseeking according to delayToSeekCare
 		Exponential delayToSeekCareExp = null;
 		
@@ -51,13 +52,17 @@ public class CareSeeking {
 	
 	public void seekCare() {
 		indiv.clearSeekCareScheduled();
-		observer.recordSoughtCare(indiv);
-		observer.getCostCalc().careCost(indiv);
-		observer.getCostCalc().testCost(indiv);
+		
+		if (indiv.infectious()) {
+			
+			indiv.myInfection().detect();
 
-		if (indiv.infectious() && indiv.symptoms()) { //confirm infectious and symptoms
+		
+			observer.recordSoughtCare(indiv);
+			observer.getCostCalc().careCost(indiv);
+			observer.getCostCalc().testCost(indiv);
+
 			observer.getCostCalc().addPersonDaysSymptomatic();
-			observer.recordNewDetected(indiv);
 			observer.recordNewDetectedAndSymptoms(indiv);
 
 			Treatment treatment = new Treatment(indiv, observer);

@@ -2,6 +2,9 @@ package msmOnlyModel.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -9,7 +12,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import msmOnlyModel.BatchRun;
+import msmOnlyModel.Indiv;
 import msmOnlyModel.SingleRun;
+import msmOnlyModel.Treatment;
 import repast.simphony.parameter.Parameters;
 
 public class TreatementTest {
@@ -30,23 +35,25 @@ public class TreatementTest {
 	public void tearDown() throws Exception {
 	}
 
-	public SingleRun setUpTreatmentTest() {
+	public SingleRun setUpTreatmentTest(int seed) {
 		BatchRun testBatch = new BatchRun("GISP", "combo");
 		Parameters params = testBatch.setParameters(
 				1,//runNumber
 				1000,//endtime
-				1, //seed
-				"none", //resistance
+				seed, //seed
+				"combo", //resistance
 				"none", //counterfactual
 				10, //yearX
-				10, //initial infected
+				1000, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
-				0.5,//riskGroupTransferProp
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
 				10, //being importing B
@@ -61,14 +68,36 @@ public class TreatementTest {
 				6, //treatmentXcost
 				7);//treatmentEcost);
 		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
-		testRun.setUp(52);
+		testRun.setUp(1000);
 		
 		return testRun;
 	}
 	
+	public void treatX(SingleRun testRun, Indiv indiv) {
+		Treatment treatment = new Treatment(indiv, testRun.observer());
+		treatment.tryDrugXorE();
+	}
+	
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testX() {
+
+		for (int i = 0; i < 10; i++) {
+
+			SingleRun testRun = setUpTreatmentTest(i);
+
+			for (int j = 0; j < 10; j++) {
+				testRun.schedule().execute();
+			}
+
+			testRun.go();
+
+			if (testRun.observer().attemptsX() != testRun.observer().sucessesX()) {
+
+				System.out.println(testRun.observer().attemptsX());
+				System.out.println(testRun.observer().sucessesX());
+			}
+
+		}
 	}
 
 }

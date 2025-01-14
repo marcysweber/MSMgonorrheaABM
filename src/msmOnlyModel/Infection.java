@@ -12,6 +12,7 @@ import repast.simphony.parameter.Parameters;
  */
 public class Infection {
 	private Parameters parameters;
+	private boolean detected;
 	private boolean resistanceToA;
 	private boolean resistanceToB;
 	private String strain;
@@ -47,6 +48,8 @@ public class Infection {
 		this.symptoms = assignSymptoms(starting);
 		
 		this.naturalRecoveryTime = naturalRecoveryTime;
+		
+		this.detected = false;
 	}
 	
 	private boolean assignSymptoms(boolean starting) {
@@ -141,5 +144,16 @@ public class Infection {
 		return randomHelper;
 	}
 	
+	public boolean isDetected() {
+		return detected;
+	}
+	
+	public void detect() {
+		detected = true;
+	}
+	
+	public void undetect() {
+		detected = false;
+	}
 
 }

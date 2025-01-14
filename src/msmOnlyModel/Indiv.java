@@ -31,7 +31,7 @@ public class Indiv {
 	private Infection infection;
 	private List<Integer> screenings;
 	private boolean seekCareScheduled;
-	
+	private boolean inTreatment;
 	//private int timeInfected;
 	//private double tickInfected;
 	
@@ -52,6 +52,7 @@ public class Indiv {
 		this.state = 0;
 		//this.abstaining = false;
 		this.seekCareScheduled = false;
+		this.inTreatment = false;
 		// state = 0 means susceptible
 		// state = 1 means infectious
 		
@@ -91,6 +92,8 @@ public class Indiv {
 		this.state = 0;
 		//this.abstaining = false;
 		this.seekCareScheduled = false;
+		this.inTreatment = false;
+
 		// state = 0 means susceptible
 		// state = 1 means infectious
 		
@@ -138,6 +141,8 @@ public class Indiv {
 		this.randomHelper = randomHelper;
 		this.observer = observer;
 		this.schedule = schedule;
+		this.inTreatment = false;
+
 		
 		Screener screenScheduler = new Screener();
 		this.screenings = screenScheduler.makeScreenSchedule(randomHelper, subPop);
@@ -192,47 +197,37 @@ public class Indiv {
 	//KEY METHODS
 	
 	public void infectiousActions() {
-		
-	
 		int roundedTick = (int) tickNow();
 
 		if (this.infectious()) {
-			//infectionTimer();
-			
-			//detected b/c symptoms 
-			if (this.symptoms() && !seekCareScheduled) {
-				CareSeeking care = new CareSeeking(this, getObserver(), schedule);
-				seekCareScheduled = care.scheduleSeekCare();
-			}
-			
-			//detected b/c time for screening
-			if(screenings.contains(roundedTick)) {
-				Screener screener = new Screener();
-				screener.screen(this, getObserver());
-			} else //if (!abstaining) 
-				{ //if i pass symptoms check and screen...
-				if (attemptContact()) {//stochastic logic gate from annualContacts param
-					Indiv partner = partnerSelect(); //find a partner
-					if (this != partner) {//doublecheck that it's not myself
-						//also should not be able to infect if both genders are f
-						if (this.gender.equals("f") && partner.gender.equals("f")) {
-							//f-f contact, no transmission
-						} else { 
-							//m-m, m-f, nb-nb, m-nb, f-nb all have transmission
-							//System.out.println("infecting");
-							partner.infect(this.infection.getStrain());//infect the partner
 
-						}
+			//if not already detected, check for detection
+			if (!infection.isDetected()) {
+				if (!seekCareScheduled) {
+					if (this.symptoms()) { //if symptomatic and not already scheduled to seek care
+						CareSeeking care = new CareSeeking(this, getObserver(), schedule);
+						seekCareScheduled = care.scheduleSeekCare();
+					} else if (screenings.contains(roundedTick)) {
+						Screener screener = new Screener();
+						screener.screen(this, getObserver());
 					}
 				}
 			}
 			
-			//try to infect again next week
-			scheduleInfectiousActions();
+			//if still infectious...
+			if (this.infectious()) {
+				if (attemptContact()) {//stochastic logic gate from annualContacts param
+					Indiv partner = partnerSelect(); //find a partner
+					if (this != partner) {//doublecheck that it's not myself
+						partner.infect(this.infection.getStrain());//infect the partner
+					}
+				}
+				//try to infect again next week
+				scheduleInfectiousActions();
+			}
 		}
-
-			
 	}
+
 	
 	public boolean attemptContact() { 
 		//this method checks if this infectious agent is actually contacting another this tick
@@ -275,6 +270,8 @@ public class Indiv {
 			Uniform uniformDist = (Uniform) randomHelper.getDistribution("partnerRiskGroupUniform");
 			
 			double value = uniformDist.nextDouble();
+			
+			
 			
 			if (value <= assort) {
 				if (this.riskGroup.equals("low")) {
@@ -426,13 +423,30 @@ public class Indiv {
 	public void recoverOrDevelopResistance(String treatment) {
 		String resistance = allParameters.getString("resistance");
 
-		if (resistance.equals("combo") && tickNow()>520) {
-			InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
-			resistanceInserter.checkForDevelopResistance(this, treatment);
-						
-		} else {
+		if (tickNow() <=520) {
 			actuallyRecover(treatment);
+		} else if (treatment.equals("X")) {
+			actuallyRecover(treatment);
+		} else if (treatment.equals("E")) {
+			actuallyRecover(treatment);
+		} else if (treatment.equals("A")) {
+			if (resistance.equals("combo")) {
+				InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
+				resistanceInserter.checkForDevelopResistance(this, treatment);
+			} else {
+				actuallyRecover(treatment);
+			}
+		} else if (treatment.equals("B")){
+			if (resistance.equals("combo")) {
+					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
+					resistanceInserter.checkForDevelopResistance(this, treatment);
+			} else {
+					actuallyRecover(treatment);
+			}
+		} else {
+			System.out.println(treatment);
 		}
+			
 	}
 	
 	public void recordSequelae(String sequelae) {
@@ -461,14 +475,21 @@ public class Indiv {
 		return result;
 	}
 	
-	
+	public void recoverNaturally() {
+		if (infectious()) {
+			if (inTreatment) {
+				observer.recordRecoveredNaturallyDuringTreatment();
+			}
+			actuallyRecover();
+		}
+	}
+
 	public void actuallyRecover(String treatment) {
 		if (infectious()) {
-			this.infection.recoverInfection();
-			this.infection = null;
 			this.recordSuccessfulTreatment(treatment);
-			this.changeStateTo(0);
-		} 
+			this.recordEndTreatment();
+		}
+		actuallyRecover();
 	}
 	
 	public void actuallyRecover() {
@@ -553,6 +574,7 @@ public class Indiv {
 	public void recordFailedTreatment() {
 		Observer observer = getObserver();
 		observer.recordNewFailedTreatment(this);
+		infection.undetect();
 	}
 	
 	public void recordKnownFailedTreatment(String treatmentFailed) {
@@ -582,6 +604,19 @@ public class Indiv {
 		}
 		}
 	
+	
+	public void recordDevelopedResistance() {
+		observer.recordDevelopedResistance();
+	}
+	
+	public void recordInTreatment() {
+		this.inTreatment = true;
+	}
+	
+	public void recordEndTreatment() {
+		this.inTreatment = false;
+	}
+	
 	//SCHEDULING METHODS
 	
 	//schedule the newly infected agent to infect others on the next tick
@@ -599,7 +634,7 @@ public class Indiv {
 		
 		//System.out.println(recoveryTick);
 		ScheduleParameters schparams = ScheduleParameters.createOneTime(recoveryTime);			
-		schedule.schedule(schparams, this, "actuallyRecover");
+		schedule.schedule(schparams, this, "recoverNaturally");
 	}
 	
 
@@ -674,6 +709,10 @@ public class Indiv {
 	
 	public String getRiskGroup() {
 		return this.riskGroup;
+	}
+	
+	public boolean inTreatment() {
+		return this.inTreatment;
 	}
 	
 	

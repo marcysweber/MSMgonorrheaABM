@@ -62,9 +62,13 @@ public class CustomFileOutput {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		//String filename = "MSMonly_output_" + fullDate +"_1_";
-		String filename = "MSMonly_output_" + fullDate +"_debug_2_";
+		//String filename = "MSMonly_output_" + fullDate +"_debug_2_";
 
-		//String filename = "MSMonly_output_DECEMBER_7_2024_overnight_";
+		//String filename = "MSMonly_output_JANUARY_10_2025_overnight_";
+		
+		String filename = fullDate;
+		
+		filename += "_";
 		
 		filename += counterfactual;
 		
@@ -158,14 +162,12 @@ public class CustomFileOutput {
 	        		"ResistBothIncidence",
 	        		"SymptomProportion",
 	        		"Treatments",
-	        		"FailedTreatments",
+	        		"UnknownFailedTreatments",
+	        		"DevelopedResistance",
 	        		"Detected",
 	        		"DetectedAndSymptoms",
 	        		"DetectedThruScreen",
-//	        		"KnownFailedTreatments",
-//	        		"KnownFailedTreatmentsA",
-//	        		"KnownFailedTreatmentsB",
-//	        		"KnownFailedTreatmentsBoth",
+
 	        		"SuccessTreatmentsA",
 	        		"SuccessTreatmentsB",
 	        		"SuccessTreatmentsX",
@@ -173,6 +175,8 @@ public class CustomFileOutput {
 	        		"AttemptTreatmentsB",
 	        		"AttemptTreatmentsX",
 	        		"UsageofErtapenem",
+	        		"OngoingTreatments",
+	        		"RecoveredNaturallyDuringTreatment",
 	        		"SurveillanceEstPropResistA",
 	        		"SurveillanceEstPropResistB",
 	        		"SurveillanceEstPropResistBoth",
@@ -263,6 +267,7 @@ public class CustomFileOutput {
 			double symptomProportion,
 			double treatments,
 			double failedTreatments, 
+			int developedResistance,
 			int detected,
 			int detectedAndSymptoms,
 			int detectedThruScreen,
@@ -273,6 +278,8 @@ public class CustomFileOutput {
 			int attemptTreatmentsB,
 			int attemptTreatmentsX,
 			int usageE,
+			int ongoingTreatments,
+    		int recoveredNaturallyDuringTreatment,
 			
 			double surveillanceResultA,
 			double surveillanceResultB,
@@ -344,14 +351,18 @@ public class CustomFileOutput {
 	        		String.valueOf(drugEtreatmentCost),
 	        		
 	        		String.valueOf(tick), 
+	        		
 	        		String.valueOf(Prevalence),
 	        		String.valueOf(Incidence),
+	        		
 	        		String.valueOf(resistAIncidence),
 	        		String.valueOf(resistBIncidence),
 	        		String.valueOf(resistBothIncidence),
+	        		
 	        		String.valueOf(symptomProportion),
 	        		String.valueOf(treatments),
 	        		String.valueOf(failedTreatments),
+	        		String.valueOf(developedResistance),
 	        		String.valueOf(detected),
 	        		String.valueOf(detectedAndSymptoms),
 	        		String.valueOf(detectedThruScreen), 
@@ -363,6 +374,10 @@ public class CustomFileOutput {
 	        		String.valueOf(attemptTreatmentsB),
 	        		String.valueOf(attemptTreatmentsX),	
 	        		String.valueOf(usageE),
+	        		String.valueOf(ongoingTreatments),
+	        		String.valueOf(recoveredNaturallyDuringTreatment),
+
+	        		
 	        		String.valueOf(surveillanceResultA),
 	        		String.valueOf(surveillanceResultB),
 	        		String.valueOf(surveillanceResultBoth),

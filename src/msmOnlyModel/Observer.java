@@ -53,6 +53,7 @@ public class Observer {
 	private double symptomProportion;
 	private double treatments;
 	private double failedTreatments;
+	private int developedResistance;
 	
 	private int detected;
 	private List<Infection> detectedList;
@@ -69,6 +70,7 @@ public class Observer {
 	private int attemptTreatmentsB;
 	private int attemptTreatmentsX;
 	private int usageE;
+	private int recoveredNaturallyDuringTreatment;
 	private CostCalc costCalc;
 	
 	
@@ -124,6 +126,7 @@ public class Observer {
 		this.resistBothIncidence = 0;
 		this.treatments = 0;
 		this.failedTreatments = 0;
+		this.developedResistance = 0;
 		this.detected = 0;
 		this.detectedList = new ArrayList<Infection>();
 		this.detectedAndSymptoms = 0;
@@ -137,7 +140,7 @@ public class Observer {
 		this.attemptTreatmentsB = 0;
 		this.attemptTreatmentsX = 0;
 		this.usageE = 0;
-
+		this.recoveredNaturallyDuringTreatment = 0;
 		
 		this.costCalc = new CostCalc(parameters);
 	}
@@ -255,6 +258,7 @@ public class Observer {
 				this.symptomProportion,
 				this.treatments,
 				this.failedTreatments, 
+				this.developedResistance,
 				this.detected, 
 				this.detectedAndSymptoms,
 				this.detectedThruScreen, 
@@ -269,6 +273,8 @@ public class Observer {
 				this.attemptTreatmentsB,
 				this.attemptTreatmentsX,
 				this.usageE,
+				ongoingTreatments(),
+				this.recoveredNaturallyDuringTreatment,
 				surveillanceResultA, 
 				surveillanceResultB,
 				surveillanceResultBoth,
@@ -299,6 +305,7 @@ public class Observer {
 		this.newResistBothCases = 0;
 		this.treatments = 0;
 		this.failedTreatments = 0;
+		this.developedResistance = 0;
 		this.detected = 0;
 		this.detectedList = new ArrayList<Infection>();
 		
@@ -319,7 +326,7 @@ public class Observer {
 		this.attemptTreatmentsB = 0;
 		this.attemptTreatmentsX = 0;
 		this.usageE = 0;
-
+		this.recoveredNaturallyDuringTreatment = 0;
 	}
 	
 	public double calcPrev() {
@@ -515,7 +522,13 @@ public class Observer {
 		return prop;
 	}
 	
-	
+	public int ongoingTreatments() {
+		int ongoing = (int) population.allIndivs().filter(ind -> ((Indiv) ind).inTreatment() == true).count();
+		
+		
+		
+		return ongoing;
+	}
 	
 	
 	
@@ -557,6 +570,11 @@ public class Observer {
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			}
+		
+//		
+//		if (attemptTreatmentsX != successTreatmentsX) {
+//			System.out.println("BAD");
+//		}
 		
 		
 	
@@ -663,6 +681,14 @@ public class Observer {
 	public void recordNewKnownFailedTreatmentBoth(Indiv indiv) {
 	}
 	
+	public void recordRecoveredNaturallyDuringTreatment() {
+		recoveredNaturallyDuringTreatment++;
+	}
+	
+	public void recordDevelopedResistance() {
+		developedResistance++;
+	}
+	
 	public void recordNewSuccessTreatmentA(Indiv indiv) {
 		successTreatmentsA++;
 		if (indiv.getGender().equals("f")) {
@@ -716,24 +742,10 @@ public class Observer {
 	
 	public void recordNewAttemptedTreatmentX(Indiv indiv) {
 		attemptTreatmentsX++;
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
 	}
 	
 	public void recordUseE(Indiv indiv) {
 		usageE++;
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
 	}
 	
 	
@@ -756,7 +768,8 @@ public class Observer {
 	
 	public void recordNewDetectedAndSymptoms(Indiv indiv) {
 		detectedAndSymptoms++;
-		
+		recordNewDetected(indiv);
+
 		if (indiv.getGender().equals("f")) {
 		} else if (indiv.getGender().equals("nb")) {
 		} else if (indiv.getSubPop().equals("msw")) {
@@ -830,6 +843,14 @@ public class Observer {
 	
 	public int detected() {
 		return detected;
+	}
+	
+	public int attemptsX() {
+		return attemptTreatmentsX;
+	}
+	
+	public int sucessesX() {
+		return successTreatmentsX;
 	}
 	
 }
