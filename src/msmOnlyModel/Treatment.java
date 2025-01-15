@@ -64,11 +64,13 @@ public class Treatment {
 	
 	
 	public boolean administerA() {
+		//System.out.println("adminA");
+		
 		boolean success = false;
-		indiv.recordTreatment();
+		infection.attemptA();
 
 		costCalc.treatmentDrugACost(indiv);
-		observer.recordNewAttemptedTreatmentA(indiv);
+		//observer.recordNewAttemptedTreatmentA(indiv);
 
 		if (infection.susceptibleToA()) {
 			success = true;
@@ -80,6 +82,8 @@ public class Treatment {
 	}
 	
 	public void tryDrugA() {
+		//System.out.println("tryA");
+
 		boolean success = administerA();
 		
 		if (success) {
@@ -92,11 +96,13 @@ public class Treatment {
 	}
 	
 	public boolean administerB() {
+		System.out.println("adminB");
+
 		boolean success = false;
-		indiv.recordTreatment();
+		infection.attemptB();
 
 		costCalc.treatmentDrugBCost(indiv);
-		observer.recordNewAttemptedTreatmentB(indiv);
+		//observer.recordNewAttemptedTreatmentB(indiv);
 		
 		if (infection.susceptibleToB()) {
 			success = true;
@@ -108,6 +114,8 @@ public class Treatment {
 	}
 
 	public void tryDrugB() {
+		System.out.println("tryA");
+
 		boolean success = administerB();
 
 		if (success) {
@@ -121,7 +129,6 @@ public class Treatment {
 	
 	public boolean treatWithX() {
 		boolean success = true;
-		indiv.recordTreatment();
 		costCalc.treatmentDrugXCost(indiv);
 		observer.recordNewAttemptedTreatmentX(indiv);
 		indiv.actuallyRecover("X");
@@ -131,7 +138,6 @@ public class Treatment {
 	
 	public boolean treatWithE() {
 		boolean success = true;
-		indiv.recordTreatment();
 		costCalc.treatmentDrugECost(indiv);
 		observer.recordUseE(indiv);
 		indiv.actuallyRecover("E");

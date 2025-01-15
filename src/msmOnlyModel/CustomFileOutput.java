@@ -175,8 +175,8 @@ public class CustomFileOutput {
 	        		"AttemptTreatmentsB",
 	        		"AttemptTreatmentsX",
 	        		"UsageofErtapenem",
-	        		"OngoingTreatments",
 	        		"RecoveredNaturallyDuringTreatment",
+	        		"Reinfected",
 	        		"SurveillanceEstPropResistA",
 	        		"SurveillanceEstPropResistB",
 	        		"SurveillanceEstPropResistBoth",
@@ -278,8 +278,8 @@ public class CustomFileOutput {
 			int attemptTreatmentsB,
 			int attemptTreatmentsX,
 			int usageE,
-			int ongoingTreatments,
     		int recoveredNaturallyDuringTreatment,
+    		int reinfected,
 			
 			double surveillanceResultA,
 			double surveillanceResultB,
@@ -374,8 +374,8 @@ public class CustomFileOutput {
 	        		String.valueOf(attemptTreatmentsB),
 	        		String.valueOf(attemptTreatmentsX),	
 	        		String.valueOf(usageE),
-	        		String.valueOf(ongoingTreatments),
 	        		String.valueOf(recoveredNaturallyDuringTreatment),
+	        		String.valueOf(reinfected),
 
 	        		
 	        		String.valueOf(surveillanceResultA),

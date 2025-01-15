@@ -71,6 +71,8 @@ public class Observer {
 	private int attemptTreatmentsX;
 	private int usageE;
 	private int recoveredNaturallyDuringTreatment;
+	private int recoveredNaturally;
+	private int reInfected;
 	private CostCalc costCalc;
 	
 	
@@ -140,7 +142,9 @@ public class Observer {
 		this.attemptTreatmentsB = 0;
 		this.attemptTreatmentsX = 0;
 		this.usageE = 0;
+		this.recoveredNaturally = 0;
 		this.recoveredNaturallyDuringTreatment = 0;
+		this.reInfected = 0;
 		
 		this.costCalc = new CostCalc(parameters);
 	}
@@ -273,8 +277,8 @@ public class Observer {
 				this.attemptTreatmentsB,
 				this.attemptTreatmentsX,
 				this.usageE,
-				ongoingTreatments(),
 				this.recoveredNaturallyDuringTreatment,
+				this.reInfected,
 				surveillanceResultA, 
 				surveillanceResultB,
 				surveillanceResultBoth,
@@ -326,10 +330,73 @@ public class Observer {
 		this.attemptTreatmentsB = 0;
 		this.attemptTreatmentsX = 0;
 		this.usageE = 0;
+		this.recoveredNaturally = 0;
 		this.recoveredNaturallyDuringTreatment = 0;
+		this.reInfected = 0;
 	}
 	
-	public double calcPrev() {
+	public void processCompleteInfection(Infection infection) throws Exception {
+		//System.out.println("processing");
+		
+		if (infection.isDetected()) {
+			detected++;
+		}
+		
+		if (infection.symptoms()) {
+			detectedAndSymptoms++;
+		}
+		
+		if (infection.screened()) {
+			detectedThruScreen++;
+		}
+		
+		if (infection.soughtCare()) {
+			soughtCare++;
+		}
+		
+		if (infection.failedTreatment()) {
+			failedTreatments++;
+			
+		}
+		
+		if (infection.attemptedA()) {
+			attemptTreatmentsA++;
+		}
+		
+		if (infection.attemptedB()) {
+			attemptTreatmentsB++;
+		}
+		
+		
+		
+		//final outcomes
+		if (infection.succeededA()) {
+			successTreatmentsA++;
+		} else if (infection.succeededB()) {
+			successTreatmentsB++;
+		} else if (infection.succeededX()) {
+			attemptTreatmentsX++;
+			successTreatmentsX++;
+		} else if (infection.succeededE()) {
+			usageE++;;
+		} else if (infection.recoveredNaturally()) {
+			recoveredNaturally++;
+			if (infection.inTreatment()) {
+				recoveredNaturallyDuringTreatment++;
+			}
+		} else if (infection.developedResistance()) {
+			developedResistance++;
+		} else if (infection.reInfected()) {
+			reInfected++;
+		} else {
+			throw new Exception("Invalid outcome reported to observer!");
+		}
+		
+		//System.out.println(soughtCare);
+		
+	}
+	
+	public double calcPrev() { //real time
 		
 		double popSize = (double) population.totalSize();
  
@@ -843,6 +910,10 @@ public class Observer {
 	
 	public int detected() {
 		return detected;
+	}
+	
+	public int successA() {
+		return successTreatmentsA;
 	}
 	
 	public int attemptsX() {

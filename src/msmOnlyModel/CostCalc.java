@@ -93,6 +93,8 @@ public class CostCalc {
 	
 	
 	public void careCost(Indiv indiv) {
+		//System.out.println("Care");
+
 		monetaryCostAnnual += careCost;
 		
 		if (indiv.getGender().equals("f")) {
@@ -114,6 +116,8 @@ public class CostCalc {
 	}
 	
 	public void testCost(Indiv indiv) {
+		//System.out.println("Dtest");
+
 		monetaryCostAnnual += testCost;
 		
 		if (indiv.getGender().equals("f")) {
@@ -135,6 +139,7 @@ public class CostCalc {
 	}
 	
 	public void strainTestCost(int count) {
+		//System.out.println("StrainTest");
 		double totalCost = strainTestCost * count;
 		
 		monetaryCostAnnual += totalCost;
@@ -142,6 +147,8 @@ public class CostCalc {
 	}
 	
 	public void treatmentDrugACost(Indiv indiv) {
+		//System.out.println("DrugA");
+
 		monetaryCostAnnual += drugAtreatmentCost;
 		if (indiv.getGender().equals("f")) {
 			//W
@@ -162,6 +169,9 @@ public class CostCalc {
 	}
 	
 	public void treatmentDrugBCost(Indiv indiv) {
+		//System.out.println("DrugB");
+
+		
 		monetaryCostAnnual += drugBtreatmentCost;
 		if (indiv.getGender().equals("f")) {
 			//W
@@ -182,6 +192,8 @@ public class CostCalc {
 	}
 	
 	public void treatmentDrugXCost(Indiv indiv) {
+		//System.out.println("DrugX");
+
 		monetaryCostAnnual += drugXtreatmentCost;
 		
 		if (indiv.getGender().equals("f")) {
@@ -203,6 +215,8 @@ public class CostCalc {
 	}
 	
 	public void treatmentDrugECost(Indiv indiv) {
+		//System.out.println("DrugE");
+		
 		monetaryCostAnnual += drugEtreatmentCost;
 		double QALYs = (10.5 * 0.3) / 365.0;
 		this.QALYsLost += QALYs;
@@ -227,6 +241,8 @@ public class CostCalc {
 	
 	
 	public void recordSequelae(String sequelae) {
+		//System.out.println("Sequelae");
+
 		double QALYs = 0; 
 
 		

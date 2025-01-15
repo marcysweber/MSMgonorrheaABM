@@ -41,17 +41,19 @@ public class CareSeekingTest {
 		Parameters params = testBatch.setParameters(1,//runNumber
 				1000,//endtime
 				1, //seed
-				"none", //resistance
+				"combo", //resistance
 				"none", //counterfactual
 				10, //yearX
 				10, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
-				0.5,//riskGroupTransferProp
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
 				10, //being importing B
@@ -77,17 +79,19 @@ public class CareSeekingTest {
 		Parameters params = testBatch.setParameters(1,//runNumber
 				1000,//endtime
 				1, //seed
-				"none", //resistance
+				"combo", //resistance
 				"none", //counterfactual
 				10, //yearX
 				10, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
-				0.5,//riskGroupTransferProp
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
 				10, //being importing B
@@ -112,7 +116,7 @@ public class CareSeekingTest {
 
 		
 	
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		
 		indiv1.infect("none");
@@ -137,17 +141,19 @@ public class CareSeekingTest {
 		Parameters params = testBatch.setParameters(1,//runNumber
 				1000,//endtime
 				1, //seed
-				"none", //resistance
+				"combo", //resistance
 				"none", //counterfactual
 				10, //yearX
 				10, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
-				0.5,//riskGroupTransferProp
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
 				10, //being importing B
@@ -173,7 +179,7 @@ public class CareSeekingTest {
 		double bigTestPopSize = 100.0;
 
 		for (int i = 0; i < bigTestPopSize; i++) {
-			testRun.population().add(new Indiv(params, "msm", randomHelper, observer, schedule));
+			testRun.population().add(new Indiv(params, "msm", "high", randomHelper, observer, schedule));
 		}	
 	
 		//infect half with symptomatic infections
@@ -200,8 +206,11 @@ public class CareSeekingTest {
 			care.seekCare();
 		}
 		
+		
 		double soughtCare = observer.getSoughtCare();
-		double treatments = observer.getTreatments();
+		double treatments = observer.successA();
+		//System.out.println(soughtCare);
+		//System.out.println(treatments);
 		assertTrue("Care3", treatments == 50);
 		double prev2 = observer.calcPrev();
 		assertTrue("Care2", prev2 == 0.0);

@@ -56,9 +56,10 @@ public class CareSeeking {
 		if (indiv.infectious()) {
 			
 			indiv.myInfection().detect();
+			indiv.myInfection().seekCare();
 
 		
-			observer.recordSoughtCare(indiv);
+			//observer.recordSoughtCare(indiv);
 			observer.getCostCalc().careCost(indiv);
 			observer.getCostCalc().testCost(indiv);
 

@@ -9161,7 +9161,7 @@ dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_13_2025_deb
 dfcalibrated <- identify(dfcalibrated, df_best_ends)
 
 sum(dfcalibrated$Detected - dfcalibrated$SuccessTreatmentsA - dfcalibrated$SuccessTreatmentsB - dfcalibrated$SuccessTreatmentsX - dfcalibrated$UsageofErtapenem)
-
+6704/7
 
 dfTOCdebug<-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_13_2025_overnight_all_all/test-of-cure_80combo251combined.csv")
 dfTOCdebug <- identify(dfTOCdebug, df_best_ends)
@@ -9192,7 +9192,7 @@ dfTOCdebug$Detected - dfTOCdebug$SuccessTreatmentsA - dfTOCdebug$SuccessTreatmen
 
 
 
-dfTOCdebug$Detected - dfTOCdebug$SuccessTreatmentsA - dfTOCdebug$SuccessTreatmentsB - dfTOCdebug$SuccessTreatmentsX - dfTOCdebug$UsageofErtapenem  - dfTOCdebug$OngoingTreatments - dfTOCdebug$RecoveredNaturallyDuringTreatment - dfTOCdebug$UnknownFailedTreatments
+dfTOCdebug$weird <- dfTOCdebug$Detected - dfTOCdebug$SuccessTreatmentsA - dfTOCdebug$SuccessTreatmentsB - dfTOCdebug$SuccessTreatmentsX - dfTOCdebug$UsageofErtapenem  - dfTOCdebug$OngoingTreatments - dfTOCdebug$RecoveredNaturallyDuringTreatment - dfTOCdebug$UnknownFailedTreatments
 
 
 

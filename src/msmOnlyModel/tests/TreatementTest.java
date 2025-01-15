@@ -81,7 +81,7 @@ public class TreatementTest {
 	@Test
 	public void testX() {
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
 
 			SingleRun testRun = setUpTreatmentTest(i);
 

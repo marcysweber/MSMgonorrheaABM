@@ -217,6 +217,7 @@ public class Indiv {
 			//if still infectious...
 			if (this.infectious()) {
 				if (attemptContact()) {//stochastic logic gate from annualContacts param
+					infection.recordTransmission();
 					Indiv partner = partnerSelect(); //find a partner
 					if (this != partner) {//doublecheck that it's not myself
 						partner.infect(this.infection.getStrain());//infect the partner
@@ -381,7 +382,6 @@ public class Indiv {
 			}
 		}
 			
-		this.recordNewCase();
 		this.scheduleInfectiousActions();
 		this.scheduleRecover(recoveryTime);
 			
@@ -397,7 +397,6 @@ public class Indiv {
 		this.changeStateTo(1);
 			
 			
-		this.recordNewCase();
 		this.scheduleInfectiousActions();
 		this.scheduleRecover(recoveryTime);
 			
@@ -412,7 +411,6 @@ public class Indiv {
 		this.changeStateTo(1);
 			
 			
-		this.recordNewCase();
 		this.scheduleInfectiousActions();
 		this.scheduleRecover(recoveryTime);
 			
@@ -426,14 +424,17 @@ public class Indiv {
 		if (tickNow() <=520) {
 			actuallyRecover(treatment);
 		} else if (treatment.equals("X")) {
+			infection.succeededX();
 			actuallyRecover(treatment);
 		} else if (treatment.equals("E")) {
+			infection.succeededE();
 			actuallyRecover(treatment);
 		} else if (treatment.equals("A")) {
 			if (resistance.equals("combo")) {
 				InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 				resistanceInserter.checkForDevelopResistance(this, treatment);
 			} else {
+				infection.succeededA();
 				actuallyRecover(treatment);
 			}
 		} else if (treatment.equals("B")){
@@ -441,6 +442,7 @@ public class Indiv {
 					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 					resistanceInserter.checkForDevelopResistance(this, treatment);
 			} else {
+					infection.succeededB();
 					actuallyRecover(treatment);
 			}
 		} else {
@@ -477,6 +479,8 @@ public class Indiv {
 	
 	public void recoverNaturally() {
 		if (infectious()) {
+			infection.recoverNaturally();
+			
 			if (inTreatment) {
 				observer.recordRecoveredNaturallyDuringTreatment();
 			}
@@ -486,7 +490,12 @@ public class Indiv {
 
 	public void actuallyRecover(String treatment) {
 		if (infectious()) {
-			this.recordSuccessfulTreatment(treatment);
+			try {
+				infection.successfulTreatment(treatment);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.recordEndTreatment();
 		}
 		actuallyRecover();
@@ -494,7 +503,7 @@ public class Indiv {
 	
 	public void actuallyRecover() {
 		if (state != 0) {
-			this.infection.recoverInfection();
+			this.infection.ceaseInfection();
 			this.infection = null;
 			this.changeStateTo(0);
 		}
@@ -509,7 +518,7 @@ public class Indiv {
 			this.infection = null;
 		}
 		
-		Infection newInfection = new Infection(allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper);
+		Infection newInfection = new Infection(this, allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper);
 		//context.add(newInfection);
 		this.infection = newInfection;
 	}
@@ -561,20 +570,18 @@ public class Indiv {
 	
 	
 	//send this new case to the observer
-	public void recordNewCase() {
-		Observer observer = getObserver();
-		observer.recordNewCase(this);
-	}
-	
-	public void recordTreatment() {
-		Observer observer = getObserver();;
-		observer.recordNewTreatment(this);
-	}
+//	public void recordNewCase() {
+//		Observer observer = getObserver();
+//		observer.recordNewCase(this);
+//	}
+//	
+//	public void recordTreatment() {
+//		Observer observer = getObserver();;
+//		observer.recordNewTreatment(this);
+//	}
 	
 	public void recordFailedTreatment() {
-		Observer observer = getObserver();
-		observer.recordNewFailedTreatment(this);
-		infection.undetect();
+		infection.failTreatment();
 	}
 	
 	public void recordKnownFailedTreatment(String treatmentFailed) {
@@ -606,6 +613,7 @@ public class Indiv {
 	
 	
 	public void recordDevelopedResistance() {
+		infection.developResistance();
 		observer.recordDevelopedResistance();
 	}
 	

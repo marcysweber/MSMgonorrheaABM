@@ -41,12 +41,14 @@ public class CostsTests {
 				"none", //counterfactual
 				10, //yearX
 				10, //initial infected
+				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
 				1, //delaytoseekcare
 				2, //delaytoretreatment
+				1.0,//assortativity
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				25, //amount resistant A
@@ -80,12 +82,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
-				1.0, //delay to retreatment
+				1.0, //delay to retreatment				
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -109,7 +115,7 @@ public class CostsTests {
 		testRun.createIndivs(0);
 		observer.setPopulation(testRun.population());
 
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		
 		indiv1.infect("none");
@@ -142,12 +148,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
-				0.5, //probSymptomatic
+				1.0, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -174,11 +184,11 @@ public class CostsTests {
 		double bigTestPopSize = 100.0;
 
 		for (int i = 0; i < bigTestPopSize; i++) {
-			testRun.population().add(new Indiv(params, "msm", randomHelper, observer, schedule));
+			testRun.population().add(new Indiv(params, "msm", "high", randomHelper, observer, schedule));
 		}	
 	
 		//infect half with symptomatic infections
-		double infections = bigTestPopSize/2;
+		double infections = 50;
 
 		for (int index = 0; index < infections; index++) {
 			Indiv indiv = testRun.population().allIndivs().collect(Collectors.toList()).get(index);
@@ -189,20 +199,26 @@ public class CostsTests {
 			}
 		}
 		
-		List<Indiv> popList = testRun.population().allIndivs().collect(Collectors.toList());
+		//System.out.println(testRun.population().infectiousCount());
 		
-		for (Indiv indiv : popList) {
+		//List<Indiv> popList = testRun.population().allIndivs().collect(Collectors.toList());
+		
+		for (Indiv indiv : testRun.population().allInfectious().collect(Collectors.toList())) {
 			CareSeeking care = new CareSeeking(indiv, observer, schedule);
 			care.seekCare();
 		}
 		
-		//everybody got a diagnostic test: 100 * 2
+		//System.out.println(testRun.population().infectiousCount());
+
+		//everybody got a diagnostic test: 50 * 2
 		//everybody got care: 50 * 1
 		//50 got treatment A: 50 * 4
 		
 		CostCalc costCalc = testRun.observer().getCostCalc();
 		//System.out.println(costCalc.getMonetaryCost());
-		assertTrue("MultiCareCost1", costCalc.getMonetaryCost() == 500);
+		
+		
+		assertTrue("MultiCareCost1", costCalc.getMonetaryCost() == 350);
 	}
 	
 	@Test
@@ -217,12 +233,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -246,7 +266,7 @@ public class CostsTests {
 		testRun.createIndivs(0);
 		observer.setPopulation(testRun.population());
 
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		indiv1.infect("none");
 		
@@ -272,12 +292,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -304,7 +328,7 @@ public class CostsTests {
 		
 		
 		//no cost for screening of single indiv who was not infected
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		Screener screener = new Screener();
 		screener.screen(indiv1, observer);
@@ -312,7 +336,7 @@ public class CostsTests {
 
 		
 		//accurate cost for screening of a single individual who was infected
-		Indiv indiv2 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv2 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv2);
 		indiv2.infect("none");
 		Screener screener2 = new Screener();
@@ -334,12 +358,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -364,7 +392,7 @@ public class CostsTests {
 		observer.setPopulation(testRun.population());
 		CostCalc costCalc = testRun.observer().getCostCalc();
 		
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		indiv1.infect("none");
 		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
@@ -402,12 +430,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -432,7 +464,7 @@ public class CostsTests {
 		observer.setPopulation(testRun.population());
 		CostCalc costCalc = testRun.observer().getCostCalc();
 		
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		indiv1.infect("A");
 		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
@@ -472,12 +504,16 @@ public class CostsTests {
 				"GISP", //counterfactual
 				10, //yearX
 				100, //initialinfected
+				0.1, //propHighRisk
+
 				1.0, //transmission
 				1.0, //recoveryLambda
 				0.5, //probSymptomatic
 				1.0, //screen interval
 				1.0, //delay to seek care
 				1.0, //delay to retreatment
+				1.0,//assortativity
+
 				0.5,//riskGroupTransferProp
 				0.5,//riskGroupTransmissionRatio
 				0.05, //percent resistant A
@@ -502,7 +538,7 @@ public class CostsTests {
 		observer.setPopulation(testRun.population());
 		CostCalc costCalc = testRun.observer().getCostCalc();
 		
-		Indiv indiv1 = new Indiv(params, "msm", randomHelper, observer, schedule);
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		indiv1.infect("A");
 		while (indiv1.symptoms()) { //keep trying until you get an asymptomatic infection
