@@ -96,7 +96,7 @@ public class Treatment {
 	}
 	
 	public boolean administerB() {
-		System.out.println("adminB");
+		//System.out.println("adminB");
 
 		boolean success = false;
 		infection.attemptB();
@@ -114,7 +114,7 @@ public class Treatment {
 	}
 
 	public void tryDrugB() {
-		System.out.println("tryA");
+		//System.out.println("tryA");
 
 		boolean success = administerB();
 
@@ -130,7 +130,6 @@ public class Treatment {
 	public boolean treatWithX() {
 		boolean success = true;
 		costCalc.treatmentDrugXCost(indiv);
-		observer.recordNewAttemptedTreatmentX(indiv);
 		indiv.actuallyRecover("X");
 		
 		return success;
@@ -139,7 +138,6 @@ public class Treatment {
 	public boolean treatWithE() {
 		boolean success = true;
 		costCalc.treatmentDrugECost(indiv);
-		observer.recordUseE(indiv);
 		indiv.actuallyRecover("E");
 		
 		return success;
@@ -343,7 +341,7 @@ public class Treatment {
 
 			if (retreatment.equals("A")) {
 				costCalc.treatmentDrugACost(indiv);
-				observer.recordNewAttemptedTreatmentA(indiv);
+				infection.attemptA();
 				if (infection.susceptibleToA()) {
 					success = "A";
 					indiv.recoverOrDevelopResistance(success);
@@ -354,8 +352,8 @@ public class Treatment {
 					costCalc.symptomaticQALYsLost(indiv, thisDelay);
 				}
 			} else if (retreatment.equals("B")) {
+				infection.attemptB();
 				costCalc.treatmentDrugBCost(indiv);
-				observer.recordNewAttemptedTreatmentB(indiv);
 				if (infection.susceptibleToB()) {
 					success = "B";
 					indiv.recoverOrDevelopResistance(success);
@@ -400,7 +398,6 @@ public class Treatment {
 		//indiv.abstain();
 
 		costCalc.treatmentDrugACost(indiv);
-		observer.recordNewAttemptedTreatmentA(indiv);
 
 		// everybody incurs the cost of getting re-tested
 
@@ -431,7 +428,6 @@ public class Treatment {
 
 			if (treatment.equals("B")) {
 				costCalc.treatmentDrugBCost(indiv);
-				observer.recordNewAttemptedTreatmentB(indiv);
 
 				if (infection.susceptibleToB()) {
 					indiv.recoverOrDevelopResistance("B");

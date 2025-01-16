@@ -34,7 +34,7 @@ public class Observer {
 	private double prevalence;
 	//prevalence is the % of population infected at a moment in time
 	
-	private double incidence;
+	private int incidence;
 	//incidence is the NEW infected cases over some time unit (*100,000)
 	
 	private int newCases;
@@ -76,7 +76,7 @@ public class Observer {
 	private CostCalc costCalc;
 	
 	
-	public Observer(Parameters parameters, CustomFileOutput outputter, int seed, double prev, double inc, ISchedule schedule) {
+	public Observer(Parameters parameters, CustomFileOutput outputter, int seed, double prev, int inc, ISchedule schedule) {
 		this.parameters=parameters;
 		this.seed = seed;
 		this.schedule = schedule;
@@ -277,6 +277,7 @@ public class Observer {
 				this.attemptTreatmentsB,
 				this.attemptTreatmentsX,
 				this.usageE,
+				this.recoveredNaturally,
 				this.recoveredNaturallyDuringTreatment,
 				this.reInfected,
 				surveillanceResultA, 
@@ -338,18 +339,29 @@ public class Observer {
 	public void processCompleteInfection(Infection infection) throws Exception {
 		//System.out.println("processing");
 		
+		newCases++;
+		
+		if (infection.resistantToA() && infection.resistantToB()) {
+			newResistBothCases++;
+		} else if (infection.resistantToA()) {
+			newResistACases++;
+		} else if (infection.resistantToB()) {
+			newResistBCases++;
+		}
+		
 		if (infection.isDetected()) {
 			detected++;
+			
+			if (infection.symptoms()) {
+				detectedAndSymptoms++;
+			}
+			
+			if (infection.screened()) {
+				detectedThruScreen++;
+			}
 		}
 		
-		if (infection.symptoms()) {
-			detectedAndSymptoms++;
-		}
-		
-		if (infection.screened()) {
-			detectedThruScreen++;
-		}
-		
+	
 		if (infection.soughtCare()) {
 			soughtCare++;
 		}
@@ -439,11 +451,10 @@ public class Observer {
 	
 
 	
-	public double calcInc() {
-		double popSize = (double) population.totalSize();
-
-		double newInc = 0;
-		newInc = (this.newCases / popSize) * 100000.0; 
+	public int calcInc() {
+		
+		int newInc = 0;
+		newInc = this.newCases; 
 		
 		return newInc;
 	}
@@ -651,59 +662,6 @@ public class Observer {
 	
 	
 	
-	
-	
-
-	public void recordNewCase(Indiv potentialNewCase) {
-		if (potentialNewCase.getState() == 1) {
-			this.newCases++;
-			
-			if (potentialNewCase.getGender().equals("f")) {
-			} else if (potentialNewCase.getGender().equals("nb")) {
-			} else if (potentialNewCase.getSubPop().equals("msw")) {
-			} else if (potentialNewCase.getSubPop().equals("msmw")) {
-			} else {
-				//MSM
-				this.newCasesMSM++;
-			}
-			
-			
-			if (potentialNewCase.myInfection().getStrain().equals("A")) {
-				this.newResistACases++;
-				
-				if (potentialNewCase.getGender().equals("f")) {
-				} else if (potentialNewCase.getGender().equals("nb")) {
-				} else if (potentialNewCase.getSubPop().equals("msw")) {
-				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-				} else {
-				}
-				
-			} else if (potentialNewCase.myInfection().getStrain().equals("B")) {
-				this.newResistBCases++;
-				
-				if (potentialNewCase.getGender().equals("f")) {
-				} else if (potentialNewCase.getGender().equals("nb")) {
-				} else if (potentialNewCase.getSubPop().equals("msw")) {
-				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-				} else {
-				}
-				
-			} else if (potentialNewCase.myInfection().getStrain().equals("Both")) {
-				//this.newResistACases++;
-				//this.newResistBCases++;
-				this.newResistBothCases++;
-				
-				if (potentialNewCase.getGender().equals("f")) {
-				} else if (potentialNewCase.getGender().equals("nb")) {
-				} else if (potentialNewCase.getSubPop().equals("msw")) {
-				} else if (potentialNewCase.getSubPop().equals("msmw")) {
-				} else {
-				}
-			}
-		}
-	}
-	
-	
 	public SurveillanceProgram getSurveillance() {
 		return surveillanceProgram;
 	}
@@ -713,156 +671,7 @@ public class Observer {
 		this.addedX = true;
 	}
 	
-	public void recordSoughtCare(Indiv indiv) {
-		soughtCare++;
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-		
-	}
 	
-	public void recordNewTreatment(Indiv indiv) {
-		 treatments++;
-
-	 }
-	
-	public void recordNewFailedTreatment(Indiv indiv) {
-		failedTreatments++;
-		
-	}
-	
-	public void recordNewKnownFailedTreatment(Indiv indiv) {
-		
-	}
-	
-	public void recordNewKnownFailedTreatmentA(Indiv indiv) {
-	}
-	
-	public void recordNewKnownFailedTreatmentB(Indiv indiv) {
-	}
-	
-	public void recordNewKnownFailedTreatmentBoth(Indiv indiv) {
-	}
-	
-	public void recordRecoveredNaturallyDuringTreatment() {
-		recoveredNaturallyDuringTreatment++;
-	}
-	
-	public void recordDevelopedResistance() {
-		developedResistance++;
-	}
-	
-	public void recordNewSuccessTreatmentA(Indiv indiv) {
-		successTreatmentsA++;
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-	}
-	
-	public void recordNewSuccessTreatmentB(Indiv indiv) {
-		successTreatmentsB++;
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-	}
-	
-	public void recordNewSuccessTreatmentX(Indiv indiv) {
-		successTreatmentsX++;
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-	}
-	
-	public void recordNewAttemptedTreatmentA(Indiv indiv) {
-		attemptTreatmentsA++;
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-	}
-	
-	public void recordNewAttemptedTreatmentB(Indiv indiv) {
-		attemptTreatmentsB++;
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-	}
-	
-	public void recordNewAttemptedTreatmentX(Indiv indiv) {
-		attemptTreatmentsX++;
-	}
-	
-	public void recordUseE(Indiv indiv) {
-		usageE++;
-	}
-	
-	
-	
-	public void recordNewDetected(Indiv indiv) {
-		if (indiv.myInfection()==null) {
-			throw new RuntimeException("Indiv" + indiv + "does not have an infection!");
-		}
-		detected++;
-		detectedList.add(indiv.myInfection());
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-		
-	}
-	
-	public void recordNewDetectedAndSymptoms(Indiv indiv) {
-		detectedAndSymptoms++;
-		recordNewDetected(indiv);
-
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-		
-		
-		
-		
-	}
-	
-	public void recordNewDetectedThruScreen(Indiv indiv) {
-		detectedThruScreen++;
-		recordNewDetected(indiv);
-		
-		if (indiv.getGender().equals("f")) {
-		} else if (indiv.getGender().equals("nb")) {
-		} else if (indiv.getSubPop().equals("msw")) {
-		} else if (indiv.getSubPop().equals("msmw")) {
-		} else {
-		}
-		
-		
-		
-	}
 	
 	public void clearDetectedList() {
 		this.detectedList = new ArrayList<Infection>();

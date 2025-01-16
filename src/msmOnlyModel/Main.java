@@ -71,7 +71,7 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
 			executeCounterfactualScenarios(scenariofile);
 

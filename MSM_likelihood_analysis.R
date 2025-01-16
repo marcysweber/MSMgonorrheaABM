@@ -76,6 +76,8 @@ identify = function(df, resampledf){
     df$resampled[df$seed==i] <- sum(resampledf$seed==i)
   }
   
+  df$Incidence <- as.integer(df$Incidence)
+  
   return(df)
 }
 
@@ -9232,3 +9234,95 @@ visualize_calibration_risk_groups(dfcalibrated)
 
 
 ########
+
+
+#jan 16 25 debug
+############
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_sweep_none/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+dfsweep$Incidence <- as.integer(dfsweep$Incidence)
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 1000)
+
+#save the resample including the replicates
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates16jan25.csv")
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$uniqueID)
+for (unique_ID in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+dfsweep$Incidence - dfsweep$RecoveredNaturally - dfsweep$SuccessTreatmentsA - dfsweep$Reinfected
+
+df_best_traj$Incidence - df_best_traj$RecoveredNaturally - df_best_traj$SuccessTreatmentsA - df_best_traj$Reinfected
+
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+
+write_calibrated(df_best_ends_unique)
+
+
+
+
+
+
+
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_none_none/nonenone251combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+
+dfcalibrated$Incidence - dfcalibrated$RecoveredNaturally - dfcalibrated$SuccessTreatmentsA - dfcalibrated$Reinfected
+
+
+#figure 2
+visualize_calibration_MSM(dfcalibrated)
+
+
+
+
+
+
+directory <- "/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+new_summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+
+
+#summary data
+summary_GISP <- cumulative_everything(dfGISP25)
+summary_random <-cumulative_everything(dfrandom25)
+summary_TOC <-cumulative_everything(dfTOC25)
+summary_DST <-cumulative_everything(dfDST25)
+summary_real <-cumulative_everything(dfreal25)
+
+
+dfTOC25$Incidence - dfTOC25$RecoveredNaturally - dfTOC25$SuccessTreatmentsA  - dfTOC25$SuccessTreatmentsB - dfTOC25$SuccessTreatmentsX  - dfTOC25$UsageofErtapenem- dfTOC25$Reinfected - dfTOC25$DevelopedResistance
+
+dfGISP25$Incidence - dfGISP25$RecoveredNaturally - dfGISP25$SuccessTreatmentsA  - dfGISP25$SuccessTreatmentsB - dfGISP25$SuccessTreatmentsX  - dfGISP25$UsageofErtapenem- dfGISP25$Reinfected - dfGISP25$DevelopedResistance
+dfrandom25$Incidence - dfrandom25$RecoveredNaturally - dfrandom25$SuccessTreatmentsA  - dfrandom25$SuccessTreatmentsB - dfrandom25$SuccessTreatmentsX  - dfrandom25$UsageofErtapenem- dfrandom25$Reinfected - dfrandom25$DevelopedResistance
+dfDST25$Incidence - dfDST25$RecoveredNaturally - dfDST25$SuccessTreatmentsA  - dfDST25$SuccessTreatmentsB - dfDST25$SuccessTreatmentsX  - dfDST25$UsageofErtapenem- dfDST25$Reinfected - dfDST25$DevelopedResistance
+dfreal25$Incidence - dfreal25$RecoveredNaturally - dfreal25$SuccessTreatmentsA  - dfreal25$SuccessTreatmentsB - dfreal25$SuccessTreatmentsX  - dfreal25$UsageofErtapenem- dfreal25$Reinfected - dfreal25$DevelopedResistance
+
+
+
+############

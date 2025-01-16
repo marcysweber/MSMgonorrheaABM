@@ -175,6 +175,7 @@ public class CustomFileOutput {
 	        		"AttemptTreatmentsB",
 	        		"AttemptTreatmentsX",
 	        		"UsageofErtapenem",
+	        		"RecoveredNaturally",
 	        		"RecoveredNaturallyDuringTreatment",
 	        		"Reinfected",
 	        		"SurveillanceEstPropResistA",
@@ -260,7 +261,7 @@ public class CustomFileOutput {
 			
 			//whole pop output
 			double Prevalence, 
-			double Incidence, 
+			int Incidence, 
 			double resistAIncidence,
 			double resistBIncidence,
 			double resistBothIncidence,
@@ -278,6 +279,7 @@ public class CustomFileOutput {
 			int attemptTreatmentsB,
 			int attemptTreatmentsX,
 			int usageE,
+			int recoveredNaturally,
     		int recoveredNaturallyDuringTreatment,
     		int reinfected,
 			
@@ -374,6 +376,7 @@ public class CustomFileOutput {
 	        		String.valueOf(attemptTreatmentsB),
 	        		String.valueOf(attemptTreatmentsX),	
 	        		String.valueOf(usageE),
+	        		String.valueOf(recoveredNaturally),
 	        		String.valueOf(recoveredNaturallyDuringTreatment),
 	        		String.valueOf(reinfected),
 

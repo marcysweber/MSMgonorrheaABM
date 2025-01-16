@@ -424,17 +424,14 @@ public class Indiv {
 		if (tickNow() <=520) {
 			actuallyRecover(treatment);
 		} else if (treatment.equals("X")) {
-			infection.succeededX();
 			actuallyRecover(treatment);
 		} else if (treatment.equals("E")) {
-			infection.succeededE();
 			actuallyRecover(treatment);
 		} else if (treatment.equals("A")) {
 			if (resistance.equals("combo")) {
 				InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 				resistanceInserter.checkForDevelopResistance(this, treatment);
 			} else {
-				infection.succeededA();
 				actuallyRecover(treatment);
 			}
 		} else if (treatment.equals("B")){
@@ -442,7 +439,6 @@ public class Indiv {
 					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 					resistanceInserter.checkForDevelopResistance(this, treatment);
 			} else {
-					infection.succeededB();
 					actuallyRecover(treatment);
 			}
 		} else {
@@ -480,10 +476,7 @@ public class Indiv {
 	public void recoverNaturally() {
 		if (infectious()) {
 			infection.recoverNaturally();
-			
-			if (inTreatment) {
-				observer.recordRecoveredNaturallyDuringTreatment();
-			}
+		
 			actuallyRecover();
 		}
 	}
@@ -584,37 +577,9 @@ public class Indiv {
 		infection.failTreatment();
 	}
 	
-	public void recordKnownFailedTreatment(String treatmentFailed) {
-		Observer observer = getObserver();
-		observer.recordNewKnownFailedTreatment(this);
-		
-		if (treatmentFailed.equals("A")) {
-			observer.recordNewKnownFailedTreatmentA(this);
-		} else if (treatmentFailed.equals("B")) {
-			observer.recordNewKnownFailedTreatmentB(this);
-		} else if (treatmentFailed.equals("Both")) {
-			observer.recordNewKnownFailedTreatmentBoth(this);
-		}
-	}
-
-	public void recordSuccessfulTreatment(String treatmentSucceeded) {
-		Observer observer = getObserver();
-		
-		if (treatmentSucceeded.equals("A")) {
-			observer.recordNewSuccessTreatmentA(this);
-		} else if (treatmentSucceeded.equals("B")) {
-			observer.recordNewSuccessTreatmentB(this);
-		} else if (treatmentSucceeded.equals("X")) {
-			observer.recordNewSuccessTreatmentX(this);
-		} else if (treatmentSucceeded.equals("E")) {
-			//nothing, because already recorded as usage of E
-		}
-		}
-	
 	
 	public void recordDevelopedResistance() {
 		infection.developResistance();
-		observer.recordDevelopedResistance();
 	}
 	
 	public void recordInTreatment() {
