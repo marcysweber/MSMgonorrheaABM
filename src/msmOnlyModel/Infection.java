@@ -14,6 +14,7 @@ public class Infection {
 	private Parameters parameters;
 	private Indiv host;
 	private int transmissionEvents;
+	private double tickStarted;
 	private boolean detected;
 	private boolean soughtCare;
 	private boolean resistanceToA;
@@ -26,6 +27,7 @@ public class Infection {
 	private boolean starting; 
 	private double naturalRecoveryTime;
 	private ThreadSafeRandomHelper randomHelper;
+	private String riskGroup;
 	
 	//treatment history
 	private boolean inTreatment;
@@ -36,6 +38,7 @@ public class Infection {
 	private boolean failedTreatment;
 	
 	//final outcome; all possible infection end-points mutually exclusive
+	private double tickEnded;
 	private boolean developedResistance;
 	private boolean reInfected;
 	private boolean succeededA;
@@ -46,10 +49,12 @@ public class Infection {
 
 
 	
-	public Infection(Indiv host, Parameters parameters, String strain, boolean starting, double naturalRecoveryTime, String subPop, ThreadSafeRandomHelper randomHelper) {//different for start of sim
+	public Infection(Indiv host, Parameters parameters, String strain, boolean starting, double naturalRecoveryTime, String subPop, ThreadSafeRandomHelper randomHelper, double currentTick) {//different for start of sim
 		this.host = host;
+		this.riskGroup = host.getRiskGroup();
 		this.strain = strain;
 		this.subPop = subPop;
+		this.tickStarted = currentTick;
 		this.current = true; 
 		if (strain.equals("A")) {
 			this.resistanceToA = true;
@@ -121,6 +126,7 @@ public class Infection {
 	
 	public void ceaseInfection() {
 		Observer obs = host.getObserver();
+		this.tickEnded = obs.tickNow();
 		
 		try {
 			obs.processCompleteInfection(this);
@@ -130,6 +136,7 @@ public class Infection {
 		}
 		
 		this.current = false;
+		this.host = null;
 	}
 	
 	public void recordTransmission() {
@@ -142,7 +149,6 @@ public class Infection {
 	}
 	
 	public void overrideInfection() {
-		reInfect();
 		ceaseInfection();
 	}
 	
@@ -226,6 +232,7 @@ public class Infection {
 	
 	public void recordInTreatment() {
 		inTreatment = true;
+		host.recordInTreatment();
 	}
 	
 	public boolean inTreatment() {
@@ -271,6 +278,9 @@ public class Infection {
 			succeededA = true;
 		} else if (treatment.contains("B")) {
 			succeededB = true;
+			if (attemptedB==false) {
+				System.out.print("issue");
+			}
 		} else if (treatment.contains("X")) {
 			succeededX = true;
 		} else if (treatment.contains("E")) {
@@ -305,6 +315,21 @@ public class Infection {
 		return succeededE;
 	}
 	
+	public double duration() {
+		return tickEnded - tickStarted;
+	}
+	
+	public Indiv host() {
+		return host;
+	}
+	
+	public boolean current() {
+		return current;
+	}
+	
+	public String getRiskGroup() {
+		return riskGroup;
+	}
 	
 	public String finalOutcome() throws Exception{
 		String outcome = null;

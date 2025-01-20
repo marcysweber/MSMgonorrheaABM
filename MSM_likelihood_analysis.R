@@ -9277,7 +9277,7 @@ write_calibrated(df_best_ends_unique)
 
 
 
-dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_none_none/nonenone251combined.csv")
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_17_2025_debug3_none_none/nonenone251combined.csv")
 dfcalibrated <- identify(dfcalibrated, df_best_ends)
 
 dfcalibrated$Incidence - dfcalibrated$RecoveredNaturally - dfcalibrated$SuccessTreatmentsA - dfcalibrated$Reinfected
@@ -9286,12 +9286,13 @@ dfcalibrated$Incidence - dfcalibrated$RecoveredNaturally - dfcalibrated$SuccessT
 #figure 2
 visualize_calibration_MSM(dfcalibrated)
 
+dfcalibratedtransmission  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_17_2025_debug1_none_none/nonenone251combined.csv")
 
 
 
 
 
-directory <- "/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_all_all/"
+directory <- "/Users/me597/Documents/MSMoutput/JANUARY_20_2025_debug1_all_all/"
 
 dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
 dfGISP25 <- identify(dfGISP25, df_best_ends)
@@ -9323,6 +9324,14 @@ dfrandom25$Incidence - dfrandom25$RecoveredNaturally - dfrandom25$SuccessTreatme
 dfDST25$Incidence - dfDST25$RecoveredNaturally - dfDST25$SuccessTreatmentsA  - dfDST25$SuccessTreatmentsB - dfDST25$SuccessTreatmentsX  - dfDST25$UsageofErtapenem- dfDST25$Reinfected - dfDST25$DevelopedResistance
 dfreal25$Incidence - dfreal25$RecoveredNaturally - dfreal25$SuccessTreatmentsA  - dfreal25$SuccessTreatmentsB - dfreal25$SuccessTreatmentsX  - dfreal25$UsageofErtapenem- dfreal25$Reinfected - dfreal25$DevelopedResistance
 
+new_figure_four(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25, 25)
 
+#figure 5
+multiplot(
+  visualize_cea_weighted_real("A.", df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
 
 ############

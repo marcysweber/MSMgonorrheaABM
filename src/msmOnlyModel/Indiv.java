@@ -220,7 +220,11 @@ public class Indiv {
 					infection.recordTransmission();
 					Indiv partner = partnerSelect(); //find a partner
 					if (this != partner) {//doublecheck that it's not myself
-						partner.infect(this.infection.getStrain());//infect the partner
+						if (partner.infectious()) {
+							partner.infect(this.infection.getStrain(), "reinfect");
+						} else {
+							partner.infect(this.infection.getStrain());//infect the partner
+						}
 					}
 				}
 				//try to infect again next week
@@ -362,6 +366,15 @@ public class Indiv {
 //		return compatible;
 //	}
 //	
+	public void infect(String strain, String type) {
+		if (type.contains("resist")) {
+			infection.developResistance();
+		} else if (type.contains("reinfect")) {
+			infection.reInfect();
+		}
+		
+		infect(strain);
+	}
 	
 	public void infect(String strain) {
 		//this method infects a susceptible partner, 
@@ -422,29 +435,29 @@ public class Indiv {
 		String resistance = allParameters.getString("resistance");
 
 		if (tickNow() <=520) {
-			actuallyRecover(treatment);
+			actuallyRecoverwTreatment(treatment);
 		} else if (treatment.equals("X")) {
-			actuallyRecover(treatment);
+			actuallyRecoverwTreatment(treatment);
 		} else if (treatment.equals("E")) {
-			actuallyRecover(treatment);
-		} else if (treatment.equals("A")) {
-			if (resistance.equals("combo")) {
-				InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
-				resistanceInserter.checkForDevelopResistance(this, treatment);
-			} else {
-				actuallyRecover(treatment);
-			}
-		} else if (treatment.equals("B")){
-			if (resistance.equals("combo")) {
+			actuallyRecoverwTreatment(treatment);
+		} else {
+			if (treatment.equals("A")) {
+				if (resistance.equals("combo")) {
 					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 					resistanceInserter.checkForDevelopResistance(this, treatment);
-			} else {
-					actuallyRecover(treatment);
+				} else {
+					actuallyRecoverwTreatment(treatment);
+				}
+			} else if (treatment.equals("B")){
+				if (resistance.equals("combo")) {
+					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
+					resistanceInserter.checkForDevelopResistance(this, treatment);
+				} else {
+					actuallyRecoverwTreatment(treatment);
+				}
 			}
-		} else {
-			System.out.println(treatment);
-		}
-			
+		} 
+
 	}
 	
 	public void recordSequelae(String sequelae) {
@@ -481,7 +494,7 @@ public class Indiv {
 		}
 	}
 
-	public void actuallyRecover(String treatment) {
+	public void actuallyRecoverwTreatment(String treatment) {
 		if (infectious()) {
 			try {
 				infection.successfulTreatment(treatment);
@@ -511,7 +524,7 @@ public class Indiv {
 			this.infection = null;
 		}
 		
-		Infection newInfection = new Infection(this, allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper);
+		Infection newInfection = new Infection(this, allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper, tickNow());
 		//context.add(newInfection);
 		this.infection = newInfection;
 	}

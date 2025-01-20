@@ -39,6 +39,7 @@ public class Observer {
 	
 	private int newCases;
 	private int newCasesMSM;
+	private List<Infection> newCasesList;
 	
 	private int newResistACases;
 	private double resistAIncidence;
@@ -120,6 +121,7 @@ public class Observer {
 		
 		this.symptomProportion = 0;
 		this.newCases = 0;
+		this.newCasesList = new ArrayList<Infection>();
 		this.newResistACases = 0;
 		this.resistAIncidence = 0;
 		this.newResistBCases = 0;
@@ -177,7 +179,7 @@ public class Observer {
 
 		this.symptomProportion = calcSymptomProportion();
 	
-		double tick = schedule.getTickCount();
+		double tick = tickNow();
 		
 		SurveillanceProgram surveillance = getSurveillance();
 		double surveillanceResultA = surveillance.calcDetectedResistantA();
@@ -293,6 +295,7 @@ public class Observer {
 				(int) population.highRiskCount()
 				
 				);
+		outputter.transmissionRateOutput(newCasesList);
 		
 		clearObserver();
 		costCalc.clearAnnualCosts();
@@ -312,9 +315,8 @@ public class Observer {
 		this.failedTreatments = 0;
 		this.developedResistance = 0;
 		this.detected = 0;
-		this.detectedList = new ArrayList<Infection>();
 		
-		new ArrayList<Infection>();
+		this.newCasesList = new ArrayList<Infection>();
 
 		
 		this.detectedAndSymptoms = 0;
@@ -351,6 +353,7 @@ public class Observer {
 		
 		if (infection.isDetected()) {
 			detected++;
+			
 			
 			if (infection.symptoms()) {
 				detectedAndSymptoms++;
@@ -658,7 +661,9 @@ public class Observer {
 	
 	}
 
-	
+	public void addToDetectedList(Infection infection) {
+		detectedList.add(infection);
+	}
 	
 	
 	
@@ -731,6 +736,10 @@ public class Observer {
 	
 	public int sucessesX() {
 		return successTreatmentsX;
+	}
+	
+	public double tickNow() {
+		return schedule.getTickCount();
 	}
 	
 }

@@ -86,7 +86,7 @@ public class InsertResistance {
 		
 		population.allInfectious().
 				limit((long) (percentResistantACombo * population.infectiousCount())).
-				forEach(indiv -> indiv.infect("A"));
+				forEach(indiv -> indiv.infect("A", "reinfect"));
 		
 	}
 	
@@ -108,7 +108,12 @@ public class InsertResistance {
 		Uniform importResistantUniform = (Uniform) randomHelper.getDistribution("importResistantUniform");
 		int newBResistant = importResistantUniform.nextInt();
 		Indiv indiv = population.allIndivs().collect(Collectors.toList()).get(newBResistant);
-		indiv.infect("B");
+		
+		if (indiv.infectious()) {
+			indiv.infect("B", "reinfect");
+		} else {		
+			indiv.infect("B");
+		}
 	}
 
 	
@@ -182,12 +187,11 @@ public class InsertResistance {
 		
 		double chanceDevelopResistance = 0.0001;
 		
-		if (randomValue <= chanceDevelopResistance && (!treatment.equals("X"))) {
-			indiv.infect(treatment);
+		if (randomValue <= chanceDevelopResistance) {
+			indiv.infect(treatment, "resist");
 			indiv.recordEndTreatment();
-			indiv.recordDevelopedResistance();
 		} else {
-			indiv.actuallyRecover(treatment);
+			indiv.actuallyRecoverwTreatment(treatment);
 		}
 	}
 	

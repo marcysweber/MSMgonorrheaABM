@@ -36,9 +36,9 @@ public class SurveillanceProgramTest {
 				1000,//endtime
 				1, //seed
 				"combo", //resistance
-				"none", //counterfactual
+				"GISP", //counterfactual
 				10, //yearX
-				10, //initial infected
+				1000, //initial infected
 				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
@@ -72,16 +72,16 @@ public class SurveillanceProgramTest {
 		
 		SingleRun testRun = setUpSurvTest();
 
-		for (int i=0; i < 3; i++) {
+		for (int i=0; i < 300; i++) {
 			testRun.schedule().execute();
 		}
-		//System.out.println("tick " + testRun.schedule().getTickCount());
+		System.out.println("tick " + testRun.schedule().getTickCount());
 
 
-		//System.out.println("prev: " + testRun.observer().calcPrev());
-		//System.out.println("detected: " + testRun.observer().detected());
+		System.out.println("prev: " + testRun.observer().calcPrev());
+		System.out.println("detected: " + testRun.observer().getDetectedList().size());
 
-
+		testRun.observer().clearDetectedList();
 		
 		testRun.resistanceInserter().convertToResistantA();
 		System.out.println("actual resistance to A: " + testRun.observer().calcResistAPrev());
@@ -90,12 +90,16 @@ public class SurveillanceProgramTest {
 			testRun.schedule().execute();
 		}
 		
+		System.out.println("detected: " + testRun.observer().getDetectedList().size());
+		System.out.println("actual resistance to A: " + testRun.observer().calcResistAPrev());
+
+		
 		testRun.surveillanceProgram().conductSurveillance();
 		double result = testRun.surveillanceProgram().calcDetectedResistantA();
 
-		//System.out.println("surveillance: " + result);
+		System.out.println("surveillance: " + result);
 		
-		//System.out.println("switch? " + testRun.surveillanceProgram().checkForSwitch(result));
+		System.out.println("switch? " + testRun.surveillanceProgram().checkForSwitch(result));
 
 		
 	}

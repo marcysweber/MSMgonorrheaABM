@@ -594,7 +594,7 @@ public class BatchRun {
 		
 		//String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_16_2025_overnight2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_16_2025_debug5_";
+		String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_20_2025_debug1_";
 
 		
 		dirname += counterfactual;
@@ -655,7 +655,7 @@ public class BatchRun {
         	boolean headerWritten = false;
 
         	List<Path> csvfiles = Files.list(Paths.get(dirpath)).
-        			filter(p -> p.getFileName().toString().contains(counterfactual)).
+        			filter(p -> p.getFileName().toString().contains(counterfactual) && !p.getFileName().toString().contains("transmission")).
         			collect(Collectors.toList());
         	
         	if (csvfiles.isEmpty()) {

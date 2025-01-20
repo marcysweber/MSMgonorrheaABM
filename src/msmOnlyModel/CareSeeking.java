@@ -66,7 +66,7 @@ public class CareSeeking {
 			observer.getCostCalc().addPersonDaysSymptomatic();
 			//observer.recordNewDetectedAndSymptoms(indiv);
 
-			Treatment treatment = new Treatment(indiv, observer);
+			Treatment treatment = new Treatment(indiv.myInfection(), observer);
 			try {
 				treatment.treat();
 			} catch (Exception e) {

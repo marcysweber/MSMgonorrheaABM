@@ -71,7 +71,7 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			executeCalibratedNoResistanceBatch(scenariofile);
+			//executeCalibratedNoResistanceBatch(scenariofile);
 
 			executeCounterfactualScenarios(scenariofile);
 
@@ -89,13 +89,13 @@ public class Main {
 		BatchRun batchRunner = new BatchRun("all", "all");
 		batchRunner.executeCalibratedBatch(scenariofile, "GISP_05");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
+		//batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "random");
+		//batchRunner.executeCalibratedBatch(scenariofile, "random");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
+		//batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_33_33_34");
+		//batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_33_33_34");
 
 		System.out.println("completed all counterfactual scenarios!");
 

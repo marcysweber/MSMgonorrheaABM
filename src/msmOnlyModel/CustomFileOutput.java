@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -18,19 +19,20 @@ import au.com.bytecode.opencsv.CSVWriter;
  *
  */
 public class CustomFileOutput {
-	
+
 	private String counterfactual;
 	private String resistance;
 	private int yearX;
 	private int RunNumber;
 	private int seed;
-	
-	
+
+
 	private String outputDir;
 	private String outputFileName;
 	private boolean isTest;
-	
-	
+	private String outputTransmissionFileName;
+
+
 	public CustomFileOutput(String batchDirPath, String counterfactual, String resistance, int yearX, int RunNumber, int seed) {
 		this.outputDir = batchDirPath;
 		this.counterfactual = counterfactual;
@@ -38,217 +40,238 @@ public class CustomFileOutput {
 		this.yearX = yearX;
 		this.RunNumber = RunNumber;
 		this.seed = seed;
-		
-		this.outputFileName = generateFileName();
+
+		String fileStub = generateFileName();
+		this.outputFileName = fileStub + ".csv";
+		this.outputTransmissionFileName = fileStub + "transmission.csv";
+
 		this.isTest = false;
 
 	}
-	
+
 	//use this init for tests
 	public CustomFileOutput(boolean test) {
 		this.outputDir = "/Users/me597/Documents/output/";
 		this.outputFileName = generateFileName();
 		this.isTest = test;
 	}
-	
+
 	public String generateFileName() {
-		
+
 		LocalDate date = LocalDate.now();
-		
+
 		Month month = date.getMonth();
 		int day = date.getDayOfMonth();
 		int year = date.getYear();
-		
+
 		String fullDate = month +"_"+ day +"_"+ year;
-		
+
 		//String filename = "MSMonly_output_" + fullDate +"_1_";
 		//String filename = "MSMonly_output_" + fullDate +"_debug_2_";
 
 		//String filename = "MSMonly_output_JANUARY_10_2025_overnight_";
-		
+
 		String filename = fullDate;
-		
+
 		filename += "_";
-		
+
 		filename += counterfactual;
-		
+
 		filename += "_";
-		
+
 		filename += resistance;
-		
+
 		filename += "_";
-		
+
 		filename += String.valueOf(yearX);
-		
+
 		filename += "_";
-		
+
 		filename += String.valueOf(RunNumber);
-		
+
 		filename += "-";
-		
+
 		filename += String.valueOf(seed);
-		
-		filename += ".csv";
-		
+
 		return filename;
 	}
-	
+
 	public void createOutputFile() {
 		//should create a new csv with the specified filename
-		
+
 		File file = new File(outputDir + outputFileName);
-        FileWriter outputfile;
+		FileWriter outputfile;
 		try {
 			outputfile = new FileWriter(file, true);
-	        CSVWriter writer = new CSVWriter(outputfile); 
-	        
-	        String[] header = { 
-	        		"RunNumber", 
-	        		"seed",
-	        		"counterfactual",
-	        		"yearX",
-	        		
-	        		"switchThreshold",
-	        		"availrDST",
-	        		"adhereTOCsympt",
-	        		"adhereTOCasympt",
-	        		
-	        		"realisticRandom",
-	        		"realisticTOC",
-	        		"realisticDST",
+			CSVWriter writer = new CSVWriter(outputfile); 
 
-	        		
-	        		
-	        		"InitialInfected",
-	        		"propHighRisk",
-	        		
-	        		"TransmissionMSM",
-	        		
-	        		
-	        		"RecoveryLambda",
-	        		
-	        		"ProbSymptomaticMSM",
-	        	
-	        		
-	        		"ScreenIntervalMSM",
-	        		
+			String[] header = { 
+					"RunNumber", 
+					"seed",
+					"counterfactual",
+					"yearX",
 
-	        		
-	        		"DelayToSeekCareMSM",
+					"switchThreshold",
+					"availrDST",
+					"adhereTOCsympt",
+					"adhereTOCasympt",
 
-	        		"DelayToRetreatmentMSM",
-	        		
-	        		"Assortativity",
-	        		"riskGroupTransferProp",
-	        		"riskGroupTransmissionRatio",
+					"realisticRandom",
+					"realisticTOC",
+					"realisticDST",
 
-	        		"PercentResistantA",
-	        		"BeginImportingB",
-	        		"ImportingBInterval",
-	        		"DSTsensitivity", 
-	        		"DSTspecificity",
-	        		"CareCost",
-	        		"TestCost",
-	        		"StrainTestCost",
-	        		"DrugATreatmentCost",
-	        		"DrugBTreatmentCost",
-	        		"DrugXTreatmentCost",
-	        		"DrugETreatmentCost",
-	        		"tick", 
-	        		"Prevalence",
-	        		"Incidence",
-	        		"ResistAIncidence",
-	        		"ResistBIncidence",
-	        		"ResistBothIncidence",
-	        		"SymptomProportion",
-	        		"Treatments",
-	        		"UnknownFailedTreatments",
-	        		"DevelopedResistance",
-	        		"Detected",
-	        		"DetectedAndSymptoms",
-	        		"DetectedThruScreen",
 
-	        		"SuccessTreatmentsA",
-	        		"SuccessTreatmentsB",
-	        		"SuccessTreatmentsX",
-	        		"AttemptTreatmentsA",
-	        		"AttemptTreatmentsB",
-	        		"AttemptTreatmentsX",
-	        		"UsageofErtapenem",
-	        		"RecoveredNaturally",
-	        		"RecoveredNaturallyDuringTreatment",
-	        		"Reinfected",
-	        		"SurveillanceEstPropResistA",
-	        		"SurveillanceEstPropResistB",
-	        		"SurveillanceEstPropResistBoth",
-	        		"SwitchedToB",
-	        		"SwitchedToX",
-	        		"AnnualMonetaryCost",
-	        		"AnnualQALYsLost",
-	        		"LowRiskPrev",
-	        		"HighRiskPrev",
-	        		"CountHighRisk"
-	        		
-	        		
-	        }; 
-	        
-	        writer.writeNext(header); 
-	        
-	        writer.close();
-	  
+
+					"InitialInfected",
+					"propHighRisk",
+
+					"TransmissionMSM",
+
+
+					"RecoveryLambda",
+
+					"ProbSymptomaticMSM",
+
+
+					"ScreenIntervalMSM",
+
+
+
+					"DelayToSeekCareMSM",
+
+					"DelayToRetreatmentMSM",
+
+					"Assortativity",
+					"riskGroupTransferProp",
+					"riskGroupTransmissionRatio",
+
+					"PercentResistantA",
+					"BeginImportingB",
+					"ImportingBInterval",
+					"DSTsensitivity", 
+					"DSTspecificity",
+					"CareCost",
+					"TestCost",
+					"StrainTestCost",
+					"DrugATreatmentCost",
+					"DrugBTreatmentCost",
+					"DrugXTreatmentCost",
+					"DrugETreatmentCost",
+					"tick", 
+					"Prevalence",
+					"Incidence",
+					"ResistAIncidence",
+					"ResistBIncidence",
+					"ResistBothIncidence",
+					"SymptomProportion",
+					"Treatments",
+					"UnknownFailedTreatments",
+					"DevelopedResistance",
+					"Detected",
+					"DetectedAndSymptoms",
+					"DetectedThruScreen",
+
+					"SuccessTreatmentsA",
+					"SuccessTreatmentsB",
+					"SuccessTreatmentsX",
+					"AttemptTreatmentsA",
+					"AttemptTreatmentsB",
+					"AttemptTreatmentsX",
+					"UsageofErtapenem",
+					"RecoveredNaturally",
+					"RecoveredNaturallyDuringTreatment",
+					"Reinfected",
+					"SurveillanceEstPropResistA",
+					"SurveillanceEstPropResistB",
+					"SurveillanceEstPropResistBoth",
+					"SwitchedToB",
+					"SwitchedToX",
+					"AnnualMonetaryCost",
+					"AnnualQALYsLost",
+					"LowRiskPrev",
+					"HighRiskPrev",
+					"CountHighRisk"
+
+
+			}; 
+
+			writer.writeNext(header); 
+
+			writer.close();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-	}
-	
-	public void addOutputRow(
+		
+		File file2 = new File(outputDir + outputTransmissionFileName);
+		FileWriter outputfile2;
+		
+		try {
+			outputfile2 = new FileWriter(file2, true);
+			CSVWriter writer2 = new CSVWriter(outputfile2); 
 			
+			String[] header2 = { 
+					"CountTransmissions", 
+					"InfectionDuration"};
+			writer2.writeNext(header2);
+			writer2.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+	}
+
+	public void addOutputRow(
+
 			//general info and parameters
 			int runNumber, 
 			int seed,
 			String counterfactual,
 			int yearX,
-			
+
 			double switchThreshold, 
 			int availrDST,
 			int adhereTOCsympt,
 			int adhereTOCasympt,
-			
+
 			double realisticRandom,
 			double realisticTOC,
 			double realisticDST,
 
-			
+
 			int initialInfected,
 			double propHighRisk,
-			
+
 			double transmissionMSM, 
-			
-			
+
+
 			double RecoveryLambda, 
-			
+
 			double ProbSymptomaticMSM,
-	
+
 			double ScreenIntervalMSM,
-		
+
 
 			double delayToSeekCareMSM,
-	
+
 
 			double delayToRetreatmentMSM,
-			
+
 			double assortativity,
 			double riskGroupTransferProp,
 			double riskGroupTransmissionRatio,
-			
-			
+
+
 			double percentResistantA,
 			int beginImportingB,
 			double importingBInterval,
 			double DSTsensitivity,
 			double DSTspecificity,
-			
+
 			double careCost,
 			double testCost,
 			double strainTestCost,
@@ -256,9 +279,9 @@ public class CustomFileOutput {
 			double drugBtreatmentCost,
 			double drugXtreatmentCost,
 			double drugEtreatmentCost,
-			
+
 			double tick, 
-			
+
 			//whole pop output
 			double Prevalence, 
 			int Incidence, 
@@ -280,9 +303,9 @@ public class CustomFileOutput {
 			int attemptTreatmentsX,
 			int usageE,
 			int recoveredNaturally,
-    		int recoveredNaturallyDuringTreatment,
-    		int reinfected,
-			
+			int recoveredNaturallyDuringTreatment,
+			int reinfected,
+
 			double surveillanceResultA,
 			double surveillanceResultB,
 			double surveillanceResultBoth,
@@ -294,118 +317,147 @@ public class CustomFileOutput {
 			double highRiskPrev,
 			int countHighRisk
 			) {
-		
+
 		if (isTest == false) {
+
+			File file = new File(outputDir + outputFileName);
+			FileWriter outputfile;
+			try {
+				outputfile = new FileWriter(file, true);
+				CSVWriter writer = new CSVWriter(outputfile); 
+
+				String[] newRow = { 
+						String.valueOf(runNumber), 
+						String.valueOf(seed),
+						String.valueOf(counterfactual),
+						String.valueOf(yearX),
+
+						String.valueOf(switchThreshold),
+						String.valueOf(availrDST),
+						String.valueOf(adhereTOCsympt),
+						String.valueOf(adhereTOCasympt),
+
+						String.valueOf(realisticRandom),
+						String.valueOf(realisticTOC),
+						String.valueOf(realisticDST),
+
+						String.valueOf(initialInfected),
+						String.valueOf(propHighRisk),
+
+						String.valueOf(transmissionMSM),
+
+						String.valueOf(RecoveryLambda),
+
+						String.valueOf(ProbSymptomaticMSM),
+
+						String.valueOf(ScreenIntervalMSM),
+
+						String.valueOf(delayToSeekCareMSM),
+
+						String.valueOf(delayToRetreatmentMSM),
+						String.valueOf(assortativity),
+
+						String.valueOf(riskGroupTransferProp),
+						String.valueOf(riskGroupTransmissionRatio),
+
+
+						String.valueOf(percentResistantA),
+						String.valueOf(beginImportingB),
+						String.valueOf(importingBInterval),
+						String.valueOf(DSTsensitivity),
+						String.valueOf(DSTspecificity),
+
+						String.valueOf(careCost),
+						String.valueOf(testCost),
+						String.valueOf(strainTestCost),
+						String.valueOf(drugAtreatmentCost),
+						String.valueOf(drugBtreatmentCost),	 
+						String.valueOf(drugXtreatmentCost),
+						String.valueOf(drugEtreatmentCost),
+
+						String.valueOf(tick), 
+
+						String.valueOf(Prevalence),
+						String.valueOf(Incidence),
+
+						String.valueOf(resistAIncidence),
+						String.valueOf(resistBIncidence),
+						String.valueOf(resistBothIncidence),
+
+						String.valueOf(symptomProportion),
+						String.valueOf(treatments),
+						String.valueOf(failedTreatments),
+						String.valueOf(developedResistance),
+						String.valueOf(detected),
+						String.valueOf(detectedAndSymptoms),
+						String.valueOf(detectedThruScreen), 
+
+						String.valueOf(successTreatmentsA),
+						String.valueOf(successTreatmentsB),
+						String.valueOf(successTreatmentsX),
+						String.valueOf(attemptTreatmentsA),
+						String.valueOf(attemptTreatmentsB),
+						String.valueOf(attemptTreatmentsX),	
+						String.valueOf(usageE),
+						String.valueOf(recoveredNaturally),
+						String.valueOf(recoveredNaturallyDuringTreatment),
+						String.valueOf(reinfected),
+
+
+						String.valueOf(surveillanceResultA),
+						String.valueOf(surveillanceResultB),
+						String.valueOf(surveillanceResultBoth),
+						String.valueOf(switchedToB),
+						String.valueOf(switchedToX),
+						String.valueOf(monetaryCost),
+						String.valueOf(QALYcost),
+						String.valueOf(lowRiskPrev),
+						String.valueOf(highRiskPrev),
+						String.valueOf(countHighRisk)
+
+
+
+				}; 
+
+				writer.writeNext(newRow); 
+
+				writer.close();
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+	}
+
+	public void transmissionRateOutput(List<Infection> infectionList) {
+		File file = new File(outputDir + outputTransmissionFileName);
+		FileWriter outputfile;
 		
-		File file = new File(outputDir + outputFileName);
-        FileWriter outputfile;
 		try {
 			outputfile = new FileWriter(file, true);
-	        CSVWriter writer = new CSVWriter(outputfile); 
-	        
-	        String[] newRow = { 
-	        		String.valueOf(runNumber), 
-	        		String.valueOf(seed),
-	        		String.valueOf(counterfactual),
-	        		String.valueOf(yearX),
-	        		
-	        		String.valueOf(switchThreshold),
-	        		String.valueOf(availrDST),
-	        		String.valueOf(adhereTOCsympt),
-	        		String.valueOf(adhereTOCasympt),
+			CSVWriter writer = new CSVWriter(outputfile); 
 
-	        		String.valueOf(realisticRandom),
-	        		String.valueOf(realisticTOC),
-	        		String.valueOf(realisticDST),
-	        		
-	        		String.valueOf(initialInfected),
-	        		String.valueOf(propHighRisk),
-	        		
-	        		String.valueOf(transmissionMSM),
-	        		
-	        		String.valueOf(RecoveryLambda),
-	        		
-	        		String.valueOf(ProbSymptomaticMSM),
-	        		
-	        		String.valueOf(ScreenIntervalMSM),
-	        		
-	        		String.valueOf(delayToSeekCareMSM),
-	        		
-	        		String.valueOf(delayToRetreatmentMSM),
-	        		String.valueOf(assortativity),
-	        		
-	        		String.valueOf(riskGroupTransferProp),
-	        		String.valueOf(riskGroupTransmissionRatio),
 
-	        		
-	        		String.valueOf(percentResistantA),
-	        		String.valueOf(beginImportingB),
-	        		String.valueOf(importingBInterval),
-	        		String.valueOf(DSTsensitivity),
-	        		String.valueOf(DSTspecificity),
-	        		
-	        		String.valueOf(careCost),
-	        		String.valueOf(testCost),
-	        		String.valueOf(strainTestCost),
-	        		String.valueOf(drugAtreatmentCost),
-	        		String.valueOf(drugBtreatmentCost),	 
-	        		String.valueOf(drugXtreatmentCost),
-	        		String.valueOf(drugEtreatmentCost),
-	        		
-	        		String.valueOf(tick), 
-	        		
-	        		String.valueOf(Prevalence),
-	        		String.valueOf(Incidence),
-	        		
-	        		String.valueOf(resistAIncidence),
-	        		String.valueOf(resistBIncidence),
-	        		String.valueOf(resistBothIncidence),
-	        		
-	        		String.valueOf(symptomProportion),
-	        		String.valueOf(treatments),
-	        		String.valueOf(failedTreatments),
-	        		String.valueOf(developedResistance),
-	        		String.valueOf(detected),
-	        		String.valueOf(detectedAndSymptoms),
-	        		String.valueOf(detectedThruScreen), 
+			for (Infection inf : infectionList) {
+				int count = inf.transmissionEvents();
+				double dur = inf.duration();
+				String riskGroup = inf.getRiskGroup();
 
-	        		String.valueOf(successTreatmentsA),
-	        		String.valueOf(successTreatmentsB),
-	        		String.valueOf(successTreatmentsX),
-	        		String.valueOf(attemptTreatmentsA),
-	        		String.valueOf(attemptTreatmentsB),
-	        		String.valueOf(attemptTreatmentsX),	
-	        		String.valueOf(usageE),
-	        		String.valueOf(recoveredNaturally),
-	        		String.valueOf(recoveredNaturallyDuringTreatment),
-	        		String.valueOf(reinfected),
-
-	        		
-	        		String.valueOf(surveillanceResultA),
-	        		String.valueOf(surveillanceResultB),
-	        		String.valueOf(surveillanceResultBoth),
-	        		String.valueOf(switchedToB),
-	        		String.valueOf(switchedToX),
-	        		String.valueOf(monetaryCost),
-	        		String.valueOf(QALYcost),
-	        		String.valueOf(lowRiskPrev),
-	        		String.valueOf(highRiskPrev),
-	        		String.valueOf(countHighRisk)
-	        		
-
-	        
-	        }; 
-	        
-	        writer.writeNext(newRow); 
-	        
-	        writer.close();
-	  
+				String[] newRow = { 
+						String.valueOf(count), 
+						String.valueOf(dur)};
+				
+				writer.writeNext(newRow);
+			}
+			
+			writer.close();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
-	}
-	
+
 
 }

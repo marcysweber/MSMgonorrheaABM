@@ -143,7 +143,7 @@ public class SurveillanceProgram {
 		List <Infection> sample = new ArrayList <Infection>();
 		
 		if (detected.size() > amountToTest) {
-			sample = detected.stream()
+			sample = detected.stream().unordered()
 					//.skip(amountToSkip)
 					.limit(amountToTest)
 					.collect(Collectors.toList());
@@ -158,10 +158,12 @@ public class SurveillanceProgram {
 		//System.out.println(sample.size());
 		//System.out.println("Susceptibility profiles:");
 		for (Infection inf : sample) {
-			susProfiles.add(detectSus(inf));
+			String strainDetected = detectSus(inf);
+			susProfiles.add(strainDetected);
+			//System.out.print(strainDetected);
+
 		}
 
-		//System.out.print(strainDetected);
 
 		long AMRcountA = susProfiles.stream().filter(i->!i.contains("A")).count();
 		thisMonthDetectionsA = AMRcountA;
