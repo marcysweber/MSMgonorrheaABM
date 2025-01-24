@@ -181,6 +181,7 @@ public class CustomFileOutput {
 					"RecoveredNaturally",
 					"RecoveredNaturallyDuringTreatment",
 					"Reinfected",
+					"ReinfectedDuringTreatment",
 					"SurveillanceEstPropResistA",
 					"SurveillanceEstPropResistB",
 					"SurveillanceEstPropResistBoth",
@@ -305,6 +306,7 @@ public class CustomFileOutput {
 			int recoveredNaturally,
 			int recoveredNaturallyDuringTreatment,
 			int reinfected,
+			int reinfectedDuringTreatment,
 
 			double surveillanceResultA,
 			double surveillanceResultB,
@@ -402,6 +404,8 @@ public class CustomFileOutput {
 						String.valueOf(recoveredNaturally),
 						String.valueOf(recoveredNaturallyDuringTreatment),
 						String.valueOf(reinfected),
+						String.valueOf(reinfectedDuringTreatment),
+
 
 
 						String.valueOf(surveillanceResultA),

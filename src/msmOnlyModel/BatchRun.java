@@ -592,9 +592,9 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		//String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_16_2025_overnight2_";
+		String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_24_2025_1_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_20_2025_debug1_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_20_2025_debug1_";
 
 		
 		dirname += counterfactual;

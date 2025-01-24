@@ -4,7 +4,9 @@
 package msmOnlyModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,6 +76,7 @@ public class Observer {
 	private int recoveredNaturallyDuringTreatment;
 	private int recoveredNaturally;
 	private int reInfected;
+	private int reInfectedDuringTreatment;
 	private CostCalc costCalc;
 	
 	
@@ -147,6 +150,7 @@ public class Observer {
 		this.recoveredNaturally = 0;
 		this.recoveredNaturallyDuringTreatment = 0;
 		this.reInfected = 0;
+		this.reInfectedDuringTreatment = 0;
 		
 		this.costCalc = new CostCalc(parameters);
 	}
@@ -282,6 +286,7 @@ public class Observer {
 				this.recoveredNaturally,
 				this.recoveredNaturallyDuringTreatment,
 				this.reInfected,
+				this.reInfectedDuringTreatment,
 				surveillanceResultA, 
 				surveillanceResultB,
 				surveillanceResultBoth,
@@ -336,6 +341,8 @@ public class Observer {
 		this.recoveredNaturally = 0;
 		this.recoveredNaturallyDuringTreatment = 0;
 		this.reInfected = 0;
+		this.reInfectedDuringTreatment = 0;
+
 	}
 	
 	public void processCompleteInfection(Infection infection) throws Exception {
@@ -351,17 +358,43 @@ public class Observer {
 			newResistBCases++;
 		}
 		
-		if (infection.isDetected()) {
+		if (infection.wasEverDetected()) {
 			detected++;
-			
-			
-			if (infection.symptoms()) {
-				detectedAndSymptoms++;
+
+			if (infection.isDetected()) {
+				if (infection.symptoms()) {
+					detectedAndSymptoms++;
+				} else if (infection.screened()) {
+					detectedThruScreen++;
+				} else {
+					System.out.println("detected case neither symptomatic nor screened");
+				}
 			}
+
+			Map<String, Boolean> finalOutcomes = new HashMap<String, Boolean>()
+			{{
+			     put("SucceededA", infection.succeededA());
+			     put("SucceededB", infection.succeededB());
+			     put("SucceededX", infection.succeededX());
+			     put("SucceededE", infection.succeededE());
+			     put("DevelopedResistance", infection.developedResistance());
+			     put("ReInfected", infection.reInfected() && infection.inTreatment());
+			     put("RecoveredNaturally", infection.recoveredNaturally()&& infection.inTreatment());
+			     put("UnknownFailedTreatment", infection.failedTreatment());
+			}};
 			
-			if (infection.screened()) {
-				detectedThruScreen++;
-			}
+			int outcomes = finalOutcomes.values().stream().map(a -> a ? 1 : 0).reduce(0, (a,b) -> a+b);
+			
+			if (outcomes != 1) {
+				if (outcomes == 0 && !infection.failedTreatment()) {
+					System.out.println(finalOutcomes);
+				} else {
+				System.out.println(finalOutcomes);
+				}
+			} 
+			
+			
+			
 		}
 		
 	
@@ -381,8 +414,7 @@ public class Observer {
 		if (infection.attemptedB()) {
 			attemptTreatmentsB++;
 		}
-		
-		
+	
 		
 		//final outcomes
 		if (infection.succeededA()) {
@@ -403,12 +435,36 @@ public class Observer {
 			developedResistance++;
 		} else if (infection.reInfected()) {
 			reInfected++;
+			if (infection.inTreatment()) {
+				reInfectedDuringTreatment++;
+			}
 		} else {
 			throw new Exception("Invalid outcome reported to observer!");
 		}
 		
 		//System.out.println(soughtCare);
 		
+	}
+	
+	public void processUndetectInfection(Infection infection) {
+		if (infection.isDetected()) {
+			detected++;
+			
+			if (infection.symptoms()) {
+				detectedAndSymptoms++;
+			} else if (infection.screened()) {
+				detectedThruScreen++;
+			} else {
+				System.out.println("detected case neither symptomatic nor screened");
+			}
+			
+			if (infection.failedTreatment()) {
+				failedTreatments++;
+			} else {
+				System.out.println("undetect that was not a failed treatment!");
+			}
+			
+		}
 	}
 	
 	public double calcPrev() { //real time

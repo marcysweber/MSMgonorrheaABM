@@ -186,10 +186,11 @@ public class Treatment {
 			} else if (counterfactual.contains("GISP")){
 				if (!switchToB && !switchToX) {
 					treatDefaultBeforeSwitch();
-				} else if (switchToB) { // have we switched to drug B?
-					treatAfterSwitchB();
+				
 				} else if (switchToX) {
 					treatAfterSwitchX();
+				} else if (switchToB) { // have we switched to drug B?
+					treatAfterSwitchB();
 				} 
 				
 			// TOC

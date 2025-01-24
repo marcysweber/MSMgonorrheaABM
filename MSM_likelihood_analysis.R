@@ -281,7 +281,7 @@ calc_failure = function(df){
 calc_failure_rate = function(df){
   failures <- calc_failure(df)
   
-  attempts <- df$AttemptTreatmentsA + df$AttemptTreatmentsB + df$AttemptTreatmentsX
+  attempts <- df$AttemptTreatmentsA + df$AttemptTreatmentsB + df$AttemptTreatmentsX + df$UsageofErtapenem
   
   rate <- failures/attempts
   
@@ -685,7 +685,8 @@ sum_attempts = function(df){
   attempts_A = sum(df$AttemptTreatmentsA) 
   attempts_B = sum(df$AttemptTreatmentsB)
   attempts_X = sum(df$AttemptTreatmentsX)
-  return(attempts_A + attempts_B + attempts_X)
+  usage_E = sum(df$UsageofErtapenem)
+  return(attempts_A + attempts_B + attempts_X + usage_E)
 }
 
 cumulative_failure = function(df){
@@ -2787,7 +2788,7 @@ viz_inc = function(df, title, yearX){
          x = "Year",
          y = "Cases Detected")+
     theme(plot.title = element_text(size=8)) +
-    coord_cartesian(ylim= c(0,20000),xlim=c(0,25))+
+    coord_cartesian(ylim= c(0,25000),xlim=c(0,25))+
     geom_vline(xintercept=yearX-5, linetype="dashed")+
   
     my_theme +
@@ -2906,8 +2907,8 @@ viz_true_resist_B = function(df, title, yearX){
 viz_true_resist_both = function(df, title, yearX){
   df <- df %>% filter(tick >= 260)
   
-  amrB <- ggplot(data = df, aes(x = (tick / 52) - 5, group = RunNumber)) + 
-    geom_line( aes(y = ResistBothIncidence/Incidence, alpha=resampled),size = 0.05, color="black") +
+  amrB <- ggplot(data = df, aes(x = (tick / 52) - 5, y = ResistBothIncidence/Incidence,  group = RunNumber)) + 
+    geom_line( aes(alpha=resampled),size = 0.05, color="black") +
     labs(x = "Year",
          y = "Prop. cases resistant\nboth drugs", 
          title = title) +
@@ -2976,7 +2977,7 @@ viz_success_A_of_A = function(df, title){
 }
 
 viz_success_B_of_B = function(df, title){
-  df <- df %>% filter(tick > 520)
+  df <- df %>% filter(tick > 260)
   
   plotB <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
     geom_line(aes(y = SuccessTreatmentsB/AttemptTreatmentsB * 100), size = 0.05, color = "black") +
@@ -2989,7 +2990,7 @@ viz_success_B_of_B = function(df, title){
 }
 
 viz_success_X_of_X = function(df, title){
-  df <- df %>% filter(tick > 520)
+  df <- df %>% filter(tick > 260)
   
   plotX <- ggplot(data = df, aes(x = tick/52, group = RunNumber)) +
     geom_line(aes(y = SuccessTreatmentsX/AttemptTreatmentsX * 100), size = 0.1, color = "black") +
@@ -2998,6 +2999,47 @@ viz_success_X_of_X = function(df, title){
          title = title) +
     ylim(0.0, 100) +
     my_theme
+  return(plotX)
+}
+
+
+
+viz_success_A = function(df, title){
+  df <- df %>% filter(tick > 260)
+  
+  plotA <- ggplot(data = df, aes(y = SuccessTreatmentsA, x = (tick/52) - 5, group = RunNumber)) +
+    geom_line(size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "% treatments successful with A", 
+         title = title) +
+    my_theme +   annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+
+  return(plotA)
+}
+
+viz_success_B = function(df, title){
+  df <- df %>% filter(tick > 260)
+  
+  plotB <- ggplot(data = df, aes(y = SuccessTreatmentsB, x = (tick/52) - 5, group = RunNumber)) +
+    geom_line(size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "% treatments successful with B", 
+         title = title) +
+    my_theme +    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+
+  return(plotB)
+}
+
+viz_success_X = function(df, title){
+  df <- df %>% filter(tick > 260)
+  
+  plotX <- ggplot(data = df, aes(y = SuccessTreatmentsX, x = (tick/52) - 5, group = RunNumber)) +
+    geom_line(size = 0.1, color = "black") +
+    labs(x = "Year",
+         y = "% treatments successful with X", 
+         title = title) +
+    my_theme +    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+
   return(plotX)
 }
 
@@ -3057,8 +3099,8 @@ viz_attempts_X = function(df, title, yearX){
 viz_E = function(df, title, yearX, ylim){
   df <- df %>% filter(tick >= 260)
   
-  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, group = RunNumber)) +
-    geom_line(aes(y = UsageofErtapenem, alpha=resampled), size = 0.05, color = "black") +
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = UsageofErtapenem, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
     labs(x = "Year",
          y = "Count treatments\nwith ertapenem", 
          title = title) +
@@ -3077,6 +3119,58 @@ viz_E = function(df, title, yearX, ylim){
 #viz_success_B_of_all
 
 #viz_success_X_of_all
+
+viz_recovered_naturally_during_treatment = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = RecoveredNaturallyDuringTreatment, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Count treatments\nwith ertapenem", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
+
+viz_reinfected_during_treatment = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = ReinfectedDuringTreatment, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Count treatments\nwith ertapenem", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
+
+viz_developed_resistance_during_treatment = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = DevelopedResistance, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Count treatments\nwith ertapenem", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
+
 
 
 #*
@@ -3157,6 +3251,24 @@ viz_failed = function(df, title){
   labs(title=title)+
     ylim(0, 0.75)+
     xlim(0,20) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(failed)
+}
+
+viz_unknown_failed = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  df$FailureRate <- calc_failure_rate(df)
+  
+  failed <- ggplot(data = df, aes(x=(tick / 52) - 5, y=UnknownFailedTreatments, group = RunNumber))+
+    geom_line(aes(alpha=resampled), linewidth = 0.05, color = "black")+
+    my_theme+
+    labs(title=title, x= "Year", y = "Unknown failed treatments")+
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    
+   # coord_cartesian(ylim=c(0, 1)) +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
     annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
   return(failed)
 }
@@ -9335,3 +9447,223 @@ multiplot(
 )
 
 ############
+
+#jan 20-21 rerun
+############
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JANUARY_20_2025_overnight_sweep_none/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 1000)
+
+#save the resample including the replicates
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates20jan25.csv")
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$uniqueID)
+for (unique_ID in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+visualize_calibration_MSM(df_best_traj)
+visualize_parameters(df_best_ends)
+
+write_calibrated(df_best_ends_unique)
+
+
+
+
+
+
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates20jan25.csv")
+
+
+
+#calibration runs
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_21_2025_overnight_none_none/nonenone251combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+
+#figure 2
+visualize_calibration_MSM(dfcalibrated)
+
+
+visualize_calibration_risk_groups(dfcalibrated)
+
+
+
+directory <- "/Users/me597/Documents/MSMoutput/JANUARY_22_2025_1_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+new_summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+
+
+#summary data
+summary_GISP <- cumulative_everything(dfGISP25)
+summary_random <-cumulative_everything(dfrandom25)
+summary_TOC <-cumulative_everything(dfTOC25)
+summary_DST <-cumulative_everything(dfDST25)
+summary_real <-cumulative_everything(dfreal25)
+
+
+mean(summary_GISP$cumulativeFailure *100)
+quantile(summary_GISP$cumulativeFailure *100, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeFailure*100)
+quantile(summary_random$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeFailure*100)
+quantile(summary_TOC$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeFailure*100)
+quantile(summary_DST$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeFailure*100)
+quantile(summary_real$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeE)
+quantile(summary_GISP$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeE)
+quantile(summary_random$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeE)
+quantile(summary_TOC$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeE)
+quantile(summary_DST$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeE)
+quantile(summary_real$cumulativeE, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeCosts)
+quantile(summary_GISP$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeCosts)
+quantile(summary_TOC$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeCosts)
+quantile(summary_DST$cumulativeCosts, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeCosts)
+quantile(summary_real$cumulativeCosts, probs = c(0.025, 0.975))
+
+
+
+all_summary<- rbind(summary_GISP, summary_random, summary_TOC, summary_DST, summary_real)
+
+ggplot(all_summary, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+  geom_boxplot(outlier.shape = NA) +
+  labs(
+    title = "C.",
+    y = "",
+    x="Cumulative treatments with ertapenem\nper 100,000 over 20 years"
+  )+
+  my_theme +
+  scale_y_discrete(labels=counter_labels)+
+  coord_cartesian(xlim=c(0, 5000))
+
+
+#figure 4
+new_figure_four(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25, 25)
+
+#figure 5
+multiplot(
+  visualize_cea_weighted_real("A.", df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+
+
+
+
+directory <- "/Users/me597/Documents/MSMoutput/JANUARY_23_2025_5_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+
+
+
+#looking closer at the trajectories where multi-resistance gets very high
+highmulti <- dfrandom25[(dfrandom25$ResistBothIncidence / dfrandom25$Incidence)>0.9,]
+highmulti <- highmulti[highmulti$tick<1300,]
+highmulti <- na.omit(highmulti)
+highmultiIDs <- highmulti$uniqueID
+highmultiIDs <- unique(highmultiIDs)
+
+highmultitraj <- dfrandom25[dfrandom25$uniqueID %in% highmultiIDs,]
+
+multiplot(
+viz_inc(highmultitraj, "detected cases", 25) + geom_line(size=1),
+viz_true_resist_both(highmultitraj, "multi-resistance", 25)+ geom_line(size=1),
+viz_E(highmultitraj, "Ertapenem", 25, 10000)+ geom_line(size=1),
+viz_unknown_failed(highmultitraj, "Cryptic failures", 25)+ geom_line(size=1),
+cols = 2)
+
+highmultitraj$Incidence - highmultitraj$Reinfected - highmultitraj$SuccessTreatmentsA - highmultitraj$SuccessTreatmentsB - highmultitraj$SuccessTreatmentsX - highmultitraj$UsageofErtapenem - highmultitraj$RecoveredNaturally - highmultitraj$DevelopedResistance
+
+highmultitraj$Detected - highmultitraj$UnknownFailedTreatments - highmultitraj$SuccessTreatmentsA - highmultitraj$SuccessTreatmentsB - highmultitraj$SuccessTreatmentsX - highmultitraj$UsageofErtapenem - highmultitraj$RecoveredNaturallyDuringTreatment - highmultitraj$DevelopedResistance - highmultitraj$ReinfectedDuringTreatment
+
+
+onetraj <- dfrandom25[(dfrandom25$Detected>17000),]
+onetraj <- onetraj[onetraj$tick<1040,]
+onetraj <- na.omit(onetraj)
+onetraj <- onetraj$uniqueID
+onetraj <- unique(onetraj)
+
+onetraj <- dfrandom25[dfrandom25$uniqueID %in% onetraj,]
+
+
+onetraj$Incidence - onetraj$Reinfected - onetraj$SuccessTreatmentsA - onetraj$SuccessTreatmentsB - onetraj$SuccessTreatmentsX - onetraj$UsageofErtapenem - onetraj$RecoveredNaturally - onetraj$DevelopedResistance
+
+onetraj$Detected - onetraj$UnknownFailedTreatments - onetraj$SuccessTreatmentsA - onetraj$SuccessTreatmentsB - onetraj$SuccessTreatmentsX - onetraj$UsageofErtapenem - onetraj$RecoveredNaturallyDuringTreatment - onetraj$DevelopedResistance - onetraj$ReinfectedDuringTreatment
+
+onetraj$Detected - onetraj$DetectedAndSymptoms - onetraj$DetectedThruScreen
+
+
+multiplot(
+  viz_true_resist_both(onetraj, "A. Proportion of cases with multi-resistance", 25) + geom_line(size=2),
+  viz_inc(onetraj, "B. Detected Cases", 25) + geom_line(size=2),
+  viz_true_resist_both(onetraj, "C. Proportion of cases with multi-resistance", 25) + geom_line(size=2),
+  viz_success_A(onetraj, "D. Successes with A")+ geom_line(size=2),
+  viz_success_B(onetraj, "E. Successes with B")+ geom_line(size=2),
+  viz_success_X(onetraj, "F. Successes with X")+ geom_line(size=2),
+  viz_E(onetraj, "G. Uses of Ertapenem", 25, 10000) + geom_line(size=2),
+  viz_unknown_failed(onetraj, "H. Unknown Treatment Failures", 25) + geom_line(size=2),
+  viz_recovered_naturally_during_treatment(onetraj, "I. RecoveredNaturallyDuringTreatment", 25) + geom_line(size=2),
+  viz_developed_resistance_during_treatment(onetraj, "J. DevelopedResistance", 25) + geom_line(size=2),
+  viz_reinfected_during_treatment(onetraj, "K. Reinfected during treatment", 25) + geom_line(size=2),
+  cols = 3)
+###########

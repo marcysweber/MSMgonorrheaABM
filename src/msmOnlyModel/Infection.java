@@ -16,6 +16,7 @@ public class Infection {
 	private int transmissionEvents;
 	private double tickStarted;
 	private boolean detected;
+	private boolean everDetected;
 	private boolean soughtCare;
 	private boolean resistanceToA;
 	private boolean resistanceToB;
@@ -127,6 +128,7 @@ public class Infection {
 	public void ceaseInfection() {
 		Observer obs = host.getObserver();
 		this.tickEnded = obs.tickNow();
+		host.clearSeekCareScheduled();
 		
 		try {
 			obs.processCompleteInfection(this);
@@ -198,12 +200,38 @@ public class Infection {
 		return detected;
 	}
 	
+	public boolean wasEverDetected() {
+		return everDetected;
+	}
+	
 	public void detect() {
 		detected = true;
+		
+		if (everDetected) {
+			//if this infection was previous detected, override the past outcome, which should only be failed treatment
+			failedTreatment = false;
+			
+		}
+		
+		everDetected = true;
 	}
 	
 	public void undetect() {
+		
+		Observer obs = host.getObserver();
+		host.clearSeekCareScheduled();
+		
+		try {
+			obs.processUndetectInfection(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		detected = false;
+		inTreatment = false;
+		
+		
 	}
 	
 	public void screen() {

@@ -203,15 +203,14 @@ public class Indiv {
 
 			//if not already detected, check for detection
 			if (!infection.isDetected()) {
-				if (!seekCareScheduled) {
-					if (this.symptoms()) { //if symptomatic and not already scheduled to seek care
-						CareSeeking care = new CareSeeking(this, getObserver(), schedule);
-						seekCareScheduled = care.scheduleSeekCare();
-					} else if (screenings.contains(roundedTick)) {
-						Screener screener = new Screener();
-						screener.screen(this, getObserver());
-					}
+				if (this.symptoms() && !seekCareScheduled) { //if symptomatic and not already scheduled to seek care
+					CareSeeking care = new CareSeeking(this, getObserver(), schedule);
+					seekCareScheduled = care.scheduleSeekCare();
+				} else if (screenings.contains(roundedTick)) {
+					Screener screener = new Screener();
+					screener.screen(this, getObserver());
 				}
+				
 			}
 			
 			//if still infectious...
