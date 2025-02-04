@@ -161,7 +161,7 @@ public class ParamConfig {
 		return this.TransmissionMSM;
 	}
 	
-	public double getRecoveryLambda() {
+	public double getRecoveryTime() {
 		return this.RecoveryLambda;
 	}
 	

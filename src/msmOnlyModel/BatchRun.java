@@ -15,6 +15,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+
 import java.time.LocalDate;
 import java.time.Month;
 import repast.simphony.parameter.DefaultParameters;
@@ -53,7 +55,7 @@ public class BatchRun {
 		
 		List<Double> transmissionMSMValuesList = sweeper.getTransmissionMSMValues(reps);
 		
-		List<Double> recoveryLambdaValuesList = sweeper.getRecoveryLambdaValues(reps);
+		List<Double> recoveryTimeValuesList = sweeper.getNaturalRecoveryTimeValues(reps);
 		
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
@@ -94,7 +96,7 @@ public class BatchRun {
 							initialInfectedValuesList.get(i), 
 							propHighRiskValuesList.get(i),
 							transmissionMSMValuesList.get(i),
-							recoveryLambdaValuesList.get(i), 
+							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
 							screenIntervalMSMValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
@@ -157,6 +159,9 @@ public class BatchRun {
 		
 		
 	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST) {
+		
+
+		
 		int reps = 0;
 		
 		this.counterfactual=counterfactual;
@@ -166,12 +171,14 @@ public class BatchRun {
 		String batchDirPath = makeBatchDir();
 		
 		
+
+		
 		List<Integer> initialInfectedValuesList = new ArrayList<Integer>();
 		List <Double> propHighRiskValuesList = new ArrayList<Double>();
 		
 		List<Double> transmissionMSMValuesList = new ArrayList<Double>();
 		
-		List<Double> recoveryLambdaValuesList = new ArrayList<Double>();
+		List<Double> recoveryTimeValuesList = new ArrayList<Double>();
 		
 		List<Double> probSymptomaticMSMValuesList = new ArrayList<Double>();
 		
@@ -231,7 +238,7 @@ public class BatchRun {
 		
 		//recovery parameter
 		try {
-			recoveryLambdaValuesList = calibrated.getRecoveryLambdaValues();
+			recoveryTimeValuesList = calibrated.getRecoveryTimeValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -401,7 +408,7 @@ public class BatchRun {
 							initialInfectedValuesList.get(i), 
 							propHighRiskValuesList.get(i),
 							transmissionMSMValuesList.get(i),
-							recoveryLambdaValuesList.get(i), 
+							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
 							screenIntervalMSMValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
@@ -425,6 +432,7 @@ public class BatchRun {
 		
 		try {
 			combineCSVs(batchDirPath);
+			analyzeAndCombineTPI(batchDirPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -459,7 +467,7 @@ public class BatchRun {
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
 				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), paramConfig.getPropHighRisk(),
 				paramConfig.getTransmissionMSM(),
-				paramConfig.getRecoveryLambda(), 
+				paramConfig.getRecoveryTime(), 
 				paramConfig.getProbSymptomaticMSM(), 
 				paramConfig.getScreenIntervalMSM(),
 				paramConfig.getDelayToSeekCareMSM(), 
@@ -491,7 +499,7 @@ public class BatchRun {
 			int initialInfected, 
 			double propHighRisk,
 			double transmissionMSM,  
-			double recoveryLambda, 
+			double recoveryTime, 
 			double probSymptomaticMSM, 
 			double screenIntervalMSM,  
 			double delayToSeekCareMSM, 
@@ -503,7 +511,7 @@ public class BatchRun {
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
-				initialInfected, propHighRisk, transmissionMSM, recoveryLambda, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, riskGrouptransferProp, riskGroupTransmissionRatio,
+				initialInfected, propHighRisk, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, riskGrouptransferProp, riskGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
 	
@@ -514,7 +522,7 @@ public class BatchRun {
 			int initialInfected, 
 			double propHighRisk,
 			double transmissionMSM,  
-			double recoveryLambda, 
+			double recoveryTime, 
 			double probSymptomaticMSM, 
 			double screenIntervalMSM,  
 			double delayToSeekCareMSM, 
@@ -544,7 +552,7 @@ public class BatchRun {
 
 		
 		params.addParameter("transmissionMSM", "TransmissionMSM", double.class, transmissionMSM, false);
-		params.addParameter("recovery_lambda", "RecoveryLambda", double.class, recoveryLambda, false);
+		params.addParameter("recovery_time", "RecoveryTime", double.class, recoveryTime, false);
 		params.addParameter("prob_symptomatic_msm", "ProbSymptomaticMSM", double.class, probSymptomaticMSM, false);
 		params.addParameter("screen_interval_MSM", "ScreenIntervalMSM", double.class, screenIntervalMSM, false);
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
@@ -592,9 +600,9 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_24_2025_1_";
-		
-		//String dirname = "/Users/me597/Documents/MSMoutput/JANUARY_20_2025_debug1_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_3_2025_overnight_";
+	
+		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_debug1_";
 
 		
 		dirname += counterfactual;
@@ -701,6 +709,109 @@ public class BatchRun {
             
         
 	}
+	
+	
+	
+	public void analyzeAndCombineTPI(String dirpath) {
+		 File directory = new File(dirpath);
+	        
+	        if (!directory.exists() || !directory.isDirectory()) {
+	            throw new IllegalArgumentException("The specified path is not a valid directory: " + dirpath);
+	        }
+	        
+	        
+	     String combinedFile = (expdir + counterfactual + resistance + yearX + batchNumber + "combinedTPW.csv");
+	     
+	     try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
+
+	        	List<Path> csvfiles = Files.list(Paths.get(dirpath)).
+	        			filter(p -> p.getFileName().toString().contains(counterfactual) && p.getFileName().toString().contains("transmission")).
+	        			collect(Collectors.toList());
+	        	
+	        	if (csvfiles.isEmpty()) {
+	        		throw new FileNotFoundException("No TPI files found in directory: " + dirpath);
+	        	}
+	        	
+	        	String header = "source, Q1, median, Q3";
+	        	writer.write(header);
+	        	writer.newLine();
+
+	        	for (Path csvFile : csvfiles) {
+	        		//System.out.println("Reading from " + csvFile.getFileName());
+	        		try (BufferedReader reader = Files.newBufferedReader(csvFile)){
+
+	        			double q1value = 0;
+	        			double medianvalue = 0;
+	        			double q3value = 0;
+
+	        			//collect the rates per each infection
+	        			List<Double> transmissionsPerWeek = new ArrayList <Double>();
+
+	        			String line;
+	        			boolean isFirstLine = true;
+	        			while ((line = reader.readLine()) != null) {
+	        				if (isFirstLine == true) {
+	        					isFirstLine = false;
+	        					//skips first line that contains header info
+	        				} else {
+	        					line = line.replaceAll("\"", "");
+	        					String[] values = line.split(",");
+	        					//System.out.println(values[0]);
+	        					//System.out.println(Double.parseDouble(values[0]));
+
+	        					
+	        					double countTransmissions = Double.parseDouble(values[0]);
+	        					double duration = Double.parseDouble(values[1]);
+	        					double rate = countTransmissions / duration;
+
+	        					transmissionsPerWeek.add(rate);
+
+	        				}
+
+	        			}
+	        			double[] TPIvalues = transmissionsPerWeek.stream().mapToDouble(Double::doubleValue).toArray();
+
+	        			//System.out.println(TPIvalues);
+
+	        			Percentile percentile = new Percentile();
+	        			q1value = percentile.evaluate(TPIvalues, 25.0);
+	        			medianvalue = percentile.evaluate(TPIvalues, 50.0);
+	        			q3value = percentile.evaluate(TPIvalues, 75.0);
+
+//	        			System.out.println("Q1:");
+//	        			System.out.println(q1value);
+//	        			System.out.println();
+//
+//	        			System.out.println("median");
+//	        			System.out.println(medianvalue);
+//	        			System.out.println();
+//
+	        			//System.out.println("Q3:");
+	        			//System.out.println(q3value);
+	        			//System.out.println();
+
+
+	        			writer.write(csvFile.toString());
+	        			writer.write(",");
+	        			writer.write(String.valueOf(q1value));
+	        			writer.write(",");
+	        			writer.write(String.valueOf(medianvalue));
+	        			writer.write(",");
+	        			writer.write(String.valueOf(q3value));
+	        			writer.newLine();
+
+	        		} catch (IOException e){
+	        			System.err.println("Error reading file: " + csvFile.toString());
+	        			e.printStackTrace();
+	        		}
+
+	        	}} catch (IOException e) {
+	        		System.err.println("Error writing file: " + combinedFile.toString());
+	        		e.printStackTrace();
+	        	}
+
+	}
+
 	
 	public void combineBatchFiles() throws IOException {
 		 File directory = new File(expdir);

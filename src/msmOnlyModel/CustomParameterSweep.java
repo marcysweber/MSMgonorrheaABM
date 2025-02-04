@@ -60,11 +60,12 @@ public class CustomParameterSweep {
 	
 	
 	//recovery parameter
-	public List<Double> getRecoveryLambdaValues(int samples) {
-		double recoveryLambdaMin = 0.05769231;
-		double recoveryLambdaMax = 0.38461538;
+	public List<Double> getNaturalRecoveryTimeValues(int samples) {
+		//these values are in YEARS; based on Barbee et al. 2021 and 2022
+		double recoveryTimeMin = 0.05769231;
+		double recoveryTimeMax = 0.38461538;
 		int seed = (int) System.currentTimeMillis() + 5;
-		return getUniformSweepValues(seed, samples, recoveryLambdaMin, recoveryLambdaMax);
+		return getUniformSweepValues(seed, samples, recoveryTimeMin, recoveryTimeMax);
 	}
 	
 	
@@ -88,8 +89,9 @@ public class CustomParameterSweep {
 	
 	// delay to seek care parameters
 	public List<Double> getDelayToSeekCareMSMValues(int samples){
-		double delayToSeekCareMin = 0;
-		double delayToSeekCareMax = 2.0/52.0;
+		//these values are in YEARS
+		double delayToSeekCareMin = 2.0/365.0;
+		double delayToSeekCareMax = 1.2/52.0;
 		int seed = (int) System.currentTimeMillis() + 12;
 		return getUniformSweepValues(seed, samples, delayToSeekCareMin, delayToSeekCareMax);
 	}
@@ -97,8 +99,9 @@ public class CustomParameterSweep {
 	
 	//delay to retreatment parameters
 	public List<Double> getDelayToRetreatmentMSMValues(int samples){
-		double delayToRetreatmentMin = 0;
-		double delayToRetreatmentMax = 4.0/52.0;
+		//these values are in YEARS
+		double delayToRetreatmentMin = 2.0/365.0;
+		double delayToRetreatmentMax = 1.2/52.0;
 		int seed = (int) System.currentTimeMillis() + 15;
 		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
 	}

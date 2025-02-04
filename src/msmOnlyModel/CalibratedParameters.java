@@ -73,7 +73,7 @@ public class CalibratedParameters {
 		return dataAsDoubles;
 	}
 
-	public List<Double> getRecoveryLambdaValues() throws IOException{
+	public List<Double> getRecoveryTimeValues() throws IOException{
 		//reads the resampled RecoveryLambda values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();

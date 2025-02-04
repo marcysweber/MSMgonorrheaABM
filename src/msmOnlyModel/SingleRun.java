@@ -129,8 +129,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("genderPrefBeta", genderPrefBeta);
 			
 			//dist for recovery
-			double recoveryLambda = parameters.getDouble("recovery_lambda") * 52.0;
-			Exponential recoveryExp = new Exponential(1/recoveryLambda, eng);
+			double recoveryTime = parameters.getDouble("recovery_time") * 52.0; // convert from years to weeks/ticks
+			Exponential recoveryExp = new Exponential(1/recoveryTime, eng);
 			randomHelper.registerDistribution("recoveryExp", recoveryExp);
 			
 			//dist for contact

@@ -344,7 +344,14 @@ public class Infection {
 	}
 	
 	public double duration() {
-		return tickEnded - tickStarted;
+		double duration = 0;
+		duration = tickEnded - tickStarted;
+		if (duration < 0.002739726) {
+			duration = 0.002739726; //duration cannot be shorter than 1 day, 
+			//so that when dividing by duration if cannot be zero or artifically inflate rate
+		}
+		
+		return duration;
 	}
 	
 	public Indiv host() {

@@ -227,7 +227,7 @@ public class Observer {
 				this.parameters.getDouble("transmissionMSM"),
 				
 				
-				this.parameters.getDouble("recovery_lambda"),
+				this.parameters.getDouble("recovery_time"),
 				
 				this.parameters.getDouble("prob_symptomatic_msm"), 
 		
@@ -300,8 +300,10 @@ public class Observer {
 				(int) population.highRiskCount()
 				
 				);
-		outputter.transmissionRateOutput(newCasesList);
 		
+		if (!this.counterfactual.contains("sweep")) {
+			outputter.transmissionRateOutput(newCasesList);
+		}
 		clearObserver();
 		costCalc.clearAnnualCosts();
 		
@@ -349,6 +351,7 @@ public class Observer {
 		//System.out.println("processing");
 		
 		newCases++;
+		newCasesList.add(infection);
 		
 		if (infection.resistantToA() && infection.resistantToB()) {
 			newResistBothCases++;
@@ -358,10 +361,9 @@ public class Observer {
 			newResistBCases++;
 		}
 		
-		if (infection.wasEverDetected()) {
+		if (infection.isDetected()) {
 			detected++;
 
-			if (infection.isDetected()) {
 				if (infection.symptoms()) {
 					detectedAndSymptoms++;
 				} else if (infection.screened()) {
@@ -369,7 +371,7 @@ public class Observer {
 				} else {
 					System.out.println("detected case neither symptomatic nor screened");
 				}
-			}
+			
 
 			Map<String, Boolean> finalOutcomes = new HashMap<String, Boolean>()
 			{{
@@ -393,19 +395,15 @@ public class Observer {
 				}
 			} 
 			
-			
-			
 		}
+			
+		
 		
 	
 		if (infection.soughtCare()) {
 			soughtCare++;
 		}
-		
-		if (infection.failedTreatment()) {
-			failedTreatments++;
-			
-		}
+	
 		
 		if (infection.attemptedA()) {
 			attemptTreatmentsA++;
@@ -419,17 +417,34 @@ public class Observer {
 		//final outcomes
 		if (infection.succeededA()) {
 			successTreatmentsA++;
+			
+			if (!infection.isDetected()) {
+				System.out.println("outcome without detection - a!");
+			}
+			
 		} else if (infection.succeededB()) {
 			successTreatmentsB++;
+			if (!infection.isDetected()) {
+				System.out.println("outcome without detection - b!");
+			}
 		} else if (infection.succeededX()) {
 			attemptTreatmentsX++;
 			successTreatmentsX++;
+			if (!infection.isDetected()) {
+				System.out.println("outcome without detection - x!");
+			}
 		} else if (infection.succeededE()) {
 			usageE++;;
+			if (!infection.isDetected()) {
+				System.out.println("outcome without detection - e!");
+			}
 		} else if (infection.recoveredNaturally()) {
 			recoveredNaturally++;
 			if (infection.inTreatment()) {
 				recoveredNaturallyDuringTreatment++;
+				if (!infection.isDetected()) {
+					System.out.println("outcome without detection - RN!");
+				}
 			}
 		} else if (infection.developedResistance()) {
 			developedResistance++;
@@ -437,6 +452,9 @@ public class Observer {
 			reInfected++;
 			if (infection.inTreatment()) {
 				reInfectedDuringTreatment++;
+				if (!infection.isDetected()) {
+					System.out.println("outcome without detection - RI!");
+				}
 			}
 		} else {
 			throw new Exception("Invalid outcome reported to observer!");

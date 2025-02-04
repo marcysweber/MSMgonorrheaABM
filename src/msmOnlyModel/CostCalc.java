@@ -65,7 +65,7 @@ public class CostCalc {
 	}
 	
 	public void symptomaticQALYsLost(Indiv indiv, double delay) {
-		double QALYs = (delay * 0.006) / 52.0;
+		double QALYs = (delay * 0.114) / 52.0;//GBD for moderate pelvic inflamatory diseases
 		
 		if (indiv.infectious() && indiv.symptoms()) {
 		

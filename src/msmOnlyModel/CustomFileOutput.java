@@ -57,25 +57,25 @@ public class CustomFileOutput {
 	}
 
 	public String generateFileName() {
-
-		LocalDate date = LocalDate.now();
-
-		Month month = date.getMonth();
-		int day = date.getDayOfMonth();
-		int year = date.getYear();
-
-		String fullDate = month +"_"+ day +"_"+ year;
+//
+//		LocalDate date = LocalDate.now();
+//
+//		Month month = date.getMonth();
+//		int day = date.getDayOfMonth();
+//		int year = date.getYear();
+//
+//		String fullDate = month +"_"+ day +"_"+ year;
 
 		//String filename = "MSMonly_output_" + fullDate +"_1_";
 		//String filename = "MSMonly_output_" + fullDate +"_debug_2_";
 
 		//String filename = "MSMonly_output_JANUARY_10_2025_overnight_";
 
-		String filename = fullDate;
+		//String filename = fullDate;
 
-		filename += "_";
+		//filename += "_";
 
-		filename += counterfactual;
+		String filename = counterfactual;
 
 		filename += "_";
 
@@ -128,7 +128,7 @@ public class CustomFileOutput {
 					"TransmissionMSM",
 
 
-					"RecoveryLambda",
+					"NaturalRecoveryTime",
 
 					"ProbSymptomaticMSM",
 
@@ -214,7 +214,8 @@ public class CustomFileOutput {
 			
 			String[] header2 = { 
 					"CountTransmissions", 
-					"InfectionDuration"};
+					"InfectionDuration",
+					"RiskGroup"};
 			writer2.writeNext(header2);
 			writer2.close();
 
@@ -250,7 +251,7 @@ public class CustomFileOutput {
 			double transmissionMSM, 
 
 
-			double RecoveryLambda, 
+			double RecoveryTime, 
 
 			double ProbSymptomaticMSM,
 
@@ -348,7 +349,7 @@ public class CustomFileOutput {
 
 						String.valueOf(transmissionMSM),
 
-						String.valueOf(RecoveryLambda),
+						String.valueOf(RecoveryTime),
 
 						String.valueOf(ProbSymptomaticMSM),
 
@@ -450,7 +451,8 @@ public class CustomFileOutput {
 
 				String[] newRow = { 
 						String.valueOf(count), 
-						String.valueOf(dur)};
+						String.valueOf(dur),
+						riskGroup};
 				
 				writer.writeNext(newRow);
 			}
