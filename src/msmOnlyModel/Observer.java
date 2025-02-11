@@ -61,7 +61,9 @@ public class Observer {
 	private int detected;
 	private List<Infection> detectedList;
 	
-
+	private int diagnosticTests;
+	private int strainTests;
+	private int visitsToClinic;
 	
 	private int detectedAndSymptoms;
 	private int soughtCare;
@@ -77,6 +79,18 @@ public class Observer {
 	private int recoveredNaturally;
 	private int reInfected;
 	private int reInfectedDuringTreatment;
+	private int casesEpidydimitis;
+	private int casesDGI;
+	private int casesBothSequelae;
+	private int checksForSequelae;
+	private int checksForSequelaeUnDetect;
+	private int checksForSequelaeRecovNat;
+	private int checksForSequelaeFailedA;
+	private int checksForSequelaeFailedB;
+
+	
+	
+	
 	private CostCalc costCalc;
 	
 	
@@ -272,6 +286,9 @@ public class Observer {
 				this.detected, 
 				this.detectedAndSymptoms,
 				this.detectedThruScreen, 
+				this.strainTests,
+				this.diagnosticTests,
+				this.visitsToClinic,
 //				this.knownFailedTreatments,
 //				this.knownFailedTreatmentsA,
 //				this.knownFailedTreatmentsB,
@@ -287,6 +304,18 @@ public class Observer {
 				this.recoveredNaturallyDuringTreatment,
 				this.reInfected,
 				this.reInfectedDuringTreatment,
+				this.casesEpidydimitis,
+				this.casesDGI,
+				this.casesBothSequelae,
+				this.checksForSequelae,
+				
+				this.checksForSequelaeUnDetect,
+				this.checksForSequelaeRecovNat,
+				this.checksForSequelaeFailedA,
+				this.checksForSequelaeFailedB,
+
+				
+				
 				surveillanceResultA, 
 				surveillanceResultB,
 				surveillanceResultBoth,
@@ -302,7 +331,7 @@ public class Observer {
 				);
 		
 		if (!this.counterfactual.contains("sweep")) {
-			outputter.transmissionRateOutput(newCasesList);
+			//outputter.transmissionRateOutput(newCasesList);
 		}
 		clearObserver();
 		costCalc.clearAnnualCosts();
@@ -329,6 +358,9 @@ public class Observer {
 		this.detectedAndSymptoms = 0;
 		this.soughtCare = 0;
 		this.detectedThruScreen = 0;
+		this.diagnosticTests = 0;
+		this.strainTests = 0;
+		this.visitsToClinic = 0;
 //		this.knownFailedTreatments = 0;
 //		this.knownFailedTreatmentsA = 0;
 //		this.knownFailedTreatmentsB = 0;
@@ -344,6 +376,15 @@ public class Observer {
 		this.recoveredNaturallyDuringTreatment = 0;
 		this.reInfected = 0;
 		this.reInfectedDuringTreatment = 0;
+		this.casesBothSequelae = 0;
+		this.casesDGI = 0;
+		this.casesEpidydimitis = 0;
+		this.checksForSequelae = 0;
+		this.checksForSequelaeUnDetect = 0;
+		this.checksForSequelaeRecovNat = 0;
+		this.checksForSequelaeFailedA = 0;
+		this.checksForSequelaeFailedB = 0;
+
 
 	}
 	
@@ -403,47 +444,42 @@ public class Observer {
 		if (infection.soughtCare()) {
 			soughtCare++;
 		}
-	
 		
-		if (infection.attemptedA()) {
-			attemptTreatmentsA++;
-		}
+		attemptTreatmentsA+=infection.attemptedA();
 		
-		if (infection.attemptedB()) {
-			attemptTreatmentsB++;
-		}
-	
+		attemptTreatmentsB+=infection.attemptedB();
+		
 		
 		//final outcomes
 		if (infection.succeededA()) {
 			successTreatmentsA++;
 			
 			if (!infection.isDetected()) {
-				System.out.println("outcome without detection - a!");
+				//System.out.println("outcome without detection - a!");
 			}
 			
 		} else if (infection.succeededB()) {
 			successTreatmentsB++;
 			if (!infection.isDetected()) {
-				System.out.println("outcome without detection - b!");
+				//System.out.println("outcome without detection - b!");
 			}
 		} else if (infection.succeededX()) {
 			attemptTreatmentsX++;
 			successTreatmentsX++;
 			if (!infection.isDetected()) {
-				System.out.println("outcome without detection - x!");
+				//System.out.println("outcome without detection - x!");
 			}
 		} else if (infection.succeededE()) {
 			usageE++;;
 			if (!infection.isDetected()) {
-				System.out.println("outcome without detection - e!");
+				//System.out.println("outcome without detection - e!");
 			}
 		} else if (infection.recoveredNaturally()) {
 			recoveredNaturally++;
 			if (infection.inTreatment()) {
 				recoveredNaturallyDuringTreatment++;
 				if (!infection.isDetected()) {
-					System.out.println("outcome without detection - RN!");
+					//System.out.println("outcome without detection - RN!");
 				}
 			}
 		} else if (infection.developedResistance()) {
@@ -453,7 +489,7 @@ public class Observer {
 			if (infection.inTreatment()) {
 				reInfectedDuringTreatment++;
 				if (!infection.isDetected()) {
-					System.out.println("outcome without detection - RI!");
+					//System.out.println("outcome without detection - RI!");
 				}
 			}
 		} else {
@@ -461,6 +497,49 @@ public class Observer {
 		}
 		
 		//System.out.println(soughtCare);
+		
+		
+		costCalc.strainTestCost(infection.strainTests());
+		this.strainTests+=infection.strainTests();
+		
+		costCalc.testCost(infection.diagnosticTests());
+		this.diagnosticTests+=infection.diagnosticTests();
+		
+		costCalc.careCost(infection.visitsToClinic());
+		this.visitsToClinic+=infection.visitsToClinic();
+	
+		costCalc.treatmentDrugACost(infection.attemptedA());
+		
+		costCalc.treatmentDrugBCost(infection.attemptedB());
+		
+		if (infection.succeededX()) {
+		costCalc.treatmentDrugXCost(1);
+		}
+		if (infection.succeededE()) {
+			costCalc.treatmentDrugECost(1);
+			}
+		
+		if (infection.symptoms()) {
+			costCalc.symptomaticQALYsLost(infection.duration());
+		}
+		
+		String sequelae = infection.getSequelae();
+		if (sequelae.contains("epi")) {
+			casesEpidydimitis++;
+		} else if (sequelae.contains("dgi")) {
+			casesDGI++;
+		} else if (sequelae.contains("both")){
+			casesBothSequelae++;
+		}
+		
+		checksForSequelae += infection.accessCheckedForSequelae();
+		checksForSequelaeUnDetect += infection.accessCheckedForSequelaeUnDetect();
+		checksForSequelaeRecovNat += infection.accessCheckedForSequelaeRecovNat();
+		checksForSequelaeFailedA += infection.accessCheckedForSequelaeFailedA();
+		checksForSequelaeFailedB += infection.accessCheckedForSequelaeFailedB();
+
+		
+		costCalc.recordSequelae(sequelae);
 		
 	}
 	
@@ -478,6 +557,9 @@ public class Observer {
 			
 			if (infection.failedTreatment()) {
 				failedTreatments++;
+				
+				
+				
 			} else {
 				System.out.println("undetect that was not a failed treatment!");
 			}
@@ -745,6 +827,9 @@ public class Observer {
 		return surveillanceProgram;
 	}
 	
+	public void recordSurveillanceStrainTests(int count) {
+		strainTests += count;
+	}
 	
 	public void addX() {
 		this.addedX = true;
@@ -816,4 +901,20 @@ public class Observer {
 		return schedule.getTickCount();
 	}
 	
+	
+	public int getChecksForSequelae() {
+		return checksForSequelae;
+	}
+	
+public int getCasesDGI() {
+		return casesDGI;
+	}
+
+public int getCasesEpi() {
+	return casesEpidydimitis;
+}
+
+public int getCasesBothSequelae() {
+	return casesBothSequelae;
+}
 }

@@ -366,6 +366,9 @@ public void assignSchedule(ThreadSafeSchedule schedule) {
 	this.schedule = schedule; //for testing
 }
 
+public void assignOutputter(CustomFileOutput outputter) {
+	this.fileOutputter = outputter;
+}
 
 
 

@@ -265,28 +265,28 @@ calc_error = function(df){
 
 # per-infection data
 
-multiplot(
-  ggplot(dfcalibratedTPI) + geom_histogram(aes(x=CountTransmissions, fill = RiskGroup), binwidth = 1)
-  +coord_cartesian(xlim = c(0, 30))
-  +labs(title = "A.",
-        x="Count transmissions per infection",
-        y="Count (log10 scale)") +
-    scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
-  
-  ggplot(dfcalibratedTPI) + geom_histogram(aes(x=InfectionDuration, fill = RiskGroup), binwidth = 1)+coord_cartesian(xlim = c(0, 100))
-  +labs(title = "B.",
-        x="Infection Duration in Weeks",
-        y="Count (log10 scale)") +
-    scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
-  
-  
-  ggplot(dfcalibratedTPI) + geom_histogram(aes(x=TransmissionRate*52, fill = RiskGroup), binwidth = 1)
-  +coord_cartesian(xlim = c(0, 40))
-  +labs(title = "C.",
-        x="Transmissions per year of infection",
-        y="Count (log10 scale)") +
-    scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
-  cols = 3)
+# multiplot(
+#   ggplot(dfcalibratedTPI) + geom_histogram(aes(x=CountTransmissions, fill = RiskGroup), binwidth = 1)
+#   +coord_cartesian(xlim = c(0, 30))
+#   +labs(title = "A.",
+#         x="Count transmissions per infection",
+#         y="Count (log10 scale)") +
+#     scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
+#   
+#   ggplot(dfcalibratedTPI) + geom_histogram(aes(x=InfectionDuration, fill = RiskGroup), binwidth = 1)+coord_cartesian(xlim = c(0, 100))
+#   +labs(title = "B.",
+#         x="Infection Duration in Weeks",
+#         y="Count (log10 scale)") +
+#     scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
+#   
+#   
+#   ggplot(dfcalibratedTPI) + geom_histogram(aes(x=TransmissionRate*52, fill = RiskGroup), binwidth = 1)
+#   +coord_cartesian(xlim = c(0, 40))
+#   +labs(title = "C.",
+#         x="Transmissions per year of infection",
+#         y="Count (log10 scale)") +
+#     scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
+#   cols = 3)
 
 
 
@@ -300,88 +300,88 @@ q1TPI=function(df){
 q3TPI=function(df){
   return(quantile(df$TransmissionRate, 0.75))}
 
-
+processTPI = function(direc){
+  
+  
+  files <- list.files(direc, pattern = "transmission", recursive = TRUE)
+  files<- sapply(files, paste_file_name)
+  
+  files <- lapply(files, read.csv)
+  
+  files <- lapply(files, transRate)
+  
+  medians <- sapply(files, medianTPI)
+  q1s <- sapply(files, q1TPI)
+  q3s <- sapply(files, q3TPI)
+  
+  summaryTPI <- cbind(medians, q1s, q3s)
+  summaryTPI <- as.data.frame(summaryTPI)
+  
+  
+  multiplot(
+    ggplot(summaryTPI) + geom_histogram(aes(x=q1s*52), binwidth = 1)
+    +coord_cartesian(xlim = c(0, 30))
+    +labs(title = "A.",
+          x="25% Quantile, transmissions per infection year",
+          y="Count simulations") ,
+    
+    ggplot(summaryTPI) + geom_histogram(aes(x=medians *52), binwidth = 1)+coord_cartesian(xlim = c(0, 100))
+    +labs(title = "B.",
+          x="Median, transmissions per infection year",
+          y="Count simulations"),
+    ggplot(summaryTPI) + geom_histogram(aes(x=q3s*52), binwidth = 1)
+    +coord_cartesian(xlim = c(0, 40))
+    +labs(title = "C.",
+          x="75% Quantile, transmissions per infection year",
+          y="Count simulations"),
+    cols = 3)
+  
+}
 transRate = function(df){
   df$TransmissionRate <- df$CountTransmissions / df$InfectionDuration
   return(df)
 }
-
-dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_204-89205transmission.csv")
-processTPI(dfcalibratedTPI)
-
-dircal <- "/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/"
-
-processTPI = function(direc){
-  
-
-files <- list.files(direc, pattern = "transmission", recursive = TRUE)
-files<- sapply(files, paste_file_name)
-
-files <- lapply(files, read.csv)
-
-files <- lapply(files, transRate)
-
-medians <- sapply(files, medianTPI)
-q1s <- sapply(files, q1TPI)
-q3s <- sapply(files, q3TPI)
-
-summaryTPI <- cbind(medians, q1s, q3s)
-summaryTPI <- as.data.frame(summaryTPI)
-
-
-multiplot(
-  ggplot(summaryTPI) + geom_histogram(aes(x=q1s*52), binwidth = 1)
-  +coord_cartesian(xlim = c(0, 30))
-  +labs(title = "A.",
-        x="25% Quantile, transmissions per infection year",
-        y="Count simulations") ,
-  
-  ggplot(summaryTPI) + geom_histogram(aes(x=medians *52), binwidth = 1)+coord_cartesian(xlim = c(0, 100))
-  +labs(title = "B.",
-        x="Median, transmissions per infection year",
-        y="Count simulations"),
-  ggplot(summaryTPI) + geom_histogram(aes(x=q3s*52), binwidth = 1)
-  +coord_cartesian(xlim = c(0, 40))
-  +labs(title = "C.",
-        x="75% Quantile, transmissions per infection year",
-        y="Count simulations"),
-  cols = 3)
-
-}
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_none_none/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_none_none/")
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_GISP_05_25/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_GISP_05_25/")
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_random_25/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_random_25/")
-
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_test-of-cure_80_25/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_test-of-cure_80_25/")
-
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_drug_sus_testing_80_25/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_drug_sus_testing_80_25/")
-
-
-paste_file_name = function(filename){
-  return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_realistic_combo_33_33_34_25/", filename, sep = ""))
-}
-processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_realistic_combo_33_33_34_25/")
-
+# 
+# dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_204-89205transmission.csv")
+# processTPI(dfcalibratedTPI)
+# 
+# dircal <- "/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/"
+# 
+# 
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_none_none/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_none_none/")
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_GISP_05_25/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_GISP_05_25/")
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_random_25/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_random_25/")
+# 
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_test-of-cure_80_25/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_test-of-cure_80_25/")
+# 
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_drug_sus_testing_80_25/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_drug_sus_testing_80_25/")
+# 
+# 
+# paste_file_name = function(filename){
+#   return(paste("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_realistic_combo_33_33_34_25/", filename, sep = ""))
+# }
+# processTPI("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_2_all_all/Batch_1_realistic_combo_33_33_34_25/")
+# 
 
 
 ############
@@ -1412,7 +1412,7 @@ giant_failure_box = function(df, title){
   
 }
 
-giant_e_box = function(df, title, xlim=50000){
+giant_e_box = function(df, title, xlim=60000){
   counter_levels <- c("realistic_combo","drug_sus_testing_80","test-of-cure_80", "random","GISP")
   counter_labels <- c("RC","DST", "TOC", "RT", "GISP")
   
@@ -2364,7 +2364,7 @@ nmb = function(cea_df, title){
   ggplot(data = cea_df) + 
     # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000), labels = c("0", "50", "100", "150"))+
-    scale_y_continuous(expand = c(0,0), limits = c(-7500000, 10000000), breaks = c(-15000000,-10000000, -5000000, 0, 5000000, 10000000), labels = c("-15","-10","-5", "0", "5","10"))+
+    scale_y_continuous(expand = c(0,0), limits = c(-10000000, 10000000), breaks = c(-15000000,-10000000, -5000000, 0, 5000000, 10000000), labels = c("-15","-10","-5", "0", "5","10"))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
     
     geom_abline(aes(slope = -GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
@@ -3234,6 +3234,41 @@ viz_E = function(df, title, yearX, ylim){
 }
 
 
+viz_checkforsequelae = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = CheckForSequelae, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Count checks for sequelae", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    coord_cartesian(ylim=c(0,20000))+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
+
+viz_allsequelae = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = CasesDGI + CasesEpidydimitis + CasesBothSequelae, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Count checks for sequelae", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    coord_cartesian(ylim=c(0,600))+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
 #viz_success_A_of_all
 
 #viz_success_B_of_all
@@ -3247,6 +3282,24 @@ viz_recovered_naturally_during_treatment = function(df, title, yearX){
     geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
     labs(x = "Year",
          y = "Count treatments\nwith ertapenem", 
+         title = title) +
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    my_theme +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(plotX)
+}
+
+
+
+viz_recovered_naturally = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  plotX <- ggplot(data = df, aes(x = (tick / 52) - 5, y = RecoveredNaturally, group = RunNumber)) +
+    geom_line(aes(alpha=resampled), size = 0.05, color = "black") +
+    labs(x = "Year",
+         y = "Recovered naturally", 
          title = title) +
     geom_vline(xintercept=yearX-5, linetype="dashed")+
     my_theme +
@@ -3406,6 +3459,45 @@ viz_all_failed = function(df, title, yearX){
     geom_vline(xintercept=yearX-5, linetype="dashed")+
     
    coord_cartesian(ylim=c(0, 1)) +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(failed)
+}
+
+viz_failed_count = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  df$Failures <- calc_failure(df)
+  
+  failed <- ggplot(data = df, aes(x=(tick / 52) - 5, group = RunNumber))+
+    geom_line(aes(y=Failures, alpha=resampled), linewidth = 0.05, color = "black")+
+    my_theme+
+    labs(title=title, x= "Year", y = "Failure rate,\nall treatments")+
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    
+    coord_cartesian(ylim=c(0, 3000)) +
+    theme(legend.position = "none")+
+    scale_alpha(range=c(0.25, 1)) +
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(failed)
+}
+
+
+
+
+viz_checks_per_failed = function(df, title, yearX){
+  df <- df %>% filter(tick >= 260)
+  
+  df$Failures <- calc_failure(df)
+  
+  failed <- ggplot(data = df, aes(x=(tick / 52) - 5, group = RunNumber))+
+    geom_line(aes(y=CheckForSequelae/Failures, alpha=resampled), linewidth = 0.05, color = "black")+
+    my_theme+
+    labs(title=title, x= "Year", y = "Checks for Sequelae per Failure")+
+    geom_vline(xintercept=yearX-5, linetype="dashed")+
+    
+    #coord_cartesian(ylim=c(0, 1)) +
     theme(legend.position = "none")+
     scale_alpha(range=c(0.25, 1)) +
     annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
@@ -4844,7 +4936,7 @@ visualize_calibration_subpops = function(dfcalibrated){
 #writes file for re-running calibrated trajectories 
 ######
 #(for input each traj should have a single row, i.e., the data ends)
-write_calibrated = function(df){
+write_calibrated = function(df, path){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
@@ -4878,38 +4970,38 @@ write_calibrated = function(df){
   resampleDrugXtreatmentCost<-df$DrugXTreatmentCost
   resampleDrugEtreatmentCost<-df$DrugETreatmentCost
   
-  fwrite(list(resampleSeed), file = "/Users/me597/Documents/MSM_calibrated_params/seed_resample.txt")
-  fwrite(list(resampleInitialInfected), file = "/Users/me597/Documents/MSM_calibrated_params/initial_infected_resample.txt")
-  fwrite(list(resamplePropHighRisk), file = "/Users/me597/Documents/MSM_calibrated_params/propHighRisk_resample.txt")
-  fwrite(list(resampleTransmissionMSM), file = "/Users/me597/Documents/MSM_calibrated_params/transmissionMSM_resample.txt")
-  fwrite(list(resampleRecoveryLambda), file = "/Users/me597/Documents/MSM_calibrated_params/recovery_lambda_resample.txt")
-  fwrite(list(resampleProbSymptomaticMSM), file = "/Users/me597/Documents/MSM_calibrated_params/prob_symptomatic_MSM_resample.txt")
-  fwrite(list(resampleScreenIntervalMSM), file = "/Users/me597/Documents/MSM_calibrated_params/screen_interval_MSM_resample.txt")
-  fwrite(list(resampleDelayToSeekCareMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_seek_care_MSM_resample.txt")
-  fwrite(list(resampleDelayToRetreatmentMSM), file = "/Users/me597/Documents/MSM_calibrated_params/delay_to_retreatment_MSM_resample.txt")
-  fwrite(list(resampleRiskGroupTransferProp), file = "/Users/me597/Documents/MSM_calibrated_params/risk_group_transfer_prop_resample.txt")
-  fwrite(list(resampleRiskGroupTransmissionRatio), file = "/Users/me597/Documents/MSM_calibrated_params/risk_group_transmission_ratio_resample.txt")
-  fwrite(list(resampleAssortativity), file = "/Users/me597/Documents/MSM_calibrated_params/assortativity_resample.txt")
+  fwrite(list(resampleSeed), file = paste(path, "seed_resample.txt", sep=""))
+  fwrite(list(resampleInitialInfected), file = paste(path, "initial_infected_resample.txt", sep=""))
+  fwrite(list(resamplePropHighRisk), file = paste(path, "propHighRisk_resample.txt", sep=""))
+  fwrite(list(resampleTransmissionMSM), file = paste(path, "transmissionMSM_resample.txt", sep=""))
+  fwrite(list(resampleRecoveryLambda), file = paste(path, "recovery_lambda_resample.txt", sep=""))
+  fwrite(list(resampleProbSymptomaticMSM), file = paste(path, "prob_symptomatic_MSM_resample.txt", sep=""))
+  fwrite(list(resampleScreenIntervalMSM), file = paste(path, "screen_interval_MSM_resample.txt", sep=""))
+  fwrite(list(resampleDelayToSeekCareMSM), file = paste(path, "delay_to_seek_care_MSM_resample.txt", sep=""))
+  fwrite(list(resampleDelayToRetreatmentMSM), file = paste(path, "delay_to_retreatment_MSM_resample.txt", sep=""))
+  fwrite(list(resampleRiskGroupTransferProp), file = paste(path, "risk_group_transfer_prop_resample.txt", sep=""))
+  fwrite(list(resampleRiskGroupTransmissionRatio), file = paste(path, "risk_group_transmission_ratio_resample.txt", sep=""))
+  fwrite(list(resampleAssortativity), file = paste(path, "assortativity_resample.txt", sep=""))
   
-  fwrite(list(resamplePercentResistantA), file = "/Users/me597/Documents/MSM_calibrated_params/percent_resistant_A_resample.txt")
-  fwrite(list(resampleBeginImportingB), file = "/Users/me597/Documents/MSM_calibrated_params/begin_importing_B_resample.txt")
-  fwrite(list(resampleImportingBInterval), file = "/Users/me597/Documents/MSM_calibrated_params/importing_B_interval_resample.txt")
-  fwrite(list(resampleDSTsensitivity), file = "/Users/me597/Documents/MSM_calibrated_params/DSTsensitivity_resample.txt")
-  fwrite(list(resampleDSTspecifictiy), file = "/Users/me597/Documents/MSM_calibrated_params/DSTspecificity_resample.txt")
+  fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
+  fwrite(list(resampleBeginImportingB), file = paste(path, "begin_importing_B_resample.txt", sep=""))
+  fwrite(list(resampleImportingBInterval), file = paste(path, "importing_B_interval_resample.txt", sep=""))
+  fwrite(list(resampleDSTsensitivity), file = paste(path, "DSTsensitivity_resample.txt", sep=""))
+  fwrite(list(resampleDSTspecifictiy), file = paste(path, "DSTspecificity_resample.txt", sep=""))
   
   
-  fwrite(list(resampleCareCost), file = "/Users/me597/Documents/MSM_calibrated_params/care_cost_resample.txt")
-  fwrite(list(resampleTestCost), file = "/Users/me597/Documents/MSM_calibrated_params/test_cost_resample.txt")
-  fwrite(list(resampleStrainTestCost), file = "/Users/me597/Documents/MSM_calibrated_params/strain_test_cost_resample.txt")
-  fwrite(list(resampleDrugAtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_a_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugBtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_b_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugXtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_X_treatment_cost_resample.txt")
-  fwrite(list(resampleDrugEtreatmentCost), file = "/Users/me597/Documents/MSM_calibrated_params/drug_E_treatment_cost_resample.txt")
+  fwrite(list(resampleCareCost), file = paste(path, "care_cost_resample.txt", sep=""))
+  fwrite(list(resampleTestCost), file = paste(path, "test_cost_resample.txt", sep=""))
+  fwrite(list(resampleStrainTestCost), file = paste(path, "strain_test_cost_resample.txt", sep=""))
+  fwrite(list(resampleDrugAtreatmentCost), file = paste(path, "drug_a_treatment_cost_resample.txt", sep=""))
+  fwrite(list(resampleDrugBtreatmentCost), file = paste(path, "drug_b_treatment_cost_resample.txt", sep=""))
+  fwrite(list(resampleDrugXtreatmentCost), file = paste(path, "drug_X_treatment_cost_resample.txt", sep=""))
+  fwrite(list(resampleDrugEtreatmentCost), file = paste(path, "drug_E_treatment_cost_resample.txt", sep=""))
 }
 
 #######
 
-#december process and visualize:
+#december 2024 process and visualize:
 ########
 #load data
 df <- read.csv("/Users/me597/Documents/output/SimpleSIR_custom_output_DECEMBER_6_2023_overnight.csv")
@@ -10257,7 +10349,7 @@ multiplot(
 
 
 
-#jan31st2025
+#jan31st - feb 5 2025
 #########
 dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JANUARY_30_2025_overnight_sweep_none/sweepnone0supercombined.csv")
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
@@ -10302,7 +10394,7 @@ visualize_calibration_risk_groups(dfcalibrated)
 
 
 
-directory <- "/Users/me597/Documents/MSMoutput/JANUARY_31_2025_1_all_all/"
+directory <- "/Users/me597/Documents/MSMoutput/FEBRUARY_5_2025_overnight_all_all/"
 
 dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
 dfGISP25 <- identify(dfGISP25, df_best_ends)
@@ -10337,29 +10429,463 @@ dfTOC25TPW <-  read.csv(paste(directory,"test-of-cure_80combo251combinedTPW.csv"
 dfDST25TPW <-  read.csv(paste(directory,"drug_sus_testing_80combo251combinedTPW.csv", sep=""))
 dfreal25TPW <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combinedTPW.csv", sep=""))
 
+transmission_q1 = function(df, title){
+  return(ggplot(data=df) +
+           geom_histogram(aes(x=Q1*52), binwidth = 1) +
+           my_theme +
+           coord_cartesian(xlim=c(0, 30), ylim=c(0, 200))+
+           labs(title = title, x = "Transmissions per infection year")) 
+}
+transmission_q2 = function(df, title){
+  return(ggplot(data=df) +
+           geom_histogram(aes(x=median*52), binwidth = 1) +
+           my_theme +
+           coord_cartesian(xlim=c(0, 30), ylim=c(0, 200))+
+           labs(title = title, x = "Transmissions per infection year")) 
+}
+transmission_q3 = function(df, title){
+  return(ggplot(data=df) +
+           geom_histogram(aes(x=Q3*52)) +
+           my_theme +
+           coord_cartesian(xlim=c(0, 30), ylim=c(0, 200))+
+           labs(title = title, x = "Transmissions per infection year")) 
+}
+
 multiplot(
-ggplot(data = dfGISP25TPW) + geom_histogram(aes(x=Q1*52)),
-ggplot(data = dfrandom25TPW) + geom_histogram(aes(x=Q1*52)),
-ggplot(data = dfTOC25TPW) + geom_histogram(aes(x=Q1*52)),
-ggplot(data = dfDST25TPW) + geom_histogram(aes(x=Q1*52)),
-ggplot(data = dfreal25TPW) + geom_histogram(aes(x=Q1*52)),
+  transmission_q1(dfGISP25TPW, "A. GISP 25% Quantile Transmissions"),
+  transmission_q1(dfrandom25TPW, "D. RT 25% Quantile Transmissions"),
+  transmission_q1(dfTOC25TPW, "G. TOC 25% Quantile Transmissions"),
+  transmission_q1(dfDST25TPW, "J. DST 25% Quantile Transmissions"),
+  transmission_q1(dfreal25TPW, "M. RC 25% Quantile Transmissions"),
 
 
-ggplot(data = dfGISP25TPW) + geom_histogram(aes(x=median*52)),
-ggplot(data = dfrandom25TPW) + geom_histogram(aes(x=median*52)),
-ggplot(data = dfTOC25TPW) + geom_histogram(aes(x=median*52)),
-ggplot(data = dfDST25TPW) + geom_histogram(aes(x=median*52)),
-ggplot(data = dfreal25TPW) + geom_histogram(aes(x=median*52)),
-
-ggplot(data = dfGISP25TPW) + geom_histogram(aes(x=Q3*52)),
-ggplot(data = dfrandom25TPW) + geom_histogram(aes(x=Q3*52)),
-ggplot(data = dfTOC25TPW) + geom_histogram(aes(x=Q3*52)),
-ggplot(data = dfDST25TPW) + geom_histogram(aes(x=Q3*52)),
-ggplot(data = dfreal25TPW) + geom_histogram(aes(x=Q3*52)),
+  transmission_q2(dfGISP25TPW, "B. GISP Median Transmissions"),
+  transmission_q2(dfrandom25TPW, "E. RT Median Transmissions"),
+  transmission_q2(dfTOC25TPW, "H. TOC Median Transmissions"),
+  transmission_q2(dfDST25TPW, "K. DST Median Transmissions"),
+  transmission_q2(dfreal25TPW, "N. RC Median Transmissions"),
+  
+  
+  transmission_q3(dfGISP25TPW, "C. GISP 75% Quantile Transmissions"),
+  transmission_q3(dfrandom25TPW, "F. RT 75% Quantile Transmissions"),
+  transmission_q3(dfTOC25TPW, "I. TOC 75% Quantile Transmissions"),
+  transmission_q3(dfDST25TPW, "L. DST 75% Quantile Transmissions"),
+  transmission_q3(dfreal25TPW, "O. RC 75% Quantile Transmissions"),
 
 cols = 3)
 
 
 
+
+#supplement sensitivity analysis
+
+#availability of X
+
+directory <- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_all_all/"
+directoryX <- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_all_combo/"
+
+
+dfGISP15 <-   read.csv(paste(directoryX,"GISP_05combo151combined.csv", sep=""))
+dfGISP15 <- identify(dfGISP15, df_best_ends)
+dfGISP20 <-   read.csv(paste(directoryX,"GISP_05combo201combined.csv", sep=""))
+dfGISP20 <- identify(dfGISP20, df_best_ends)
+
+dfGISP31 <-  read.csv(paste(directoryX,"GISP_05combo311combined.csv", sep=""))
+dfGISP31 <- identify(dfGISP31, df_best_ends)
+
+
+dfrandom15 <-  read.csv(paste(directoryX,"randomcombo151combined.csv", sep=""))
+dfrandom15 <- identify(dfrandom15, df_best_ends)
+dfrandom20 <-  read.csv(paste(directoryX,"randomcombo201combined.csv", sep=""))
+dfrandom20 <- identify(dfrandom20, df_best_ends)
+
+dfrandom31 <-  read.csv(paste(directoryX,"randomcombo311combined.csv", sep=""))
+dfrandom31 <- identify(dfrandom31, df_best_ends)
+
+
+dfTOC15 <-  read.csv(paste(directoryX,"test-of-cure_80combo151combined.csv", sep=""))
+dfTOC15 <- identify(dfTOC15, df_best_ends)
+dfTOC20 <-  read.csv(paste(directoryX,"test-of-cure_80combo201combined.csv", sep=""))
+dfTOC20 <- identify(dfTOC20, df_best_ends)
+
+dfTOC31 <-  read.csv(paste(directoryX,"test-of-cure_80combo311combined.csv", sep=""))
+dfTOC31 <- identify(dfTOC31, df_best_ends)
+
+
+dfDST15 <-  read.csv(paste(directoryX,"drug_sus_testing_80combo151combined.csv", sep=""))
+dfDST15 <- identify(dfDST15, df_best_ends)
+dfDST20 <-  read.csv(paste(directoryX,"drug_sus_testing_80combo201combined.csv", sep=""))
+dfDST20 <- identify(dfDST20, df_best_ends)
+
+dfDST31 <-  read.csv(paste(directoryX,"drug_sus_testing_80combo311combined.csv", sep=""))
+dfDST31 <- identify(dfDST31, df_best_ends)
+
+dfreal15 <-  read.csv(paste(directoryX,"realistic_combocombo151combined.csv", sep=""))
+dfreal15<-identify(dfreal15, df_best_ends)
+dfreal20<-  read.csv(paste(directoryX,"realistic_combocombo201combined.csv", sep=""))
+dfreal20<-identify(dfreal20, df_best_ends)
+dfreal31<-  read.csv(paste(directoryX,"realistic_combocombo311combined.csv", sep=""))
+dfreal31<-identify(dfreal31, df_best_ends)
+
+#figure s3.1
+giant_summary_plot(dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
+                   dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
+                   dfTOC15, dfTOC20, dfTOC25, dfTOC31,
+                   dfDST15, dfDST20, dfDST25, dfDST31,
+                   dfreal15, dfreal20, dfreal25, dfreal31)
+
+#figure s3.2
+multiplot(
+  
+  visualize_cea_weighted_real("A. Drug X available year 10", df_best_ends,dfreal15, dfGISP15, dfrandom15, dfTOC15, dfDST15)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 200)),
+  visualize_cea_weighted_real("C. Drug X available year 15", df_best_ends,dfreal20, dfGISP20, dfrandom20, dfTOC20, dfDST20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 200)),
+  visualize_cea_weighted_real("E. Drug X available year 20", df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 200)),  
+  visualize_cea_weighted_real("G. Drug X never available",df_best_ends, dfreal31, dfGISP31, dfrandom31, dfTOC31, dfDST31)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-300, 200)),
+  
+  nmb(cea_real_weighted(df_best_ends,dfreal15, dfGISP15, dfrandom15, dfTOC15, dfDST15), "B.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal20, dfGISP20, dfrandom20, dfTOC20, dfDST20), "D.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "F.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal31, dfGISP31, dfrandom31, dfTOC31, dfDST31), "H.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  
+  cols = 2
+)
+
+cea_real_weighted(df_best_ends,dfreal31, dfGISP31, dfrandom31, dfTOC31, dfDST31)
+
+
+new_figure_four(dfGISP15, dfrandom15, dfTOC15, dfDST15, dfreal15, 15)
+new_figure_four(dfGISP20, dfrandom20, dfTOC20, dfDST20, dfreal20, 20)
+new_figure_four(dfGISP31, dfrandom31, dfTOC31, dfDST31, dfreal31, 31)
+
+
+# switch threshold
+
+directory_switch<- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_switch_combo/"
+
+dfGISP3 <-   read.csv(paste(directory_switch, "GISP_3combo251combined.csv", sep=""))
+dfGISP3 <- identify(dfGISP3, df_best_ends)
+
+dfGISP4 <-   read.csv(paste(directory_switch, "GISP_4combo251combined.csv", sep=""))
+dfGISP4 <- identify(dfGISP4, df_best_ends)
+
+dfGISP5 <- dfGISP25
+
+dfGISP6 <-   read.csv(paste(directory_switch, "GISP_6combo251combined.csv", sep=""))
+dfGISP6 <- identify(dfGISP6, df_best_ends)
+
+dfGISP7 <-   read.csv(paste(directory_switch, "GISP_7combo251combined.csv", sep=""))
+dfGISP7 <- identify(dfGISP7, df_best_ends)
+
+
+#add GISP 3% and GISP 7% instead of 2 and 8
+
+summary_plot_sa(dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7, 
+                c("GISP_3", "GISP_4", "GISP_5", "GISP_6", "GISP_7"), 
+                c("GISP 3%", "GISP 4%", "GISP 5%", "GISP 6%", "GISP 7%"), 
+                20, 60000)
+
+multiplot(
+  
+  visualize_cea_weighted_real("A. GISP 3%", df_best_ends,dfreal25,dfGISP3, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("C. GISP 4%", df_best_ends,dfreal25,dfGISP4, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("E. GISP 5% (default)", df_best_ends,dfreal25,dfGISP5, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),  
+  visualize_cea_weighted_real("G. GISP 6%",df_best_ends, dfreal25,dfGISP6, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("I. GISP 7%",df_best_ends, dfreal25,dfGISP7, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP3, dfrandom25, dfTOC25, dfDST25), "B.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP4, dfrandom25, dfTOC25, dfDST25), "D.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP5, dfrandom25, dfTOC25, dfDST25), "F.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP6, dfrandom25, dfTOC25, dfDST25), "H.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP7, dfrandom25, dfTOC25, dfDST25), "J.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  
+  cols = 2
+)
+
+#rDST coverage
+
+directoryDST <- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_availrDST_combo/"
+dfDST60 <-  read.csv(paste(directoryDST, "drug_sus_testing_60combo251combined.csv", sep=""))
+dfDST60 <- identify(dfDST60, df_best_ends)
+
+dfDST70 <-  read.csv(paste(directoryDST,"drug_sus_testing_70combo251combined.csv", sep=""))
+dfDST70 <- identify(dfDST70, df_best_ends)
+
+dfDST80 <- dfDST25 
+
+dfDST90 <-  read.csv(paste(directoryDST,"drug_sus_testing_90combo251combined.csv", sep=""))
+dfDST90 <- identify(dfDST90, df_best_ends)
+
+dfDST100 <-  read.csv(paste(directoryDST,"drug_sus_testing_100combo251combined.csv", sep=""))
+dfDST100 <- identify(dfDST100, df_best_ends)
+
+summary_plot_sa(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100, 
+                c("drug_sus_testing_60", "drug_sus_testing_70", "drug_sus_testing_80", "drug_sus_testing_90", "drug_sus_testing_100"), 
+                c("DST 60%", "DST 70%", "DST 80%", "DST 90%", "DST 100%"), 
+                30, 2500)
+
+multiplot(
+  
+  visualize_cea_weighted_real("A. DST 60%", df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("C. DST 70%", df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST70)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("E. DST 80% (default)", df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),  
+  visualize_cea_weighted_real("G. DST 90%",df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST90)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("I. DST 100%",df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60), "B.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST70), "D.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80), "F.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST90), "H.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100), "J.")+ coord_cartesian(ylim = c(-5000000, 10000000)),
+  
+  cols = 2
+)
+
+
+
+
+#adhereTOCsympt
+directoryTOCsympt <- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_adhereTOCsympt_combo/"
+
+
+dfTOCadsympt60 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_60combo251combined.csv", sep=""))
+dfTOCadsympt60 <- identify(dfTOCadsympt60, df_best_ends)
+
+dfTOCadsympt70 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_70combo251combined.csv", sep=""))
+dfTOCadsympt70 <- identify(dfTOCadsympt70, df_best_ends)
+
+dfTOCadsympt80 <-  dfTOC25
+
+dfTOCadsympt90 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_90combo251combined.csv", sep=""))
+dfTOCadsympt90 <- identify(dfTOCadsympt90, df_best_ends)
+
+dfTOCadsympt100 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_100combo251combined.csv", sep=""))
+dfTOCadsympt100 <- identify(dfTOCadsympt100, df_best_ends)
+
+summary_plot_sa(dfTOCadsympt60, dfTOCadsympt70, dfTOCadsympt80, dfTOCadsympt90, dfTOCadsympt100, 
+                c("test-of-cure_sympt_60", "test-of-cure_sympt_70", "test-of-cure_sympt_80", "test-of-cure_sympt_90", "test-of-cure_sympt_100"), 
+                c("TOC symptomatic 60%", "TOC symptomatic 70%", "TOC symptomatic 80%", "TOC symptomatic 90%", "TOC symptomatic 100%"), 
+                100, 40000)
+multiplot(
+  
+  visualize_cea_weighted_real("A. TOC symptomatic 60%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt60, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("C. TOC symptomatic 70%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt70, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("E. TOC symptomatic 80% (default)", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt80, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),  
+  visualize_cea_weighted_real("G. TOC symptomatic 90%",df_best_ends, dfreal25,dfGISP25, dfrandom25, dfTOCadsympt90, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("I. TOC symptomatic 100%",df_best_ends, dfreal25,dfGISP25, dfrandom25, dfTOCadsympt100, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt60, dfDST25), "B.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt70, dfDST25), "D.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt80, dfDST25), "F.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt90, dfDST25), "H.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadsympt100, dfDST25), "J.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  
+  cols = 2
+)
+
+
+
+
+
+#adhereTOCasympt
+directoryTOCasympt <- "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_overnight_adhereTOCasympt_combo/"
+
+
+dfTOCadasympt60 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_60combo251combined.csv", sep=""))
+dfTOCadasympt60 <- identify(dfTOCadasympt60, df_best_ends)
+
+dfTOCadasympt70 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_70combo251combined.csv", sep=""))
+dfTOCadasympt70 <- identify(dfTOCadasympt70, df_best_ends)
+
+dfTOCadasympt80 <-  dfTOC25
+
+dfTOCadasympt90 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_90combo251combined.csv", sep=""))
+dfTOCadasympt90 <- identify(dfTOCadasympt90, df_best_ends)
+
+dfTOCadasympt100 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_100combo251combined.csv", sep=""))
+dfTOCadasympt100 <- identify(dfTOCadasympt100, df_best_ends)
+
+summary_plot_sa(dfTOCadasympt60, dfTOCadasympt70, dfTOCadasympt80, dfTOCadasympt90, dfTOCadasympt100, 
+                c("test-of-cure_asympt_60", "test-of-cure_asympt_70", "test-of-cure_asympt_80", "test-of-cure_asympt_90", "test-of-cure_asympt_100"), 
+                c("TOC asymptomatic 60%", "TOC asymptomatic 70%", "TOC asymptomatic 80%", "TOC asymptomatic 90%", "TOC asymptomatic 100%"), 
+                100, 40000)
+multiplot(
+  
+  visualize_cea_weighted_real("A. TOC asymptomatic 60%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt60, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("C. TOC asymptomatic 70%", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt70, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("E. TOC asymptomatic 80% (default)", df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt80, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),  
+  visualize_cea_weighted_real("G. TOC asymptomatic 90%",df_best_ends, dfreal25,dfGISP25, dfrandom25, dfTOCadasympt90, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("I. TOC asymptomatic 100%",df_best_ends, dfreal25,dfGISP25, dfrandom25, dfTOCadasympt100, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 20), xlim = c(-200, 50)),
+  
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt60, dfDST25), "B.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt70, dfDST25), "D.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt80, dfDST25), "F.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt90, dfDST25), "H.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfreal25,dfGISP25, dfrandom25, dfTOCadasympt100, dfDST25), "J.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  
+  cols = 2
+)
+
+
+#RC distribution
+directoryRC <- "/Users/me597/Documents/MSMoutput/FEBRUARY_5_2025_debug1_realistic_combo_combo/"
+
+dfRC20_20_60 <- read.csv(paste(directoryRC, "realistic_combo_20_20_60combo251combined.csv", sep=""))
+dfRC20_20_60 <- identify(dfRC20_20_60, df_best_ends)
+
+dfRC20_40_40 <- read.csv(paste(directoryRC, "realistic_combo_20_40_40combo251combined.csv", sep=""))
+dfRC20_40_40 <- identify(dfRC20_40_40, df_best_ends)
+
+dfRC20_60_20 <- read.csv(paste(directoryRC, "realistic_combo_20_60_20combo251combined.csv", sep=""))
+dfRC20_60_20 <- identify(dfRC20_60_20, df_best_ends)
+
+dfRC40_20_40 <- read.csv(paste(directoryRC, "realistic_combo_40_20_40combo251combined.csv", sep=""))
+dfRC40_20_40 <- identify(dfRC40_20_40, df_best_ends)
+
+dfRC40_40_20 <- read.csv(paste(directoryRC, "realistic_combo_40_40_20combo251combined.csv", sep=""))
+dfRC40_40_20 <- identify(dfRC40_40_20, df_best_ends)
+
+dfRC60_20_20 <- read.csv(paste(directoryRC, "realistic_combo_60_20_20combo251combined.csv", sep=""))
+dfRC60_20_20 <- identify(dfRC60_20_20, df_best_ends)
+
+dfRC33_33_34 <- dfreal25
+
+summary_plot_sa_seven(dfRC33_33_34, dfRC20_20_60, dfRC20_40_40, dfRC20_60_20, dfRC40_20_40, dfRC40_40_20, dfRC60_20_20,
+                      c("realistic_combo_20_20_60", "realistic_combo_20_40_40", "realistic_combo_20_60_20", "realistic_combo_40_20_40", "realistic_combo_40_40_20", "realistic_combo_60_20_20", "realistic_combo_33_33_34"), 
+                      c("RC 20-20-60", "RC 20-40-40", "RC 20-60-20", "RC 40-20-40", "RC 40-40-20", "RC 60-20-20", "RC 33-33-34"),  
+                      70, 11000)
+
+multiplot(
+  
+  visualize_cea_weighted_real("A. RC 33-33-34", df_best_ends,dfRC33_33_34,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("C. RC 20-20-60", df_best_ends,dfRC20_20_60,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("E. RC 20-40-40", df_best_ends, dfRC20_40_40,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),  
+  visualize_cea_weighted_real("G. RC 20-60-20",df_best_ends, dfRC20_60_20,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("I. RC 40-20-40",df_best_ends, dfRC40_20_40,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("K. RC 40-40-20",df_best_ends, dfRC40_40_20,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  visualize_cea_weighted_real("M. RC 60-20-20",df_best_ends, dfRC60_20_20,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-10, 30), xlim = c(-200, 50)),
+  
+  
+  nmb(cea_real_weighted(df_best_ends,dfRC33_33_34,dfGISP25, dfrandom25, dfTOC25, dfDST25), "B.") + coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC20_20_60,dfGISP25, dfrandom25, dfTOC25, dfDST25), "D.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC20_40_40,dfGISP25, dfrandom25, dfTOC25, dfDST25), "F.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC20_60_20,dfGISP25, dfrandom25, dfTOC25, dfDST25), "H.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC40_20_40,dfGISP25, dfrandom25, dfTOC25, dfDST25), "J.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC40_40_20,dfGISP25, dfrandom25, dfTOC25, dfDST25), "L.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  nmb(cea_real_weighted(df_best_ends,dfRC60_20_20,dfGISP25, dfrandom25, dfTOC25, dfDST25), "N.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
+  
+  cols = 2
+)
+
+
+
+
 ###########
+
+
+
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JANUARY_30_2025_overnight_sweep_none/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 10)
+
+#save the resample including the replicates
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates10feb25.csv")
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$uniqueID)
+for (unique_ID in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+visualize_calibration_MSM(df_best_traj)
+write_calibrated(df_best_ends_unique, "/Users/me597/Documents/MSM_calibrated_params_test/")
+
+
+
+directory <- "/Users/me597/Documents/MSMoutput/FEBRUARY_10_2025_debug7_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISP_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+new_summary_plot(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+
+
+#figure 4
+new_figure_four(dfGISP25, dfrandom25, dfTOC25, dfDST25, dfreal25, 25)
+
+#figure 5
+multiplot(
+  visualize_cea_weighted_real("A.", df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  cols = 2
+)
+
+
+
+cost_accounting = function(df){
+  cost <- 0
+   cost <- cost + (df$AttemptTreatmentsA* df$DrugATreatmentCost)
+   cost <- cost + (df$AttemptTreatmentsB* df$DrugBTreatmentCost)
+   cost <- cost + (df$AttemptTreatmentsX* df$DrugXTreatmentCost)
+   cost <- cost + (df$UsageofErtapenem* df$DrugETreatmentCost) 
+   cost <- cost + (df$VisitsToClinic*df$CareCost)
+   cost <- cost + (df$DiagnosticTests * df$TestCost)
+   cost <- cost + (df$StrainTests * df$StrainTestCost)
+   cost <- cost + (df$CasesDGI * 2916)
+   cost <- cost + (df$CasesEpidydimitis * 522)
+   cost <- cost + (df$CasesBothSequelae * 3438)
+   return(cost)
+}
+
+multiplot(
+  viz_checkforsequelae(dfGISP25, "A. GISP", 25),
+  viz_allsequelae(dfGISP25, "A. GISP", 25),
+  
+  viz_recovered_naturally(dfGISP25, "A. GISP", 25),
+  viz_failed_count(dfGISP25, "A. GISP", 25),
+
+  viz_checkforsequelae(dfrandom25, "B. RT", 25),
+  viz_allsequelae(dfrandom25, "B. RT", 25),
+  
+  viz_recovered_naturally(dfrandom25, "B. RT", 25),
+  viz_failed_count(dfrandom25, "B. RT", 25),
+
+  
+  cols = 2
+)
+
+
+dfGISP25$costRecalc <- cost_accounting(dfGISP25)
+dfrandom25$costRecalc <- cost_accounting(dfrandom25)
+dfreal25$costRecalc <- cost_accounting(dfreal25)
+dfTOC25$costRecalc <- cost_accounting(dfTOC25)
+dfDST25$costRecalc <- cost_accounting(dfDST25)
+
+
+dfGISP25cost <- cost_df(dfGISP25)
+dfrandom25cost <- cost_df(dfrandom25)
+
+dfTOC25cost <- cost_df(dfTOC25)
+
+dfDST25cost <- cost_df(dfDST25)
+
 

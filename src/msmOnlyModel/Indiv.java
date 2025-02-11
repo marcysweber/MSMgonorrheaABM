@@ -200,6 +200,7 @@ public class Indiv {
 		int roundedTick = (int) tickNow();
 
 		if (this.infectious()) {
+			
 
 			//if not already detected, check for detection
 			if (!infection.isDetected()) {
@@ -388,10 +389,7 @@ public class Indiv {
 		this.changeStateTo(1);
 			
 		if (!this.symptoms()) {
-			String sequelae = checkForSequelae();
-			if (!sequelae.equals("none")) {
-				recordSequelae(sequelae);
-			}
+			
 		}
 			
 		this.scheduleInfectiousActions();
@@ -459,34 +457,12 @@ public class Indiv {
 
 	}
 	
-	public void recordSequelae(String sequelae) {
-
-		observer.getCostCalc().recordSequelae(sequelae);
-		
-	}
 	
-	public String checkForSequelae() {
-		String result = "none";
-		
-		Uniform sequelaeUniform = (Uniform) randomHelper.getDistribution("sequelaeUniform");
-		double randomValue = sequelaeUniform.nextDouble();
-		
-		if (randomValue <= 0.042) {
-			//epididymitis
-			result = "epididymitis";
-		} else if (randomValue <= 0.052) {
-			//DGI
-			result = "dgi";
-		} else if (randomValue <= 0.05242) {
-			//both
-			result = "both";
-		}
-		
-		return result;
-	}
+	
 	
 	public void recoverNaturally() {
 		if (infectious()) {
+		
 			infection.recoverNaturally();
 		
 			actuallyRecover();
@@ -517,7 +493,7 @@ public class Indiv {
 	public void createInfection(String strain, boolean starting, double naturalRecoveryTime) {
 		String newStrain = strain;
 		//Context<Object> context = ContextUtils.getContext(this);
-		if (this.state == 1){
+		if (this.myInfection()!=null){
 			newStrain = myInfection().checkForDoubleResist(newStrain);
 			this.myInfection().overrideInfection(); //essentially remove the old infection, in case different strain
 			this.infection = null;
@@ -585,11 +561,7 @@ public class Indiv {
 //		observer.recordNewTreatment(this);
 //	}
 	
-	public void recordFailedTreatment() {
-		infection.failTreatment();
-	}
-	
-	
+
 	public void recordDevelopedResistance() {
 		infection.developResistance();
 	}
@@ -665,19 +637,37 @@ public class Indiv {
 	}
 	
 	public int getState() {
+		if (this.infection == null) {
+			state = 0;
+		} else {
+			state = 1;
+		}
 		return this.state;
 	}
 	
 	public boolean susceptible() {
-		if (this.state == 0) {
+		if (this.infection == null) {
+			state = 0;
 			return true;
-		} else {return false;}
+
+		} else {
+			state = 1;
+			return false;
+		}
+		
+		
 	}
 	
 	public boolean infectious() {
-		if (this.state == 1) {
+		if (this.infection == null) {
+			state = 0;
+			return false;
+
+		} else {
+			state = 1;
 			return true;
-		} else {return false;}
+		}
+		
 	}
 	
 	public String getGender() {

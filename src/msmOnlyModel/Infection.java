@@ -32,11 +32,21 @@ public class Infection {
 	
 	//treatment history
 	private boolean inTreatment;
-	private boolean attemptedA;
-	private boolean attemptedB;
+	private int attemptedA;
+	private int attemptedB;
 	private boolean developedResistanceA;
 	private boolean developedResistanceB;
 	private boolean failedTreatment;
+	private int visitsToClinic;
+	private int diagnosticTests;
+	private int strainTests;
+	private String sequelae;
+	private int checkedForSequelae;
+	private int checkedForSequelaeRecovNat;
+	private int checkedForSequelaeFailedA;
+	private int checkedForSequelaeFailedB;
+	private int checkedForSequelaeUnDetect;
+
 	
 	//final outcome; all possible infection end-points mutually exclusive
 	private double tickEnded;
@@ -81,6 +91,10 @@ public class Infection {
 		this.detected = false;
 		
 		transmissionEvents = 0;
+		
+		sequelae = "";
+		
+		checkedForSequelae = 0;
 	}
 	
 	private boolean assignSymptoms(boolean starting) {
@@ -130,6 +144,8 @@ public class Infection {
 		this.tickEnded = obs.tickNow();
 		host.clearSeekCareScheduled();
 		
+		
+		
 		try {
 			obs.processCompleteInfection(this);
 		} catch (Exception e) {
@@ -140,6 +156,74 @@ public class Infection {
 		this.current = false;
 		this.host = null;
 	}
+	
+	public void checkForSequelae(String source) throws Exception {
+		//System.out.println("check");
+		checkedForSequelae++;
+		
+		if (source.contains("Undetection")) {
+			checkedForSequelaeUnDetect++;
+		} else if (source.contains("recoveredNaturally")) {
+			checkedForSequelaeRecovNat++;
+		} else if (source.contains("failedA")) {
+			checkedForSequelaeFailedA++;
+		} else if (source.contains("failedB")) {
+			checkedForSequelaeFailedB++;
+		} else {
+			System.out.println(source);
+			throw new Exception("unacceptable source for sequelae check");
+		}
+		
+		boolean epididymitis = false;
+		boolean dgi = false;
+		String newresult = "none";
+
+		//now preserves pre-existing sequala, but can add more to equal both sequelae
+		
+		Uniform sequelaeUniform = (Uniform) randomHelper.getDistribution("sequelaeUniform");
+		double randomValue1 = sequelaeUniform.nextDouble();
+		
+		if (randomValue1 <= 0.042) {
+			//epididymitis
+			epididymitis=true;
+		}  
+			
+		double randomValue2 = sequelaeUniform.nextDouble();
+
+		if (randomValue2 <= 0.01) {
+			//DGI
+			 dgi=true;
+		} 		
+		
+		
+		
+		
+		assignSequelae(epididymitis, dgi);
+	}
+	
+	public void assignSequelae(boolean epididymitis, boolean dgi) {
+		boolean weHaveEpi = epididymitis || this.sequelae.contains("epi");
+		boolean weHaveDgi = dgi || this.sequelae.contains("dgi");
+		
+		if (this.sequelae.contains("both")) {
+			weHaveEpi = true;
+			weHaveDgi = true;
+		}
+		
+		// do we have both conditions?
+		if (weHaveEpi && weHaveDgi) {
+			this.sequelae = "both";
+		} else if (weHaveEpi) {
+			this.sequelae = "epididymitis";
+		} else if (weHaveDgi){
+			this.sequelae = "dgi";
+		} else {
+			//nothing
+		}
+		
+		
+	}
+	
 	
 	public void recordTransmission() {
 		transmissionEvents++;
@@ -232,6 +316,7 @@ public class Infection {
 		inTreatment = false;
 		
 		
+		
 	}
 	
 	public void screen() {
@@ -251,11 +336,11 @@ public class Infection {
 	}
 	
 	public void attemptA() {
-		attemptedA = true;
+		attemptedA++;
 	}
 
 	public void attemptB() {
-		attemptedB = true;
+		attemptedB++;
 	}
 	
 	public void recordInTreatment() {
@@ -270,6 +355,12 @@ public class Infection {
 	public void failTreatment() {
 		failedTreatment = true;
 		inTreatment = false;
+		try {
+			checkForSequelae("Undetection");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		undetect();
 	}
 	
@@ -285,6 +376,34 @@ public class Infection {
 		return developedResistance;
 	}
 	
+	
+	
+	public String getSequelae() {
+		return sequelae;
+	}
+	
+	public int accessCheckedForSequelae() {
+		return checkedForSequelae;
+	}
+	
+	public int accessCheckedForSequelaeUnDetect() {
+		return checkedForSequelaeUnDetect;
+	}
+
+	public int accessCheckedForSequelaeRecovNat() {
+		return checkedForSequelaeRecovNat;
+	}
+	
+
+	public int accessCheckedForSequelaeFailedA() {
+		return checkedForSequelaeFailedA;
+	}
+	
+
+	public int accessCheckedForSequelaeFailedB() {
+		return checkedForSequelaeFailedB;
+	}
+	
 	public void reInfect() {
 		reInfected = true;
 	}
@@ -293,7 +412,39 @@ public class Infection {
 		return reInfected;
 	}
 	
+	public void recordVisitClinic() {
+		visitsToClinic++;
+	}
+	
+	public int visitsToClinic() {
+		return visitsToClinic;
+	}
+	
+	public void recordDiagnosticTest() {
+		diagnosticTests++;
+	}
+	
+	
+	public int diagnosticTests() {
+		return diagnosticTests;
+	}
+	
+	
+	public void recordStrainTest() {
+		strainTests++;
+	}
+	
+	public int strainTests() {
+		return strainTests;
+	}
+	
 	public void recoverNaturally() {
+		try {
+			//checkForSequelae("recoveredNaturally");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		recoveredNaturally = true;
 	}
 
@@ -306,7 +457,7 @@ public class Infection {
 			succeededA = true;
 		} else if (treatment.contains("B")) {
 			succeededB = true;
-			if (attemptedB==false) {
+			if (attemptedB<1) {
 				System.out.print("issue");
 			}
 		} else if (treatment.contains("X")) {
@@ -319,11 +470,11 @@ public class Infection {
 		}
 	}
 	
-	public boolean attemptedA() {
+	public int attemptedA() {
 		return attemptedA;
 	}
 	
-	public boolean attemptedB() {
+	public int attemptedB() {
 		return attemptedB;
 	}
 	

@@ -23,6 +23,7 @@ public class Screener {
 			//observer.recordNewDetectedThruScreen(indiv);
 			indiv.myInfection().detect();
 			indiv.myInfection().screen();
+			indiv.myInfection().recordDiagnosticTest();
 			//if (indiv.symptoms()) {observer.recordNewDetectedAndSymptoms(indiv);}
 			
 			Treatment treatment = new Treatment(indiv.myInfection(), observer);

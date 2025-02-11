@@ -432,7 +432,7 @@ public class BatchRun {
 		
 		try {
 			combineCSVs(batchDirPath);
-			analyzeAndCombineTPI(batchDirPath);
+			//analyzeAndCombineTPI(batchDirPath);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -600,9 +600,9 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_3_2025_overnight_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_5_2025_overnight_";
 	
-		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_4_2025_debug1_";
+		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_10_2025_debug7_";
 
 		
 		dirname += counterfactual;
@@ -696,6 +696,8 @@ public class BatchRun {
         			System.err.println("Error reading file: " + csvFile.toString());
         			e.printStackTrace();
         		}
+        		
+        		Files.delete(csvFile);
         	}
         } catch (IOException e) {
         		System.err.println("Error writing file: " + combinedFile.toString());
@@ -805,6 +807,8 @@ public class BatchRun {
 	        			e.printStackTrace();
 	        		}
 
+	        		Files.delete(csvFile);
+	        		
 	        	}} catch (IOException e) {
 	        		System.err.println("Error writing file: " + combinedFile.toString());
 	        		e.printStackTrace();
@@ -858,6 +862,7 @@ public class BatchRun {
 	        			System.err.println("Error reading file: " + csvFile.toString());
 	        			e.printStackTrace();
 	        		}
+	        		Files.delete(csvFile);
 	        	}
 	        } catch (IOException e) {
 	        		System.err.println("Error writing file: " + combinedFile.toString());

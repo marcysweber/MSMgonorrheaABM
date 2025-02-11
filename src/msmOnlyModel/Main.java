@@ -73,9 +73,9 @@ public class Main {
 			// to run everything:
 			//executeCalibratedNoResistanceBatch(scenariofile);
 
-			//executeCounterfactualScenarios(scenariofile);
+			executeCounterfactualScenarios(scenariofile);
 
-			executeSensitivityAnalysisBatch(scenariofile);			
+			//executeSensitivityAnalysisBatch(scenariofile);			
 			
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -88,10 +88,10 @@ public class Main {
 	public static void executeCounterfactualScenarios(File scenariofile) {
 		BatchRun batchRunner = new BatchRun("all", "all");
 		batchRunner.executeCalibratedBatch(scenariofile, "GISP_05");
-		
+		batchRunner.executeCalibratedBatch(scenariofile, "random");
+
 		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "random");
 		
 		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 		
@@ -142,18 +142,18 @@ public class Main {
 
 		
 		  
-//		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15,
-//		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-//		  realisticTOC, realisticDST); 
-//		  
-//		  batchRunner.executeCalibratedBatch(scenario,
-//		  "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-//		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-//		 
-//		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31,
-//		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-//		  realisticTOC, realisticDST);
-//		  
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST); 
+		  
+		  batchRunner.executeCalibratedBatch(scenario,
+		  "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		 
+		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31,
+		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+		  realisticTOC, realisticDST);
+		  
 		  
 		  
 		 

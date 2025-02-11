@@ -43,7 +43,6 @@ public class CareSeeking {
 		
 		//System.out.println("delay: ");
 		//System.out.println(thisDelayToSeekCare);
-		observer.getCostCalc().symptomaticQALYsLost(indiv, thisDelayToSeekCare);
 		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelayToSeekCare + indiv.tickNow());
 		schedule.schedule(schparams, this, "seekCare");
 		return true;
@@ -52,20 +51,12 @@ public class CareSeeking {
 	
 	public void seekCare() {
 		indiv.clearSeekCareScheduled();
-
 		
 		if (indiv.infectious() && indiv.symptoms()) {
 			
 			indiv.myInfection().detect();
 			indiv.myInfection().seekCare();
 
-		
-			//observer.recordSoughtCare(indiv);
-			observer.getCostCalc().careCost(indiv);
-			observer.getCostCalc().testCost(indiv);
-
-			observer.getCostCalc().addPersonDaysSymptomatic();
-			//observer.recordNewDetectedAndSymptoms(indiv);
 
 			Treatment treatment = new Treatment(indiv.myInfection(), observer);
 			try {

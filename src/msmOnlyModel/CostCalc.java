@@ -54,214 +54,118 @@ public class CostCalc {
 		this.drugEtreatmentCost = this.parameters.getDouble("treatment_E_cost");
 
 		
-		this.monetaryCostAnnual = 0;
-		this.monetaryCostCumulative = 0;
-		this.personDaysSymptomaticAnnual = 0;
-		this.QALYsLost = 0;
+		this.monetaryCostAnnual = 0.0;
+		this.monetaryCostCumulative = 0.0;
+		this.personDaysSymptomaticAnnual = 0.0;
+		this.QALYsLost = 0.0;
 	}
 	
 	public void addPersonDaysSymptomatic() {
 		personDaysSymptomaticAnnual ++;
 	}
 	
-	public void symptomaticQALYsLost(Indiv indiv, double delay) {
+	public void symptomaticQALYsLost(double delay) {
 		double QALYs = (delay * 0.114) / 52.0;//GBD for moderate pelvic inflamatory diseases
 		
-		if (indiv.infectious() && indiv.symptoms()) {
 		
 		QALYsLost = QALYsLost + QALYs;
 		
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.QALYsLostW+= QALYs;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.QALYsLostNB+= QALYs;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.QALYsLostMSW+= QALYs;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.QALYsLostMSMW+= QALYs;
-		} else {
-			//MSM
-			this.QALYsLostMSM+= QALYs;
-		}
-		}
 		
 	}
 	
 	
-	public void careCost(Indiv indiv) {
+	public void careCost(int count) {
 		//System.out.println("Care");
 
-		monetaryCostAnnual += careCost;
+		double convertedCount = (double) count;
 		
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= careCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= careCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= careCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= careCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= careCost;
-		}
+		monetaryCostAnnual += (careCost * convertedCount);
+		
+		
 	}
 	
-	public void testCost(Indiv indiv) {
+	public void testCost(int count) {
 		//System.out.println("Dtest");
+		double convertedCount = (double) count;
 
-		monetaryCostAnnual += testCost;
+
+		monetaryCostAnnual += (testCost * convertedCount);
 		
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= testCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= testCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= testCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= testCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= testCost;
-		}
+		
 	}
 	
 	public void strainTestCost(int count) {
 		//System.out.println("StrainTest");
-		double totalCost = strainTestCost * count;
+		double convertedCount = (double) count;
+
+		double totalCost = strainTestCost * convertedCount;
 		
 		monetaryCostAnnual += totalCost;
 		
 	}
 	
-	public void treatmentDrugACost(Indiv indiv) {
+	public void treatmentDrugACost(int count) {
 		//System.out.println("DrugA");
+		double convertedCount = (double) count;
 
-		monetaryCostAnnual += drugAtreatmentCost;
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= drugAtreatmentCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= drugAtreatmentCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= drugAtreatmentCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= drugAtreatmentCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= drugAtreatmentCost;
-		}
+
+		monetaryCostAnnual += (drugAtreatmentCost * convertedCount);
+		
 	}
 	
-	public void treatmentDrugBCost(Indiv indiv) {
+	public void treatmentDrugBCost(int count) {
 		//System.out.println("DrugB");
 
-		
-		monetaryCostAnnual += drugBtreatmentCost;
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= drugBtreatmentCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= drugBtreatmentCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= drugBtreatmentCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= drugBtreatmentCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= drugBtreatmentCost;
-		}
-	}
-	
-	public void treatmentDrugXCost(Indiv indiv) {
-		//System.out.println("DrugX");
+		double convertedCount = (double) count;
 
-		monetaryCostAnnual += drugXtreatmentCost;
+		monetaryCostAnnual += (drugBtreatmentCost * convertedCount);
 		
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= drugXtreatmentCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= drugXtreatmentCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= drugXtreatmentCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= drugXtreatmentCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= drugXtreatmentCost;
-		}
 	}
 	
-	public void treatmentDrugECost(Indiv indiv) {
-		//System.out.println("DrugE");
+	public void treatmentDrugXCost(int count) {
+		//System.out.println("DrugX");
+		double convertedCount = (double) count;
+
+		monetaryCostAnnual += (drugXtreatmentCost * convertedCount);
 		
-		monetaryCostAnnual += drugEtreatmentCost;
+		
+	}
+	
+	public void treatmentDrugECost(int count) {
+		//System.out.println("DrugE");
+		double convertedCount = (double) count;
+
+		
+		monetaryCostAnnual += (drugEtreatmentCost * convertedCount);
 		double QALYs = (10.5 * 0.3) / 365.0;
 		this.QALYsLost += QALYs;
 		
-		if (indiv.getGender().equals("f")) {
-			//W
-			this.monetaryCostAnnualW+= drugEtreatmentCost;
-		} else if (indiv.getGender().equals("nb")) {
-			//NB
-			this.monetaryCostAnnualNB+= drugEtreatmentCost;
-		} else if (indiv.getSubPop().equals("msw")) {
-			//MSW
-			this.monetaryCostAnnualMSW+= drugEtreatmentCost;
-		} else if (indiv.getSubPop().equals("msmw")) {
-			//MSMW
-			this.monetaryCostAnnualMSMW+= drugEtreatmentCost;
-		} else {
-			//MSM
-			this.monetaryCostAnnualMSM+= drugEtreatmentCost;
-		}
+		
 	}
 	
 	
 	public void recordSequelae(String sequelae) {
 		//System.out.println("Sequelae");
 
-		double QALYs = 0; 
+		double QALYs = 0.0; 
 
 		
 		if (sequelae.equals("epididymitis")) {
-			this.monetaryCostAnnual += 522;
+			this.monetaryCostAnnual += 522.0;
 			
 			QALYs = (6.9 * 0.128) / 365.0;
 			this.QALYsLost += QALYs;
 			
 			
 		} else if (sequelae.equals("dgi")) {
-			this.monetaryCostAnnual += 2916;
+			this.monetaryCostAnnual += 2916.0;
 			QALYs = (8.8 * 0.37) / 365.0;
 			this.QALYsLost += QALYs;
 			
 			
 			
 		} else if (sequelae.equals("both")) {
-			this.monetaryCostAnnual += 3438;
+			this.monetaryCostAnnual += 3438.0;
 			QALYs = ((6.9 + 8.8) * 0.7102) / 365.0;
 			this.QALYsLost += QALYs;
 			
@@ -272,12 +176,12 @@ public class CostCalc {
 	
 	
 	public void clearAnnualCosts() {
-		monetaryCostAnnual = 0;
-		personDaysSymptomaticAnnual = 0;
-		QALYsLost = 0;
+		monetaryCostAnnual = 0.0;
+		personDaysSymptomaticAnnual = 0.0;
+		QALYsLost = 0.0;
 		
-		monetaryCostAnnualW = 0;
-		QALYsLostW = 0;
+		monetaryCostAnnualW = 0.0;
+		QALYsLostW = 0.0;
 		
 		monetaryCostAnnualNB = 0;
 		QALYsLostNB = 0;

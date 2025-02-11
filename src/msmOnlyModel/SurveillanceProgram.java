@@ -72,7 +72,7 @@ public class SurveillanceProgram {
 		
 	}
 	
-	@ScheduledMethod(start = 261, interval = 4, priority = 1)
+	@ScheduledMethod(start = 261, interval = 4.333, priority = 1)
 	public void conductSurveillance() {
 		//System.out.println("conducting surveillance");
 		if (counterfactual.contains("GISP")) {
@@ -148,9 +148,12 @@ public class SurveillanceProgram {
 					.limit(amountToTest)
 					.collect(Collectors.toList());
 			costCalc.strainTestCost(amountToTest);
+			observer.recordSurveillanceStrainTests(amountToTest);
 		} else {
 			sample = detected.stream().collect(Collectors.toList());
 			costCalc.strainTestCost(detected.size());
+			observer.recordSurveillanceStrainTests(detected.size());
+
 		}
 
 		List <String> susProfiles = new ArrayList <String>();

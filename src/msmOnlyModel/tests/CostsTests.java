@@ -120,7 +120,7 @@ public class CostsTests {
 		
 		indiv1.infect("none");
 		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
-			indiv1.infect("none");
+			indiv1.infect("none", "reinfect");
 		}
 		
 
@@ -195,7 +195,7 @@ public class CostsTests {
 			indiv.infect("none");
 			
 			while (!indiv.symptoms()) { //keep going until the infection is symptomatic
-				indiv.infect("none");
+				indiv.infect("none", "reinfect");
 			}
 		}
 		
@@ -396,14 +396,14 @@ public class CostsTests {
 		testRun.population().add(indiv1);
 		indiv1.infect("none");
 		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
-			indiv1.infect("none");
+			indiv1.infect("none", "reinfect");
 		}
 		
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
 		care.scheduleSeekCare();
 		
 		assertTrue("QALYLostSympSusTest1", indiv1.infectious());
-		Treatment treatment = new Treatment(indiv1, observer);
+		Treatment treatment = new Treatment(indiv1.myInfection(), observer);
 		try {
 			treatment.treat();
 		} catch (Exception e) {
@@ -468,14 +468,17 @@ public class CostsTests {
 		testRun.population().add(indiv1);
 		indiv1.infect("A");
 		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
-			indiv1.infect("A");
+			indiv1.infect("A", "reinfect");
 		}
 		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
-		care.scheduleSeekCare();
+		care.seekCare();
 		
 		assertTrue("QALYLostSympSusTest1", indiv1.infectious());
-		Treatment treatment = new Treatment(indiv1, observer);
+		Treatment treatment = new Treatment(indiv1.myInfection(), observer);
 		try {
 			treatment.treat();
 		} catch (Exception e) {
@@ -483,9 +486,15 @@ public class CostsTests {
 			e.printStackTrace();
 		}
 		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
 		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
 
 		treatment.retreat("B");
+		
+		System.out.println(costCalc.getMonetaryCost());
+
 		
 		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
 		//System.out.println("resist " + costCalc.getQALYsLost());
@@ -493,15 +502,15 @@ public class CostsTests {
 	}
 	
 	@Test
-	public void QALYLostAsymptResistTest() {
-		//accurate loss of QALYs (none) for asymptomatic infection
-		BatchRun testBatch = new BatchRun("GISP", "combo");
+	public void QALYLostSymptResistTestRT(){
+		//accurate loss of QALYs for a symptomatic infection resistant to drug A
+		BatchRun testBatch = new BatchRun("random", "combo");
 		Parameters params = testBatch.setParameters(
 				0, //run number
 				52, //end time
 				1, //seed
 				"combo",  //resistance
-				"GISP", //counterfactual
+				"random", //counterfactual
 				10, //yearX
 				100, //initialinfected
 				0.1, //propHighRisk
@@ -541,15 +550,18 @@ public class CostsTests {
 		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		indiv1.infect("A");
-		while (indiv1.symptoms()) { //keep trying until you get an asymptomatic infection
-			indiv1.infect("A");
+		while (!indiv1.symptoms()) { //keep trying until you get a symptomatic infection
+			indiv1.infect("A", "reinfect");
 		}
 		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
-		care.scheduleSeekCare();
+		care.seekCare();
 		
 		assertTrue("QALYLostSympSusTest1", indiv1.infectious());
-		Treatment treatment = new Treatment(indiv1, observer);
+		Treatment treatment = new Treatment(indiv1.myInfection(), observer);
 		try {
 			treatment.treat();
 		} catch (Exception e) {
@@ -557,9 +569,97 @@ public class CostsTests {
 			e.printStackTrace();
 		}
 		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
 		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
 
 		treatment.retreat("B");
+		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
+		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
+		//System.out.println("resist " + costCalc.getQALYsLost());
+		assertTrue("QALYLostSympSusTest3", costCalc.getQALYsLost()>0.0005);
+	}
+	
+	@Test
+	public void QALYLostAsymptResistTest() {
+		//accurate loss of QALYs (none) for asymptomatic infection
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(
+				0, //run number
+				52, //end time
+				1, //seed
+				"combo",  //resistance
+				"GISP", //counterfactual
+				10, //yearX
+				100, //initialinfected
+				0.1, //propHighRisk
+
+				1.0, //transmission
+				1.0, //recoveryLambda
+				0.5, //probSymptomatic
+				1.0, //screen interval
+				1.0, //delay to seek care
+				1.0, //delay to retreatment
+				1.0,//assortativity
+
+				0.5,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
+				0.05, //percent resistant A
+				53, //begin importing B
+				1.0, //importing B interval
+				0.95, //DST sensitivity
+				0.95, //DST specificity
+				1.1, //care cost
+				2, //diagnostic test cost
+				3, //strain test cost
+				4, //treatment A cost
+				5, //treatment B cost
+				6, //treatment X cost
+				7); //treatment E cost
+		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
+		testRun.assignSchedule(schedule);
+		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
+		Observer observer = testRun.createObserver(0, null, null, 0);
+		testRun.createSurveillance("none");
+		testRun.createIndivs(0);
+		observer.setPopulation(testRun.population());
+		CostCalc costCalc = testRun.observer().getCostCalc();
+		
+		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
+		testRun.population().add(indiv1);
+		indiv1.infect("A");
+		while (indiv1.symptoms()) { //keep trying until you get an asymptomatic infection
+			indiv1.infect("A", "reinfect");
+		}
+		
+		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
+		care.seekCare();
+		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
+		assertTrue("QALYLostSympSusTest1", indiv1.infectious());
+		Treatment treatment = new Treatment(indiv1.myInfection(), observer);
+		try {
+			treatment.treat();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println(costCalc.getMonetaryCost());
+
+		
+		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
+
+		treatment.retreat("B");
+		
+		System.out.println(costCalc.getMonetaryCost());
 		
 		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
 		//System.out.println("resist " + costCalc.getQALYsLost());

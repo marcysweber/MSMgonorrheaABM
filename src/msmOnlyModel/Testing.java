@@ -87,7 +87,11 @@ public class Testing {
 	}
 	
 	public String drugSusceptibilityTest() {
+		infection.recordStrainTest();
+		
 		//this method should return the drug(s) that the infection is SUSCEPTIBLE to
+		
+		
 		String result;
 		String resultA = "A";
 		String resultB = "B";

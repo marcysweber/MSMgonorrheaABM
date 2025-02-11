@@ -170,6 +170,10 @@ public class CustomFileOutput {
 					"Detected",
 					"DetectedAndSymptoms",
 					"DetectedThruScreen",
+					
+					"StrainTests",
+					"DiagnosticTests",
+					"VisitsToClinic",
 
 					"SuccessTreatmentsA",
 					"SuccessTreatmentsB",
@@ -182,6 +186,17 @@ public class CustomFileOutput {
 					"RecoveredNaturallyDuringTreatment",
 					"Reinfected",
 					"ReinfectedDuringTreatment",
+					"CasesEpidydimitis",
+					"CasesDGI",
+					"CasesBothSequelae",
+					"CheckForSequelae",
+					"CheckForSequelaeUnDetect",
+					"CheckForSequelaeRecovNat",
+					"CheckForSequelaeFailedA",
+					"CheckForSequelaeFailedB",
+
+					
+					
 					"SurveillanceEstPropResistA",
 					"SurveillanceEstPropResistB",
 					"SurveillanceEstPropResistBoth",
@@ -297,6 +312,13 @@ public class CustomFileOutput {
 			int detected,
 			int detectedAndSymptoms,
 			int detectedThruScreen,
+			
+			int strainTests,
+			int diagnosticTests,
+			int visitsToClinic,
+			
+			
+			
 			int successTreatmentsA,
 			int successTreatmentsB, 
 			int successTreatmentsX,
@@ -308,6 +330,17 @@ public class CustomFileOutput {
 			int recoveredNaturallyDuringTreatment,
 			int reinfected,
 			int reinfectedDuringTreatment,
+			int casesEpi,
+			int casesDGI,
+			int casesBothSequelae,
+			int checksForSequelae,
+			
+			int checksForSequelaeUnDetect,
+			int checksForSequelaeRecovNat,
+			int checksForSequelaeFailedA,
+			int checksForSequelaeFailedB,
+
+			
 
 			double surveillanceResultA,
 			double surveillanceResultB,
@@ -395,6 +428,11 @@ public class CustomFileOutput {
 						String.valueOf(detectedAndSymptoms),
 						String.valueOf(detectedThruScreen), 
 
+						String.valueOf(strainTests),
+						String.valueOf(diagnosticTests),
+						String.valueOf(visitsToClinic),
+
+						
 						String.valueOf(successTreatmentsA),
 						String.valueOf(successTreatmentsB),
 						String.valueOf(successTreatmentsX),
@@ -406,7 +444,14 @@ public class CustomFileOutput {
 						String.valueOf(recoveredNaturallyDuringTreatment),
 						String.valueOf(reinfected),
 						String.valueOf(reinfectedDuringTreatment),
-
+						String.valueOf(casesEpi),
+						String.valueOf(casesDGI),
+						String.valueOf(casesBothSequelae),
+						String.valueOf(checksForSequelae),
+						String.valueOf(checksForSequelaeUnDetect),
+						String.valueOf(checksForSequelaeRecovNat),
+						String.valueOf(checksForSequelaeFailedA),
+						String.valueOf(checksForSequelaeFailedB),
 
 
 						String.valueOf(surveillanceResultA),
