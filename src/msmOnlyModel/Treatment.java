@@ -21,8 +21,9 @@ public class Treatment {
 	private ThreadSafeRandomHelper randomHelper;
 	private CostCalc costCalc;
 	private String counterfactual;
-	private boolean switchToB;
-	private boolean switchToX;
+	private boolean removedA;
+	private boolean removedB;
+	private boolean removedAandB;
 	private boolean addedX;
 	
 	private int availrDST;
@@ -56,8 +57,9 @@ public class Treatment {
 		this.observer = observer;
 		this.costCalc = observer.getCostCalc();
 		this.counterfactual = parameters.getString("counterfactual");
-		this.switchToB = observer.getSurveillance().getSwitchToB();
-		this.switchToX = observer.getSurveillance().getSwitchToX();
+		this.removedA = observer.getSurveillance().getRemovedA();
+		this.removedB = observer.getSurveillance().getRemovedB();
+		this.removedAandB = observer.getSurveillance().getRemovedAandB();
 	}
 	
 	
@@ -132,6 +134,22 @@ public class Treatment {
 		}
 	}
 	
+	public void tryAandBTogether() {
+		boolean a = administerA();
+		boolean b = administerB();
+	
+		if (a || b) {
+			
+			infection.host().recoverOrDevelopResistance("AandB");
+			
+		} else if (infection.symptoms()) {
+			symptomaticTreatmentFailure("AandB");
+		} else {
+			fail(infection.host());
+		}
+		
+	}
+	
 	public boolean treatWithX() {
 		boolean success = true;
 		infection.host().actuallyRecoverwTreatment("X");
@@ -183,14 +201,7 @@ public class Treatment {
 
 					//GISP possibilities
 				} else if (counterfactual.contains("GISP")){
-					if (!switchToB && !switchToX) {
-						treatDefaultBeforeSwitch();
-
-					} else if (switchToX) {
-						treatAfterSwitchX();
-					} else if (switchToB) { // have we switched to drug B?
-						treatAfterSwitchB();
-					} 
+					treatGISP();
 
 					// TOC
 				} else if (counterfactual.contains("test-of-cure")) { // test-of-cure?
@@ -220,6 +231,83 @@ public class Treatment {
 		}
 	}
 
+	
+	public void treatGISP() throws Exception {
+		Uniform drugUniform = (Uniform) randomHelper.getDistribution("randomDrugUniform");
+		double randomValue = drugUniform.nextDouble();
+		
+		
+		if (!removedA && !removedB && !removedAandB) { //default, nothing removed yet
+			
+			if (addedX) { //if nothing has been removed and X is added...
+				if (randomValue < 0.33333333) {
+					// treat with drug A first
+					tryDrugA();
+
+				} else if (randomValue < 0.66666667){
+					tryDrugB();
+				} else {
+					// treat with drug B first
+					tryDrugXorE();
+				}
+			} else { //before X is added to possible treatments
+				if (randomValue < 0.5) {
+					// treat with drug A first
+					tryDrugA();
+
+				} else{
+					tryDrugB();
+				}
+			}
+			
+		} else if (removedA && !removedB) { //if we've removed A but not B
+			
+			if (addedX) { //if A has been removed and X is added...
+				if (randomValue < 0.5) {
+					tryDrugB();
+				} else {
+					tryDrugXorE();
+				}
+			} else { //before X is added to possible treatments
+					tryDrugB();
+			}
+			
+		} else if (removedB && !removedA) {
+			if (addedX) { //if A has been removed and X is added...
+				if (randomValue < 0.5) {
+					tryDrugA();
+				} else {
+					tryDrugXorE();
+				}
+			} else { //before X is added to possible treatments
+					tryDrugA();
+			}
+			
+			
+		} else if (removedA && removedB && !removedAandB) { // if we've remove A and B separately but not combo therapy
+			if (addedX) {
+				tryDrugXorE();
+			} else {
+				tryAandBTogether();
+			}
+		} else if (removedA && removedB && removedAandB) {
+			tryDrugXorE();
+		} else {
+			System.out.println("RemovedA:");
+			System.out.println(removedA);
+			System.out.println("removedB");
+			System.out.println(removedB);
+			System.out.println("removedAandB");
+			System.out.println(removedAandB);
+
+			
+			throw new Exception("Invalid combo of drug removals");
+		}
+		
+		
+		
+	}
+	
 	public void treatRandom() {
 		Uniform drugUniform = (Uniform) randomHelper.getDistribution("randomDrugUniform");
 		double randomValue = drugUniform.nextDouble();
@@ -309,7 +397,7 @@ public class Treatment {
 
 		if (treatmentAttempted.equals("A")) {
 			nextTreatment = "B";
-		} else if (treatmentAttempted.equals("B") && !switchToB) {
+		} else if (treatmentAttempted.equals("B") && !removedA) {
 			nextTreatment = "A";
 		} else { // after switch to B, or catch-all
 			nextTreatment = "X";
@@ -372,7 +460,30 @@ public class Treatment {
 	}
 
 	public void treatDefaultBeforeSwitch() {
-		tryDrugA();
+		Uniform drugUniform = (Uniform) randomHelper.getDistribution("randomDrugUniform");
+		double randomValue = drugUniform.nextDouble();
+
+		if (addedX) {
+			if (randomValue < 0.33333333) {
+				// treat with drug A first
+				tryDrugA();
+
+			} else if (randomValue < 0.66666667){
+				tryDrugB();
+			} else {
+				// treat with drug B first
+				tryDrugXorE();
+			}
+		} else { //before X is added to possible treatments
+			if (randomValue < 0.5) {
+				// treat with drug A first
+				tryDrugA();
+
+			} else{
+				tryDrugB();
+			}
+		}
+		
 	}
 
 	public void treatAfterSwitchB() {

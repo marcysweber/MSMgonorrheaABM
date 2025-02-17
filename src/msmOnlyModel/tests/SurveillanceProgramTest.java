@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import msmOnlyModel.BatchRun;
 import msmOnlyModel.SingleRun;
+import msmOnlyModel.SurveillanceProgram;
 import repast.simphony.parameter.Parameters;
 
 public class SurveillanceProgramTest {
@@ -103,6 +104,63 @@ public class SurveillanceProgramTest {
 
 		
 	}
+	
+	@Test
+	public void test2() {
+		
+		SingleRun testRun = setUpSurvTest();
+
+		for (int i=0; i < 300; i++) {
+			testRun.schedule().execute();
+		}
+		//System.out.println("tick " + testRun.schedule().getTickCount());
+
+
+		System.out.println("prev: " + testRun.observer().calcPrev());
+		System.out.println("detected: " + testRun.observer().getDetectedList().size());
+
+		testRun.observer().clearDetectedList();
+		
+		testRun.population().allIndivs().limit(5000).forEach(indiv -> indiv.infect("Both", "test"));
+		System.out.println("actual resistance to Both " + testRun.observer().calcResistBothPrev());
+
+		for (int i=0; i < 300; i++) {
+			testRun.schedule().execute();
+		}
+		
+		System.out.println("detected: " + testRun.observer().getDetectedList().size());
+		System.out.println("actual resistance to Both: " + testRun.observer().calcResistBothPrev());
+
+		
+		testRun.surveillanceProgram().conductSurveillance();
+		double result = testRun.surveillanceProgram().calcDetectedResistantBoth();
+
+		System.out.println("surveillance: " + result);
+		
+		System.out.println("switch? " + testRun.surveillanceProgram().checkForSwitch(result));
+		
+		SurveillanceProgram surveillance = testRun.surveillanceProgram();
+		double surveillanceResultA = surveillance.calcDetectedResistantA();
+		double surveillanceResultB = surveillance.calcDetectedResistantB();
+		double surveillanceResultBoth = surveillance.calcDetectedResistantBoth();
+
+		if (!surveillance.getRemovedA() && surveillance.checkForSwitch(surveillanceResultA)) {
+			surveillance.removeDrugA();
+		}
+			//if we haven;t already removed B and resistance to B is above 5%
+		if (!surveillance.getRemovedB() && surveillance.checkForSwitch(surveillanceResultB)) {
+			surveillance.removeDrugB();
+		}	
+		
+		//if we havent' already removed combinatino therapy and multiresistance is above 5%
+		if (!surveillance.getRemovedAandB() && surveillance.checkForSwitch(surveillanceResultBoth)) {
+			surveillance.removeDrugsABandAandB();
+		}
+		
+		
+
+		
+		}
 	
 
 }

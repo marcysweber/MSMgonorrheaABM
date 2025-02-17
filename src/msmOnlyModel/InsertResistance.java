@@ -187,7 +187,22 @@ public class InsertResistance {
 		
 		double chanceDevelopResistance = 0.0001;
 		
-		if (randomValue <= chanceDevelopResistance) {
+		if (treatment.equals("AandB")) {
+			double randomValueA = randomValue;
+			double randomValueB = developResistanceUniform.nextDouble();
+
+			if (randomValueA <= chanceDevelopResistance && randomValueB <= chanceDevelopResistance) {
+				indiv.infect("Both", "resist");
+			} else if (randomValueA <= chanceDevelopResistance) {
+				indiv.infect("A", "resist");
+			} else if (randomValueB <= chanceDevelopResistance) {
+				indiv.infect("B", "resist");
+			} else {
+				indiv.actuallyRecoverwTreatment("AandB");
+			}
+			
+			
+		} else if (randomValue <= chanceDevelopResistance) {
 			indiv.infect(treatment, "resist");
 			indiv.recordEndTreatment();
 		} else {

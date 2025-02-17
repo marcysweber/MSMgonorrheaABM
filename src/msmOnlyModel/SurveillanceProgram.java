@@ -38,7 +38,10 @@ public class SurveillanceProgram {
 	private double thisMonthRateBoth;
 	
 	private String firstLine;
-	private boolean switchtoB;
+	
+	private boolean removedA;
+	private boolean removedB;
+	private boolean removedAandB;
 
 	public SurveillanceProgram(String counterfactual, Observer observer) {
 		this.counterfactual = counterfactual;
@@ -67,7 +70,9 @@ public class SurveillanceProgram {
 		this.thisMonthRateBoth = 0.0;
 		
 		this.firstLine = "A";
-		this.switchtoB = false;
+		this.removedA = false;
+		this.removedB = false;
+		this.removedAandB = false;
 		
 		
 	}
@@ -212,12 +217,20 @@ public class SurveillanceProgram {
 		return shouldSwitch;
 	}
 	
-	public void switchToDrugB() {
-		this.switchtoB = true;
+	public void removeDrugA() {
+		this.removedA = true;
 		this.firstLine = "B";
 	}
 	
-	public void switchToDrugX() {
+	public void removeDrugB() {
+		this.removedB = true;
+		this.firstLine = "AandB";
+	}
+	
+	public void removeDrugsABandAandB() {
+		this.removedA = true;
+		this.removedB = true;
+		this.removedAandB = true;
 		this.firstLine = "X";
 	}
 	
@@ -260,8 +273,16 @@ public class SurveillanceProgram {
 		return this.thisMonthRateA;
 	}
 	 
-	public boolean getSwitchToB() {
-		return this.switchtoB;
+	public boolean getRemovedA() {
+		return this.removedA;
+	}
+	
+	public boolean getRemovedB() {
+		return this.removedB;
+	}
+	
+	public boolean getRemovedAandB() {
+		return this.removedAandB;
 	}
 	
 	public boolean getSwitchToX() {

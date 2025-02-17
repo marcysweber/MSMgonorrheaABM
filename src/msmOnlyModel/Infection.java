@@ -56,6 +56,7 @@ public class Infection {
 	private boolean succeededB;
 	private boolean succeededX;
 	private boolean succeededE;
+	private boolean succeededAandB;
 	private boolean recoveredNaturally;
 
 
@@ -440,7 +441,7 @@ public class Infection {
 	
 	public void recoverNaturally() {
 		try {
-			//checkForSequelae("recoveredNaturally");
+			checkForSequelae("recoveredNaturally");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -453,7 +454,9 @@ public class Infection {
 	}
 	
 	public void successfulTreatment(String treatment) throws Exception {
-		if (treatment.contains("A")) {
+		if (treatment.contains("AandB")){
+			succeededAandB = true;
+		} else if (treatment.contains("A")) {
 			succeededA = true;
 		} else if (treatment.contains("B")) {
 			succeededB = true;
@@ -492,6 +495,10 @@ public class Infection {
 	
 	public boolean succeededE() {
 		return succeededE;
+	}
+	
+	public boolean succededAandB() {
+		return succeededAandB;
 	}
 	
 	public double duration() {

@@ -71,6 +71,7 @@ public class Observer {
 	private int successTreatmentsA;
 	private int successTreatmentsB;
 	private int successTreatmentsX;
+	private int successTreatmentsAandB;
 	private int attemptTreatmentsA;
 	private int attemptTreatmentsB;
 	private int attemptTreatmentsX;
@@ -156,6 +157,7 @@ public class Observer {
 		this.successTreatmentsA = 0;
 		this.successTreatmentsB = 0;
 		this.successTreatmentsX = 0;
+		this.successTreatmentsAandB = 0;
 		
 		this.attemptTreatmentsA = 0;
 		this.attemptTreatmentsB = 0;
@@ -205,17 +207,21 @@ public class Observer {
 		double surveillanceResultBoth = surveillance.calcDetectedResistantBoth();
 
 		if (counterfactual.contains("GISP") && tick > 520) {
-			if (!surveillance.getSwitchToB()) {//if not already switched to B
-				if (surveillance.checkForSwitch(surveillanceResultA)) {
-					surveillance.switchToDrugB();
-				} else if (surveillance.checkForSwitch(surveillanceResultBoth)) {
-					surveillance.switchToDrugX();
+			//if we haven't already removed A and resistance to A is above 5%
+				if (!surveillance.getRemovedA() && surveillance.checkForSwitch(surveillanceResultA)) {
+					surveillance.removeDrugA();
 				}
-			} else if (surveillance.getSwitchToB()){
-				if (surveillance.checkForSwitch(surveillanceResultB) || (surveillance.checkForSwitch(surveillanceResultBoth))) {
-					surveillance.switchToDrugX();
+					//if we haven;t already removed B and resistance to B is above 5%
+				if (!surveillance.getRemovedB() && surveillance.checkForSwitch(surveillanceResultB)) {
+					surveillance.removeDrugB();
+				}	
+				
+				//if we havent' already removed combinatino therapy and multiresistance is above 5%
+				if (!surveillance.getRemovedAandB() && surveillance.checkForSwitch(surveillanceResultBoth)) {
+					surveillance.removeDrugsABandAandB();
 				}
-			}
+				
+			
 		}
 
 		this.outputter.addOutputRow(
@@ -296,6 +302,7 @@ public class Observer {
 				this.successTreatmentsA, 
 				this.successTreatmentsB,
 				this.successTreatmentsX,
+				this.successTreatmentsAandB,
 				this.attemptTreatmentsA,
 				this.attemptTreatmentsB,
 				this.attemptTreatmentsX,
@@ -319,8 +326,9 @@ public class Observer {
 				surveillanceResultA, 
 				surveillanceResultB,
 				surveillanceResultBoth,
-				surveillance.getSwitchToB(),
-				surveillance.getSwitchToX(),
+				surveillance.getRemovedA(),
+				surveillance.getRemovedB(),
+				surveillance.getRemovedAandB(),
 				costCalc.getMonetaryCost(),
 				costCalc.getQALYsLost(),
 				
@@ -368,6 +376,7 @@ public class Observer {
 		this.successTreatmentsA = 0;
 		this.successTreatmentsB = 0;
 		this.successTreatmentsX = 0;
+		this.successTreatmentsAandB = 0;
 		this.attemptTreatmentsA = 0;
 		this.attemptTreatmentsB = 0;
 		this.attemptTreatmentsX = 0;
@@ -420,6 +429,7 @@ public class Observer {
 			     put("SucceededB", infection.succeededB());
 			     put("SucceededX", infection.succeededX());
 			     put("SucceededE", infection.succeededE());
+			     put("SucceededAandB", infection.succededAandB());
 			     put("DevelopedResistance", infection.developedResistance());
 			     put("ReInfected", infection.reInfected() && infection.inTreatment());
 			     put("RecoveredNaturally", infection.recoveredNaturally()&& infection.inTreatment());
@@ -474,6 +484,9 @@ public class Observer {
 			if (!infection.isDetected()) {
 				//System.out.println("outcome without detection - e!");
 			}
+		} else if (infection.succededAandB()) {
+			successTreatmentsAandB++;
+		
 		} else if (infection.recoveredNaturally()) {
 			recoveredNaturally++;
 			if (infection.inTreatment()) {
@@ -493,7 +506,7 @@ public class Observer {
 				}
 			}
 		} else {
-			throw new Exception("Invalid outcome reported to observer!");
+			//throw new Exception("Invalid outcome reported to observer!");
 		}
 		
 		//System.out.println(soughtCare);

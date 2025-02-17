@@ -71,11 +71,11 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
 
 			executeCounterfactualScenarios(scenariofile);
 
-			//executeSensitivityAnalysisBatch(scenariofile);			
+			executeSensitivityAnalysisBatch(scenariofile);			
 			
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -89,7 +89,7 @@ public class Main {
 		BatchRun batchRunner = new BatchRun("all", "all");
 		batchRunner.executeCalibratedBatch(scenariofile, "GISP_05");
 		batchRunner.executeCalibratedBatch(scenariofile, "random");
-
+//
 		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
 		
 		

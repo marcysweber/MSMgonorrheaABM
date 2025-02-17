@@ -74,8 +74,8 @@ public class TreatementTest {
 	}
 	
 	public void treatX(SingleRun testRun, Indiv indiv) {
-		Treatment treatment = new Treatment(indiv, testRun.observer());
-		treatment.tryDrugXorE();
+		//Treatment treatment = new Treatment(indiv, testRun.observer());
+		//treatment.tryDrugXorE();
 	}
 	
 	@Test

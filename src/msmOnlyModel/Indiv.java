@@ -452,6 +452,13 @@ public class Indiv {
 				} else {
 					actuallyRecoverwTreatment(treatment);
 				}
+			} else if (treatment.equals("AandB")) {
+				if (resistance.equals("combo")) {
+					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
+					resistanceInserter.checkForDevelopResistance(this, "AandB");
+				} else {
+					actuallyRecoverwTreatment(treatment);
+				}
 			}
 		} 
 
