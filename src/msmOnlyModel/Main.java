@@ -87,7 +87,9 @@ public class Main {
 
 	public static void executeCounterfactualScenarios(File scenariofile) {
 		BatchRun batchRunner = new BatchRun("all", "all");
-		batchRunner.executeCalibratedBatch(scenariofile, "GISP_05");
+		batchRunner.executeCalibratedBatch(scenariofile, "GISPemp_05");
+		batchRunner.executeCalibratedBatch(scenariofile, "GISPrand_05");
+
 		batchRunner.executeCalibratedBatch(scenariofile, "random");
 //
 		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
@@ -142,18 +144,30 @@ public class Main {
 
 		
 		  
-		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 15,
+		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_05", "combo", 15,
 		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
 		  realisticTOC, realisticDST); 
 		  
 		  batchRunner.executeCalibratedBatch(scenario,
-		  "GISP_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+		  "GISPemp_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
 		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		 
-		  batchRunner.executeCalibratedBatch(scenario, "GISP_05", "combo", 31,
+		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_05", "combo", 31,
 		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
 		  realisticTOC, realisticDST);
 		  
+		  batchRunner.executeCalibratedBatch(scenario, "GISPrand_05", "combo", 15,
+				  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+				  realisticTOC, realisticDST); 
+				  
+				  batchRunner.executeCalibratedBatch(scenario,
+				  "GISPrand_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+				  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+				 
+				  batchRunner.executeCalibratedBatch(scenario, "GISPrand_05", "combo", 31,
+				  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+				  realisticTOC, realisticDST);
+				  
 		  
 		  
 		 
@@ -241,25 +255,27 @@ public class Main {
 		double realisticTOC = 0.33;
 		double realisticDST = 0.34;
 
-		batchRunner.executeCalibratedBatch(scenario, "GISP_3", resistInsert, yearX, 3, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		batchRunner.executeCalibratedBatch(scenario, "GISP_7", resistInsert, yearX, 7, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "GISPemp_3", resistInsert, yearX, 3, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "GISPemp_7", resistInsert, yearX, 7, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		
-		 // batchRunner.executeCalibratedBatch(scenario, "GISP_2", resistInsert, yearX,
-		 // 2, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 // batchRunner.executeCalibratedBatch(scenario, "GISP_8", resistInsert, yearX,
-		  //8, availrDST, adhereTOCsympt, adhereTOCasympt);
-		  
-		  batchRunner.executeCalibratedBatch(scenario, "GISP_4", resistInsert, yearX,
+	
+		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_4", resistInsert, yearX,
 		  4, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST); //
-		 // batchRunner.executeCalibratedBatch(scenario, "GISP_45", resistInsert, yearX,
-		 // 4.5, availrDST, adhereTOCsympt, adhereTOCasympt);
-		 // batchRunner.executeCalibratedBatch(scenario, "GISP_5", resistInsert, yearX,
-		 // 5, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST); //
-		 // batchRunner.executeCalibratedBatch(scenario, "GISP_55", resistInsert, yearX,
-		  //5.5, availrDST, adhereTOCsympt, adhereTOCasympt);
-		  batchRunner.executeCalibratedBatch(scenario, "GISP_6", resistInsert, yearX,
+		
+		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_6", resistInsert, yearX,
 		  6, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		 
+		  
+		  batchRunner.executeCalibratedBatch(scenario, "GISPrand_3", resistInsert, yearX, 3, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+			batchRunner.executeCalibratedBatch(scenario, "GISPrand_7", resistInsert, yearX, 7, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+			
+		
+			  batchRunner.executeCalibratedBatch(scenario, "GISPrand_4", resistInsert, yearX,
+			  4, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST); //
+			
+			  batchRunner.executeCalibratedBatch(scenario, "GISPrand_6", resistInsert, yearX,
+			  6, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+			 
 	}
 	
 	public static void executeAvailrDSTBatch(File scenario) {

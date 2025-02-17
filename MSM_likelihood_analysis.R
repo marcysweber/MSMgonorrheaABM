@@ -908,7 +908,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 4000))
+    coord_cartesian(xlim=c(0, 10000))
   
   
   summary <- ggarrange(inc +

@@ -232,7 +232,57 @@ public class Treatment {
 	}
 
 	
+	
 	public void treatGISP() throws Exception {
+
+		if (counterfactual.contains("rand")) {
+			
+				treatGISPRand();
+			
+		} else if (counterfactual.contains("emp")) {
+				treatGISPEmp();
+			
+		} else {
+			throw new Exception("GISP subscenario not specified");
+		}
+		
+		
+		
+	}
+	
+	
+	public void treatGISPEmp() throws Exception{
+
+		if (!removedA && !removedB && !removedAandB) { //default, nothing removed yet
+			tryDrugA();
+			
+		} else if (removedA && !removedB) { //if we've removed A but not B
+			tryDrugB();
+			
+		} else if (removedB && !removedA) {
+			tryDrugA();
+			
+		} else if (removedA && removedB && !removedAandB) { // if we've remove A and B separately but not combo therapy
+			tryAandBTogether();
+			
+		} else if (removedA && removedB && removedAandB) {
+			tryDrugXorE();
+			
+		} else {
+			System.out.println("RemovedA:");
+			System.out.println(removedA);
+			System.out.println("removedB");
+			System.out.println(removedB);
+			System.out.println("removedAandB");
+			System.out.println(removedAandB);
+
+			
+			throw new Exception("Invalid combo of drug removals");
+		}
+	}
+	
+	public void treatGISPRand() throws Exception {
+
 		Uniform drugUniform = (Uniform) randomHelper.getDistribution("randomDrugUniform");
 		double randomValue = drugUniform.nextDouble();
 		
@@ -303,10 +353,8 @@ public class Treatment {
 			
 			throw new Exception("Invalid combo of drug removals");
 		}
-		
-		
-		
 	}
+	
 	
 	public void treatRandom() {
 		Uniform drugUniform = (Uniform) randomHelper.getDistribution("randomDrugUniform");

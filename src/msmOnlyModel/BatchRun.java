@@ -600,7 +600,7 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_14_2025_overnight_";
+		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_17_2025_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_14_2025_debug6_";
 
