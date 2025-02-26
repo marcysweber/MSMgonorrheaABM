@@ -926,7 +926,93 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
   return(summary)
    
   
-  }
+}
+
+summary_plot_hba = function(df1, df2, df3, df4, df5){ 
+  df1ends <- cumulative_everything(df1)
+  df2ends <- cumulative_everything(df2)
+  df3ends <- cumulative_everything(df3)
+  df4ends <- cumulative_everything(df4)
+  df5ends <- cumulative_everything(df5)
+  
+  
+  allends <- rbind(df1ends,
+                   df2ends,
+                   df3ends, 
+                   df4ends,
+                   df5ends)
+  
+  
+  counter_levels <- c("GISPrand_05", "drug_sus_testing_80","test-of-cure_80", "random","GISPemp_05")
+  counter_labels <- c("GISP-Random", "DST", "TOC", "RT", "GISP-Empiric")
+  
+  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels), color = factor(counterfactual, levels = counter_levels))) +
+    # geom_point() +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "A.",
+      y = "",
+      x="Cumulative incidence over 20 years\nper 100,000 (thousands)"
+    )+
+    my_theme +     theme(legend.position = "none")+
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 1500)) +    scale_fill_brewer(palette = "Set2", direction=-1)
+  
+  failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels), color = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "B.",
+      y = "",
+      x="% failures per \ntreatment attempt\ncumulative over 20 years"
+    )+
+    my_theme +     theme(legend.position = "none")+
+    scale_y_discrete(labels=counter_labels) +
+    coord_cartesian(xlim=c(0, 40)) +    scale_fill_brewer(palette = "Set2", direction=-1)
+  
+  x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels), color = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "C.",
+      y = "",
+      x="Cumulative treatments\nwith ertapenem\nper 100,000 over 20 years"
+    )+
+    my_theme +     theme(legend.position = "none")+
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 40000)) +    scale_fill_brewer(palette = "Set2", direction=-1)
+  
+  cost <- ggplot(data = allends, aes(x=cumulativeCosts/1000000, y = factor(counterfactual, levels = counter_levels), color = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = "D.",
+      y = "",
+      x="Cumulative costs in \nmillions USD over 20 years"
+    )+
+    my_theme +     theme(legend.position = "none")+
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(15, 60)) +    scale_fill_brewer(palette = "Set2", direction=-1)
+  
+  
+  summary <- ggarrange(inc +
+                         theme(axis.text.y = element_text(size = 8),axis.text.x = element_text(size = 8),axis.title.x = element_text(size = 8)), failure + 
+                         theme(axis.text.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.title.y = element_blank(),
+                               axis.text.x = element_text(size = 8),
+                               axis.title.x = element_text(size = 8)), x + 
+                         theme(axis.text.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.title.y = element_blank() ,
+                               axis.text.x = element_text(size = 8),
+                               axis.title.x = element_text(size = 8)), cost + 
+                         theme(axis.text.y = element_blank(),
+                               axis.ticks.y = element_blank(),
+                               axis.title.y = element_blank() ,
+                               axis.text.x = element_text(size = 8),
+                               axis.title.x = element_text(size = 8)),nrow = 1)
+  return(summary)
+  
+  
+}
 
 summary_plot = function(df1, df2, df3, df4, df5){
   df1ends <- cumulative_everything(df1)
@@ -2581,10 +2667,10 @@ prcc_all = function(df){
 
 my_theme = theme_bw(base_size = 8)
  #*
-viz_prev_cal = function(df, title){
+viz_prev_cal = function(df, title, size){
   #df <- df %>% filter(tick > 260)
   prev <- ggplot(data = df, aes(x = tick / 52, group = uniqueID)) + 
-    geom_line(aes(y = Prevalence),size = 0.01, color = "black") +
+    geom_line(aes(y = Prevalence),size = size, color = "black") +
     # geom_point(aes(y=4.5, x = 6), color="red", size = 1) +
     # geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 6), color = "red")+
     # geom_point(aes(y=4.5, x = 7), color="red", size = 1) +
@@ -2600,7 +2686,8 @@ viz_prev_cal = function(df, title){
          y = "Prevalence (%) in MSM") +
     theme(plot.title = element_text(size=8)) +
     coord_cartesian(ylim=c(0,11), xlim=c(0, 10))+
-    my_theme
+    my_theme+
+    theme(legend.position = "none")
   return(prev)
 }
 
@@ -2971,10 +3058,10 @@ viz_treatments = function(df, title){
 }
 
 #*
-viz_true_resist_A = function(df, title, yearX){
+viz_true_resist_A = function(df, title, yearX, linecolor="black"){
   df <- df %>% filter(tick >= 260)
   amrA <- ggplot(data = df, aes(x = (tick / 52) - 5, group = RunNumber)) + 
-    geom_line( aes(y = ResistAIncidence/Incidence, alpha=resampled),size = 0.05, color="black") +
+    geom_line( aes(y = ResistAIncidence/Incidence, alpha=resampled),size = 0.1, color=linecolor) +
     labs(x = "Year",
          y = "Prop. cases resistant\ndrug A",
          title = title) +
@@ -2987,11 +3074,11 @@ viz_true_resist_A = function(df, title, yearX){
   return(amrA)
 }
 
-viz_true_resist_A_mean = function(df, title, yearX){
+viz_true_resist_A_mean = function(df, title, yearX, linecolor="black"){
   df <- df %>% filter(tick >= 260)
   amrA <- ggplot(data = df, aes(x = (tick / 52) - 5, group = RunNumber)) + 
-    geom_line( aes(y = ResistAIncidence/Incidence, alpha=resampled),size = 0.05, color="black") +
-    stat_summary(aes(y = ResistAIncidence/Incidence, group = counterfactual), fun.y="mean", geom="line", color = "red")+
+    geom_line( aes(y = ResistAIncidence/Incidence, alpha=resampled),size = 0.1, color=linecolor) +
+    stat_summary(aes(y = ResistAIncidence/Incidence, group = counterfactual), fun.y="mean", geom="line", color = "black")+
     labs(x = "Year",
          y = "Prop. cases resistant drug A",
          title = title) +
@@ -3006,10 +3093,10 @@ viz_true_resist_A_mean = function(df, title, yearX){
 
 
 #*
-viz_true_resist_B = function(df, title, yearX){
+viz_true_resist_B = function(df, title, yearX, linecolor="black"){
   df <- df %>% filter(tick >= 260)
   amrB <- ggplot(data = df, aes(x = (tick / 52) - 5, group = RunNumber)) + 
-    geom_line( aes(y = ResistBIncidence/Incidence, alpha=resampled),size = 0.05, color="black") +
+    geom_line( aes(y = ResistBIncidence/Incidence, alpha=resampled),size = 0.1, color=linecolor) +
     labs(x = "Year",
          y = "Prop. cases resistant\ndrug B", 
          title = title) +
@@ -3022,11 +3109,11 @@ viz_true_resist_B = function(df, title, yearX){
   return(amrB)
 }
 #*
-viz_true_resist_both = function(df, title, yearX){
+viz_true_resist_both = function(df, title, yearX, linecolor="black"){
   df <- df %>% filter(tick >= 260)
   
   amrB <- ggplot(data = df, aes(x = (tick / 52) - 5, y = ResistBothIncidence/Incidence,  group = RunNumber)) + 
-    geom_line( aes(alpha=resampled),size = 0.05, color="black") +
+    geom_line( aes(alpha=resampled),size = 0.1, color=linecolor) +
     labs(x = "Year",
          y = "Prop. cases resistant\nboth drugs", 
          title = title) +
@@ -3947,6 +4034,58 @@ gg<- ggarrange(
 
 return(gg)
 }
+
+
+
+resistance_hba = function(df1, df2, df3, df4, df5, yearX){
+  a<-viz_true_resist_A(df1, "A.GISP-Empiric", yearX, "#E78AC3") + theme(axis.title.x = element_blank()) 
+  f<-viz_true_resist_B(df1, "F.", yearX, "#E78AC3")+ theme(axis.title.x = element_blank())
+  k<-viz_true_resist_both(df1, "K.", yearX, "#E78AC3")+ theme(axis.title.x = element_blank())
+ 
+  b<-viz_true_resist_A(df2, "B. RT", yearX, "#8DA0CB")+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
+  g<-viz_true_resist_B(df2, "G.", yearX, "#8DA0CB")+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank())
+  l<-viz_true_resist_both(df2, "L.", yearX, "#8DA0CB")+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank())
+
+  
+  c<-viz_true_resist_A(df3, "C. TOC", yearX,"#66C2A5")+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  h<-viz_true_resist_B(df3, "H.", yearX, "#66C2A5")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  m<-viz_true_resist_both(df3, "M.", yearX, "#66C2A5")+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank())
+  
+  d<-viz_true_resist_A(df4, "D. DST", yearX, "#A6D854")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  i<-viz_true_resist_B(df4, "I.", yearX, "#A6D854")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  n<-viz_true_resist_both(df4, "N.", yearX, "#A6D854")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
+
+  e<-viz_true_resist_A(df5, "E. GISP-Random", yearX, "#FC8D62")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  j<-viz_true_resist_B(df5, "J.", yearX, "#FC8D62")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
+  o<-viz_true_resist_both(df5, "O.", yearX, "#FC8D62")+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
+
+  
+  gg<- ggarrange(
+    a, b, c, d, e, f, g, h, i, j, k, l, m, n, o,
+    nrow = 3)
+  
+  return(gg)
+}
+
+resist_zoom_hba = function(df1, df2, df3){
+  yearX <- NA
+  e<-viz_true_resist_A_mean(df1, "A. GISP-Empiric", yearX,  "#E78AC3")+ 
+    coord_cartesian(xlim = c(5, 10), ylim=c(0, 0.1)) 
+  
+  f<-viz_true_resist_A_mean(df2, "B. RT", yearX, "#8DA0CB")+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank())+
+    coord_cartesian(xlim = c(5, 10), ylim=c(0, 0.1))
+  
+  g<-viz_true_resist_A_mean(df3, "C. GISP-Random", yearX, "#FC8D62")+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(),axis.text.y = element_blank())+
+    coord_cartesian(xlim = c(5, 10), ylim=c(0, 0.1))
+  
+  gg<- ggarrange(
+    e, f, g, 
+    nrow = 1)
+  
+  return(gg)
+}
+
+
 
 burden_isemph = function(df1, df2, df3){
   yearX <- NA
@@ -11203,6 +11342,74 @@ multiplot(
   nmb(cea_real_weighted(df_best_ends,dfRC40_40_20,dfGISP25, dfrandom25, dfTOC25, dfDST25), "L.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
   nmb(cea_real_weighted(df_best_ends,dfRC60_20_20,dfGISP25, dfrandom25, dfTOC25, dfDST25), "N.")+ coord_cartesian(ylim = c(-15000000, 10000000)),
   
+  cols = 2
+)
+
+
+#############
+
+
+#HBA figures
+######
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JANUARY_30_2025_overnight_sweep_none/sweepnone0supercombined.csv")
+dfsweep$resampled <- rep(1, length(dfsweep$RunNumber))
+
+
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/FEBRUARY_17_2025_overnight_none_none/nonenone251combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+
+#calibration
+multiplot(
+  viz_prev_cal(dfsweep, "A. Parameter sweep", 0.004),
+  viz_prev_MSM_cal(dfcalibrated, "B. Resampled trajectories"),
+  cols = 2)
+
+
+visualize_calibration_risk_groups(dfcalibrated)
+
+
+directory <- "/Users/me597/Documents/MSMoutput/FEBRUARY_17_2025_overnight_all_all/"
+
+dfGISPemp25 <-   read.csv(paste(directory,"GISPemp_05combo251combined.csv", sep=""))
+dfGISPemp25 <- identify(dfGISPemp25, df_best_ends)
+
+dfGISPrand25 <-   read.csv(paste(directory,"GISPrand_05combo251combined.csv", sep=""))
+dfGISPrand25 <- identify(dfGISPrand25, df_best_ends)
+
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_33_33_34combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+summary_plot_hba(dfGISPemp25, dfrandom25, dfTOC25, dfDST25, dfGISPrand25)
+
+
+#figure 4
+resistance_hba(dfGISPemp25, dfrandom25, dfTOC25, dfDST25, dfGISPrand25, 25)
+
+resist_zoom_hba(dfGISPemp25, dfrandom25,dfGISPrand25)
+
+#######
+
+
+
+#figure 3
+new_summary_plot(dfGISPrand25, dfrandom25, dfTOC25, dfDST25, dfreal25)
+
+
+#figure 4
+new_figure_four(dfGISPrand25, dfrandom25, dfTOC25, dfDST25, dfreal25, 25)
+
+#figure 5
+multiplot(
+  visualize_cea_weighted_real("A.", df_best_ends, dfreal25, dfGISPrand25, dfrandom25, dfTOC25, dfDST25)+ 
+    theme(legend.position = "bottom", legend.title = element_blank()) ,
+  nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
   cols = 2
 )
 

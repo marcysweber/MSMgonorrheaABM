@@ -184,14 +184,14 @@ public class Infection {
 		Uniform sequelaeUniform = (Uniform) randomHelper.getDistribution("sequelaeUniform");
 		double randomValue1 = sequelaeUniform.nextDouble();
 		
-		if (randomValue1 <= 0.042) {
+		if (randomValue1 <= 0.0021) {
 			//epididymitis
 			epididymitis=true;
 		}  
 			
 		double randomValue2 = sequelaeUniform.nextDouble();
 
-		if (randomValue2 <= 0.01) {
+		if (randomValue2 <= 0.005) {
 			//DGI
 			 dgi=true;
 		} 		
