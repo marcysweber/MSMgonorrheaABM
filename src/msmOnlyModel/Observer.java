@@ -60,6 +60,9 @@ public class Observer {
 	
 	private int detected;
 	private List<Infection> detectedList;
+	private int detectedResistA;
+	private int detectedResistB;
+	private int detectedResistBoth;
 	
 	private int diagnosticTests;
 	private int strainTests;
@@ -150,6 +153,9 @@ public class Observer {
 		this.failedTreatments = 0;
 		this.developedResistance = 0;
 		this.detected = 0;
+		this.detectedResistA = 0;
+		this.detectedResistB = 0;
+		this.detectedResistBoth = 0;
 		this.detectedList = new ArrayList<Infection>();
 		this.detectedAndSymptoms = 0;
 		this.soughtCare = 0;
@@ -292,6 +298,9 @@ public class Observer {
 				this.detected, 
 				this.detectedAndSymptoms,
 				this.detectedThruScreen, 
+				this.detectedResistA,
+				this.detectedResistB,
+				this.detectedResistBoth,
 				this.strainTests,
 				this.diagnosticTests,
 				this.visitsToClinic,
@@ -359,6 +368,9 @@ public class Observer {
 		this.failedTreatments = 0;
 		this.developedResistance = 0;
 		this.detected = 0;
+		this.detectedResistA = 0;
+		this.detectedResistB = 0;
+		this.detectedResistBoth = 0;
 		
 		this.newCasesList = new ArrayList<Infection>();
 
@@ -422,6 +434,14 @@ public class Observer {
 					System.out.println("detected case neither symptomatic nor screened");
 				}
 			
+				if (infection.resistantToB() && infection.resistantToA()) {
+					detectedResistBoth++;
+				} else if (infection.resistantToA()) {
+					detectedResistA++;
+				} else if (infection.resistantToB()) {
+					detectedResistB++;
+				}
+				
 
 			Map<String, Boolean> finalOutcomes = new HashMap<String, Boolean>()
 			{{

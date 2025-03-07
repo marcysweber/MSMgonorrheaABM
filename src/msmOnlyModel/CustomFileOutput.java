@@ -170,6 +170,10 @@ public class CustomFileOutput {
 					"Detected",
 					"DetectedAndSymptoms",
 					"DetectedThruScreen",
+					"DetectedResistA",
+					"DetectedResistB",
+					"DetectedResistBoth",
+
 					
 					"StrainTests",
 					"DiagnosticTests",
@@ -315,6 +319,10 @@ public class CustomFileOutput {
 			int detectedAndSymptoms,
 			int detectedThruScreen,
 			
+			int detectedResistA,
+			int detectedResistB,
+			int detectedResistBoth,
+			
 			int strainTests,
 			int diagnosticTests,
 			int visitsToClinic,
@@ -431,6 +439,9 @@ public class CustomFileOutput {
 						String.valueOf(detected),
 						String.valueOf(detectedAndSymptoms),
 						String.valueOf(detectedThruScreen), 
+						String.valueOf(detectedResistA),
+						String.valueOf(detectedResistB),
+						String.valueOf(detectedResistBoth),
 
 						String.valueOf(strainTests),
 						String.valueOf(diagnosticTests),
