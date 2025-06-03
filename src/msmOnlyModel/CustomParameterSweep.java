@@ -42,7 +42,7 @@ public class CustomParameterSweep {
 		
 	}
 	
-	public List<Double> getPropHighRiskValues(int samples){
+	public List<Double> getPropHighActivityValues(int samples){
 		double min = 0.05;
 		double max = 0.35;
 		int seed = (int) System.currentTimeMillis() + 25;
@@ -115,7 +115,7 @@ public class CustomParameterSweep {
 	}
 	
 	
-	public List<Double> getRiskGroupTransferPropValues(int samples){
+	public List<Double> getActivityGroupTransferPropValues(int samples){
 		double RiskGroupTransferPropMin = 0.01;
 		double RiskGroupTransferPropMax = 0.1;
 		int seed = (int) System.currentTimeMillis() + 30;
@@ -124,7 +124,7 @@ public class CustomParameterSweep {
 	
 
 	
-	public List<Double> getRiskGroupTransmissionRatioValues(int samples){
+	public List<Double> getActivityGroupTransmissionRatioValues(int samples){
 		double RiskGroupTransmissionRatioMin = 0.05;
 		double RiskGroupTransmissionRatioMax = 0.5;
 		int seed = (int) System.currentTimeMillis() + 31;

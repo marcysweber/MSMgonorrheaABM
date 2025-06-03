@@ -26,7 +26,7 @@ public class SingleRun {
 	private InsertResistance resistanceInserter;
 	private ThreadSafeRandomHelper randomHelper;
 	private CustomFileOutput fileOutputter;
-	private ChangeRiskGroups riskGroupChanger;
+	private ChangeActivityGroups activityGroupChanger;
 	
 	private double endTime;
 	private boolean finishing;
@@ -69,7 +69,7 @@ public void setUp(double endTime) {
 		
 		infectInitialInfected(params.getInteger("infected_count_init"), params.getInteger("population_size"), population);
 		
-		scheduleRiskGroupChanges(parameters, randomHelper, schedule, population);
+		scheduleActivityGroupChanges(parameters, randomHelper, schedule, population);
 		 
 		if (!resistance.equals("none")) {
 			scheduleInsertResistance(resistance);
@@ -122,8 +122,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			//randomHelper.setSeed(seed);
 			RandomEngine eng = randomHelper.registerGenerator(uniqueGeneratorName, seed);
 			
-			Uniform partnerRiskGroupUniform = new Uniform(0.0, 1.0, eng);
-			randomHelper.registerDistribution("partnerRiskGroupUniform", partnerRiskGroupUniform);
+			Uniform partnerActivityGroupUniform = new Uniform(0.0, 1.0, eng);
+			randomHelper.registerDistribution("partnerActivityGroupUniform", partnerActivityGroupUniform);
 			
 			Beta genderPrefBeta = new Beta(0.5, 0.05, eng);
 			randomHelper.registerDistribution("genderPrefBeta", genderPrefBeta);
@@ -148,8 +148,8 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
 			
-			Normal riskGroupTransferPropNormal = new Normal(parameters.getDouble("risk_group_transfer_prop"), parameters.getDouble("risk_group_transfer_prop")/10, eng);
-			randomHelper.registerDistribution("riskGroupTransferPropNormal", riskGroupTransferPropNormal);
+			Normal activityGroupTransferPropNormal = new Normal(parameters.getDouble("activity_group_transfer_prop"), parameters.getDouble("activity_group_transfer_prop")/10, eng);
+			randomHelper.registerDistribution("activityGroupTransferPropNormal", activityGroupTransferPropNormal);
 		
 			
 			Uniform sequelaeUniform = new Uniform(0.0, 1.0, eng);
@@ -220,15 +220,15 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 }
 
 
-public ChangeRiskGroups scheduleRiskGroupChanges(Parameters parameters, ThreadSafeRandomHelper randomHelper, ISchedule schedule, Population population) {
-	ChangeRiskGroups riskGroupChanger = new ChangeRiskGroups(parameters, randomHelper, schedule, population);
+public ChangeActivityGroups scheduleActivityGroupChanges(Parameters parameters, ThreadSafeRandomHelper randomHelper, ISchedule schedule, Population population) {
+	ChangeActivityGroups activityGroupChanger = new ChangeActivityGroups(parameters, randomHelper, schedule, population);
 
 	ScheduleParameters schparams = ScheduleParameters.createRepeating(0.0, 52.0);
-	schedule.schedule(schparams, riskGroupChanger, "changeRiskGroups");
+	schedule.schedule(schparams, activityGroupChanger, "changeActivityGroups");
 	
-	this.riskGroupChanger = riskGroupChanger;
+	this.activityGroupChanger = activityGroupChanger;
 	
-	return riskGroupChanger;
+	return activityGroupChanger;
 }
 
 public void createSurveillance(String counterfactual) {
@@ -284,7 +284,7 @@ public void infectInitialInfected(int InfectiousCount, int IndivCount, Populatio
 	List <Object> highRisktoInfect = population.highRiskGroupStream().limit((long) amountToInfectHighRisk).collect(Collectors.toList());
 	indivToInfectList.addAll(highRisktoInfect);
 	
-	List <Object> lowRisktoInfect = population.lowRiskGroupStream().limit((long) amountToInfectLowRisk).collect(Collectors.toList());
+	List <Object> lowRisktoInfect = population.lowActivityGroupStream().limit((long) amountToInfectLowRisk).collect(Collectors.toList());
 	indivToInfectList.addAll(lowRisktoInfect);
 	
 	//infect the infectious indivs
@@ -358,8 +358,8 @@ public InsertResistance resistanceInserter() {
 	return resistanceInserter;
 }
 
-public ChangeRiskGroups riskGroupChanger() {
-	return riskGroupChanger;
+public ChangeActivityGroups riskGroupChanger() {
+	return activityGroupChanger;
 }
 
 public void assignSchedule(ThreadSafeSchedule schedule) {
@@ -395,8 +395,8 @@ public void testSetUp(double endTime) {
 		
 		createSurveillance(counterfactual);
 		
-		ChangeRiskGroups riskGroupChanger = new ChangeRiskGroups(parameters, randomHelper, schedule, population);
-		this.riskGroupChanger = riskGroupChanger;
+		ChangeActivityGroups riskGroupChanger = new ChangeActivityGroups(parameters, randomHelper, schedule, population);
+		this.activityGroupChanger = riskGroupChanger;
 
 			
 }

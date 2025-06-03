@@ -6,14 +6,14 @@ import cern.jet.random.Normal;
 import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.parameter.Parameters;
 
-public class ChangeRiskGroups {
+public class ChangeActivityGroups {
 	private Parameters parameters;
 	private ThreadSafeRandomHelper randomHelper;
 	private ISchedule schedule;
 	private Population population;
 	private Normal propDist;
 	
-	public ChangeRiskGroups(Parameters parameters, ThreadSafeRandomHelper randomHelper, ISchedule schedule, Population population) {
+	public ChangeActivityGroups(Parameters parameters, ThreadSafeRandomHelper randomHelper, ISchedule schedule, Population population) {
 		this.parameters = parameters;
 		this.randomHelper = randomHelper;
 		this.schedule = schedule;
@@ -21,7 +21,7 @@ public class ChangeRiskGroups {
 		this.propDist = (Normal) randomHelper.getDistribution("riskGroupTransferPropNormal");
 	}
 	
-	public void changeRiskGroups() {
+	public void changeActivityGroups() {
 		//happens once per year
 		//parameter risk_group_transfer_prop determines what fraction of the pop swaps risk groups
 		
@@ -35,7 +35,7 @@ public class ChangeRiskGroups {
 		long numberToTransferLow = Math.round(numberToTransfer / 2);
 		//System.out.println("Transfering " + numberToTransferLow + " from low to high.");
 		
-		Stream <Indiv> lowToTransfer = population.lowRiskGroupStream().limit(numberToTransferLow);
+		Stream <Indiv> lowToTransfer = population.lowActivityGroupStream().limit(numberToTransferLow);
 
 		
 		//process high risk to low risk
@@ -48,7 +48,7 @@ public class ChangeRiskGroups {
 		Stream.concat(lowToTransfer, highToTransfer).forEach(indiv -> indiv.changeRiskGroup());
 		//System.out.println("New high risk count: " + population.highRiskCount());
 
-		population.updateRiskGroups();
+		population.updateActivityGroups();
 		
 		
 	}

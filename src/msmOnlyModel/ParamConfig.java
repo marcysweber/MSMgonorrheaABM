@@ -17,7 +17,8 @@ public class ParamConfig {
 	private int yearX;
 	private int initialInfected;
 	
-	private double propHighRisk;
+	private double propHighActivity;
+	private double propHighScreening;
 	
 	private double TransmissionMSM;
 
@@ -36,8 +37,8 @@ public class ParamConfig {
 	private double delayToRetreatmentMSM;
 	
 	private double assortativity;
-	private double riskGroupTransferProp;
-	private double riskGroupTransmissionRatio;
+	private double activityGroupTransferProp;
+	private double activityGroupTransmissionRatio;
 
 	
 	private double percentResistantA;
@@ -62,7 +63,8 @@ public class ParamConfig {
 			String counterfactual,
 			int yearX,
 			int initialInfected,
-			double propHighRisk,
+			double propHighActivity,
+			double propHighScreening,
 			double TransmissionMSM, 
 		
 			double RecoveryLambda, 
@@ -74,8 +76,8 @@ public class ParamConfig {
 
 			double delayToRetreatmentMSM,
 			double assortativity,
-			double riskGroupTransferProp,
-			double riskGroupTransmissionRatio,
+			double activityGroupTransferProp,
+			double activityGroupTransmissionRatio,
 
 			
 			double amountResistantA,
@@ -97,7 +99,8 @@ public class ParamConfig {
 		this.counterfactual = counterfactual;
 		this.yearX = yearX;
 		this.initialInfected = initialInfected;
-		this.propHighRisk = propHighRisk;
+		this.propHighActivity = propHighActivity;
+		this.propHighScreening = propHighScreening;
 		this.TransmissionMSM = TransmissionMSM;
 
 		this.RecoveryLambda = RecoveryLambda;
@@ -111,8 +114,8 @@ public class ParamConfig {
 		this.delayToRetreatmentMSM = delayToRetreatmentMSM;
 		
 		this.assortativity = assortativity;
-		this.riskGroupTransferProp = riskGroupTransferProp;
-		this.riskGroupTransmissionRatio = riskGroupTransmissionRatio;
+		this.activityGroupTransferProp = activityGroupTransferProp;
+		this.activityGroupTransmissionRatio = activityGroupTransmissionRatio;
 		
 		this.percentResistantA = amountResistantA;
 		this.beginImportingB = beginImportingB;
@@ -153,8 +156,12 @@ public class ParamConfig {
 		return this.initialInfected;
 	}
 	
-	public double getPropHighRisk() {
-		return this.propHighRisk;
+	public double getPropHighActivity() {
+		return this.propHighActivity;
+	}
+	
+	public double getPropHighScreening() {
+		return this.propHighScreening;
 	}
 	
 	public double getTransmissionMSM() {
@@ -187,12 +194,12 @@ public class ParamConfig {
 	}
 	
 	
-	public double getRiskGroupTransferProp() {
-		return this.riskGroupTransferProp;
+	public double getActivityGroupTransferProp() {
+		return this.activityGroupTransferProp;
 	}
 	
-	public double getRiskGroupTransmissionRatio() {
-		return this.riskGroupTransmissionRatio;
+	public double getActivityGroupTransmissionRatio() {
+		return this.activityGroupTransmissionRatio;
 	}
 	
 	public double getPercentResistantA() {

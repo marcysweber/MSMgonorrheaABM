@@ -79,22 +79,22 @@ public class RiskGroupTest {
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 		
-		testRun.riskGroupChanger().changeRiskGroups();
+		testRun.riskGroupChanger().changeActivityGroups();
 		
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 
-		testRun.riskGroupChanger().changeRiskGroups();
+		testRun.riskGroupChanger().changeActivityGroups();
 		
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 
-		testRun.riskGroupChanger().changeRiskGroups();
+		testRun.riskGroupChanger().changeActivityGroups();
 		
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 
-		testRun.riskGroupChanger().changeRiskGroups();
+		testRun.riskGroupChanger().changeActivityGroups();
 		
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
@@ -120,7 +120,7 @@ public class RiskGroupTest {
 					"none", //counterfactual
 					10, //yearX
 					10, //initial infected
-					sweeper.getPropHighRiskValues(1).get(0), //propHighRisk
+					sweeper.getPropHighActivityValues(1).get(0), //propHighRisk
 					100, //transmission
 					1 , //recoveryLambda
 					0.5, //probSymptomatic
@@ -180,7 +180,7 @@ public class RiskGroupTest {
 					1, //delaytoseekcare
 					2, //delaytoretreatment
 					1.0,//assortativity
-					sweeper.getRiskGroupTransferPropValues(1).get(0),//riskGroupTransferProp
+					sweeper.getActivityGroupTransferPropValues(1).get(0),//riskGroupTransferProp
 					0.1,//riskGroupTransmissionRatio
 					25, //amount resistant A
 					10, //being importing B
@@ -206,7 +206,7 @@ public class RiskGroupTest {
 			System.out.println("high: " + testRun.population().highRiskCount());
 			System.out.println("low: " + testRun.population().lowRiskCount());
 			
-			testRun.riskGroupChanger().changeRiskGroups();
+			testRun.riskGroupChanger().changeActivityGroups();
 
 			System.out.println("high: " + testRun.population().highRiskCount());
 			System.out.println("low: " + testRun.population().lowRiskCount());
@@ -262,7 +262,7 @@ public class RiskGroupTest {
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 				
-		testRun.population().lowRiskGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
+		testRun.population().lowActivityGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
 		
 		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
 		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
@@ -380,13 +380,13 @@ public class RiskGroupTest {
 		testRun.createIndivs(100);
 		testRun.observer().setPopulation(testRun.population());
 		
-		Indiv indiv = testRun.population().highRiskGroup.get(0);
+		Indiv indiv = testRun.population().highActivityGroup.get(0);
 		
 		for (int i = 0; i < 10; i++) {
 			assertTrue("assort 1.0 test", indiv.partnerSelect().getRiskGroup().equals("high"));
 		}
 		
-		Indiv indiv2 = testRun.population().lowRiskGroup.get(0);
+		Indiv indiv2 = testRun.population().lowActivityGroup.get(0);
 
 		for (int i = 0; i < 10; i++) {
 			assertTrue("assort 1.0 test", indiv2.partnerSelect().getRiskGroup().equals("low"));
@@ -439,13 +439,13 @@ public class RiskGroupTest {
 		testRun2.createIndivs(100);
 		testRun2.observer().setPopulation(testRun2.population());
 		
-		Indiv indiv3 = testRun2.population().highRiskGroup.get(0);
+		Indiv indiv3 = testRun2.population().highActivityGroup.get(0);
 		
 		for (int i = 0; i < 10; i++) {
 			assertTrue("assort 1.0 test", indiv3.partnerSelect().getRiskGroup().equals("low"));
 		}
 		
-		Indiv indiv4 = testRun2.population().lowRiskGroup.get(0);
+		Indiv indiv4 = testRun2.population().lowActivityGroup.get(0);
 
 		for (int i = 0; i < 10; i++) {
 			assertTrue("assort 1.0 test", indiv4.partnerSelect().getRiskGroup().equals("high"));
@@ -499,7 +499,7 @@ public class RiskGroupTest {
 		testRun3.createIndivs(100);
 		testRun3.observer().setPopulation(testRun3.population());
 		
-		Indiv indiv5 = testRun3.population().highRiskGroup.get(0);
+		Indiv indiv5 = testRun3.population().highActivityGroup.get(0);
 		
 		System.out.println( "\n" + indiv5.getRiskGroup());
 
@@ -507,7 +507,7 @@ public class RiskGroupTest {
 			System.out.println(indiv5.partnerSelect().getRiskGroup());
 		}
 		
-		Indiv indiv6 = testRun3.population().lowRiskGroup.get(0);
+		Indiv indiv6 = testRun3.population().lowActivityGroup.get(0);
 		System.out.println( "\n" + indiv6.getRiskGroup());
 
 		for (int i = 0; i < 10; i++) {

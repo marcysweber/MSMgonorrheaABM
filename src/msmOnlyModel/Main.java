@@ -71,12 +71,14 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
-
-			//executeCounterfactualScenarios(scenariofile);
+			executeCalibratedNoResistanceBatch(scenariofile);
+			
+			executeCounterfactualScenarios(scenariofile);
 
 			executeSensitivityAnalysisBatch(scenariofile);			
 			
+			executeSensitivityAnalysisBatchnoDST(scenariofile);			
+
 			
 			//executeCompareResistanceInserters(scenariofile);
 //			
@@ -97,7 +99,7 @@ public class Main {
 		
 		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_33_33_34");
+		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_45_45_10");
 
 		System.out.println("completed all counterfactual scenarios!");
 
@@ -112,22 +114,39 @@ public class Main {
 	public static void executeCalibratedNoResistanceBatch(File scenario) {
 		BatchRun batchRunner = new BatchRun("none", "none");
 
-		batchRunner.executeCalibratedBatch(scenario, "none", "none", 25, 5, 80, 80, 80, 0.33, 0.33, 0.34);
+		batchRunner.executeCalibratedBatch(scenario, "none", "none", 25, 5, 80, 80, 50, 0.45, 0.45, 0.10);
 
 	}
 	
 	public static void executeSensitivityAnalysisBatch(File scenariofile) {
 		
-		//executeAvailDrugXBatchRC(scenariofile);
-
-//		
-		//executeAvailDrugXBatch(scenariofile);
-//		
-    	//executeSwitchThresholdBatch(scenariofile);
-		//executeAvailrDSTBatch(scenariofile);
-	   // executeAdhereTOCsymptomaticBatch(scenariofile);
-	   // executeAdhereTOCasymptomaticBatch(scenariofile);
+		//executeAvailDrugXBatchRC(scenariofile);	
+		
+		executeAvailDrugXBatch(scenariofile);
+    	executeSwitchThresholdBatch(scenariofile);
+		executeAvailrDSTBatch(scenariofile);
+	    executeAdhereTOCsymptomaticBatch(scenariofile);
+	    executeAdhereTOCasymptomaticBatch(scenariofile);
 		executeRealisticComboBatch(scenariofile);
+		
+	}
+	
+	public static void executeSensitivityAnalysisBatchnoDST(File scenario) {
+		BatchRun batchRunner = new BatchRun("all", "combo");
+
+		int switchThres = 5;
+		int availrDST = 80;
+		int adhereTOCsympt = 80;
+		int adhereTOCasympt = 50;
+		double realisticRandom = 0.5;
+		double realisticTOC = 0.5;
+		double realisticDST = 0;
+		
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 15, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+
+		
 		
 	}
 	
@@ -137,10 +156,10 @@ public class Main {
 		int switchThres = 5;
 		int availrDST = 80;
 		int adhereTOCsympt = 80;
-		int adhereTOCasympt = 80;
-		double realisticRandom = 0.33;
-		double realisticTOC = 0.33;
-		double realisticDST = 0.34;
+		int adhereTOCasympt = 50;
+		double realisticRandom = 0.45;
+		double realisticTOC = 0.45;
+		double realisticDST = 0.1;
 
 		
 		  
@@ -224,7 +243,9 @@ public class Main {
 	
 	public static void executeAvailDrugXBatchRC(File scenario) {
 		BatchRun batchRunner = new BatchRun("all", "combo");
+		String resistInsert = "combo";
 
+		int yearX = 25;
 		int switchThres = 5;
 		int availrDST = 80;
 		int adhereTOCsympt = 80;
@@ -238,6 +259,10 @@ public class Main {
 		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 20, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		batchRunner.executeCalibratedBatch(scenario, "realistic_combo", "combo", 31, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo_60_40_00", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, 0.6, 0.4, 0.0);
+		batchRunner.executeCalibratedBatch(scenario, "realistic_combo_40_60_00", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, 0.4, 0.6, 0.0);
+
+		
 	}
 	
 
@@ -249,11 +274,11 @@ public class Main {
 		//int switchThres = 5;
 		int availrDST = 80;
 		int adhereTOCsympt = 80;
-		int adhereTOCasympt = 80;
+		int adhereTOCasympt = 50;
 		
-		double realisticRandom = 0.33;
-		double realisticTOC = 0.33;
-		double realisticDST = 0.34;
+		double realisticRandom = 0.45;
+		double realisticTOC = 0.45;
+		double realisticDST = 0.10;
 
 		batchRunner.executeCalibratedBatch(scenario, "GISPemp_3", resistInsert, yearX, 3, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		batchRunner.executeCalibratedBatch(scenario, "GISPemp_7", resistInsert, yearX, 7, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
@@ -309,20 +334,30 @@ public class Main {
 		int availrDST = 80;
 
 		//int adhereTOCsympt = 80;
-		int adhereTOCasympt = 80;
+		int adhereTOCasympt = 50;
 		
-		double realisticRandom = 0.33;
-		double realisticTOC = 0.33;
-		double realisticDST = 0.34;
+		double realisticRandom = 0.45;
+		double realisticTOC = 0.45;
+		double realisticDST = 0.10;
 		
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_20", resistInsert, yearX, switchThres, availrDST, 20, adhereTOCasympt);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_40", resistInsert, yearX, switchThres, availrDST, 40, adhereTOCasympt);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_20", resistInsert, yearX, switchThres, availrDST, 20, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_30", resistInsert, yearX, switchThres, availrDST, 30, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_40", resistInsert, yearX, switchThres, availrDST, 40, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_50", resistInsert, yearX, switchThres, availrDST, 50, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_60", resistInsert, yearX, switchThres, availrDST, 60, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		//batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_80", resistInsert, yearX, switchThres, availrDST, 80, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
-		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_100", resistInsert, yearX, switchThres, availrDST, 100, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_70", resistInsert, yearX, switchThres, availrDST, 70, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_80", resistInsert, yearX, switchThres, availrDST, 80, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_90", resistInsert, yearX, switchThres, availrDST, 90, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_sympt_100", resistInsert, yearX, switchThres, availrDST, 100, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
+		
 
 
 	}
@@ -338,18 +373,28 @@ public class Main {
 		int adhereTOCsympt = 80;
 		//int adhereTOCasympt = 80;
 		
-		double realisticRandom = 0.33;
-		double realisticTOC = 0.33;
-		double realisticDST = 0.34;
+		double realisticRandom = 0.45;
+		double realisticTOC = 0.45;
+		double realisticDST = 0.10;
 		
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_20", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 20);
-//		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_40", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 40);
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_20", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 20, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_30", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 30, realisticRandom, realisticTOC, realisticDST);
+
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_40", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 40, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_50", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 50, realisticRandom, realisticTOC, realisticDST);
+
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_60", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 60, realisticRandom, realisticTOC, realisticDST);
-		//batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_80", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 80, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_70", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 70, realisticRandom, realisticTOC, realisticDST);
+
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_80", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 80, realisticRandom, realisticTOC, realisticDST);
+		
+		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_90", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 90, realisticRandom, realisticTOC, realisticDST);
+
 		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_100", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 100, realisticRandom, realisticTOC, realisticDST);
 
-		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_70", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 70, realisticRandom, realisticTOC, realisticDST);
-		batchRunner.executeCalibratedBatch(scenario, "test-of-cure_asympt_90", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, 90, realisticRandom, realisticTOC, realisticDST);
 
 	}
 	
@@ -362,7 +407,7 @@ public class Main {
 		int switchThres = 5;
 		int availrDST = 80;
 		int adhereTOCsympt = 80;
-		int adhereTOCasympt = 80;
+		int adhereTOCasympt = 50;
 
 		batchRunner.executeCalibratedBatch(scenario, "realistic_combo_50_50_00", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, 0.5, 0.5, 0.0);
 		batchRunner.executeCalibratedBatch(scenario, "realistic_combo_75_25_00", resistInsert, yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, 0.75, 0.25, 0.0);
@@ -392,11 +437,11 @@ public class Main {
 		int switchThres = 5;
 		int availrDST = 80;
 		int adhereTOCsympt = 80;
-		int adhereTOCasympt = 80;
+		int adhereTOCasympt = 50;
 		
-		double realisticRandom = 0.33;
-		double realisticTOC = 0.33;
-		double realisticDST = 0.34;
+		double realisticRandom = 0.45;
+		double realisticTOC = 0.45;
+		double realisticDST = 0.10;
 		
 		batchRunner.executeCalibratedBatch(scenariofile, "GISP", "constantImport", yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);
 		batchRunner.executeCalibratedBatch(scenariofile, "GISP", "dropInOnce",yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST);

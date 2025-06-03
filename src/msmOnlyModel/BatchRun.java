@@ -51,7 +51,7 @@ public class BatchRun {
 
 		List<Integer> initialInfectedValuesList = sweeper.getInitialInfectedValues(reps);
 		
-		List<Double> propHighRiskValuesList = sweeper.getPropHighRiskValues(reps);
+		List<Double> propHighActivityValuesList = sweeper.getPropHighActivityValues(reps);
 		
 		List<Double> transmissionMSMValuesList = sweeper.getTransmissionMSMValues(reps);
 		
@@ -67,9 +67,9 @@ public class BatchRun {
 		
 		List<Double> assortativityValuesList = sweeper.getAssortativityValues(reps);
 		
-		List<Double> riskGroupTransferPropValuesList = sweeper.getRiskGroupTransferPropValues(reps);
+		List<Double> activityGroupTransferPropValuesList = sweeper.getActivityGroupTransferPropValues(reps);
 		
-		List<Double> riskGroupTransmissionRatioValuesList = sweeper.getRiskGroupTransmissionRatioValues(reps);
+		List<Double> activityGroupTransmissionRatioValuesList = sweeper.getActivityGroupTransmissionRatioValues(reps);
 
 		List<Double> percentResistantAValuesList = sweeper.getPercentResistantA(reps);
 		List<Integer> beginImportingBValuesList = sweeper.getBeginImportingB(reps);
@@ -94,7 +94,7 @@ public class BatchRun {
 			comboStream = Stream.concat(comboStream,
 					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, 31,
 							initialInfectedValuesList.get(i), 
-							propHighRiskValuesList.get(i),
+							propHighActivityValuesList.get(i),
 							transmissionMSMValuesList.get(i),
 							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
@@ -102,8 +102,8 @@ public class BatchRun {
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
 							assortativityValuesList.get(i),
-							riskGroupTransferPropValuesList.get(i),
-							riskGroupTransmissionRatioValuesList.get(i),
+							activityGroupTransferPropValuesList.get(i),
+							activityGroupTransmissionRatioValuesList.get(i),
 							percentResistantAValuesList.get(i),
 							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
 							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
@@ -154,7 +154,7 @@ public class BatchRun {
 	
 	public void executeCalibratedBatch(File scenariofile, String counterfactual) {
 		//contains constants for default runs
-		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 80, 0.33, 0.33, 0.34);
+		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.45, 0.45, 0.10);
 	}
 		
 		
@@ -174,7 +174,7 @@ public class BatchRun {
 
 		
 		List<Integer> initialInfectedValuesList = new ArrayList<Integer>();
-		List <Double> propHighRiskValuesList = new ArrayList<Double>();
+		List <Double> propHighActivityValuesList = new ArrayList<Double>();
 		
 		List<Double> transmissionMSMValuesList = new ArrayList<Double>();
 		
@@ -189,8 +189,8 @@ public class BatchRun {
 		
 		List<Double> delayToRetreatmentMSMValuesList = new ArrayList<Double>();
 		List <Double> assortativityValuesList = new ArrayList<Double>();
-		List<Double> riskGroupTransferPropValuesList = new ArrayList<Double>();
-		List<Double> riskGroupTransmissionRatioValuesList = new ArrayList<Double>();
+		List<Double> activityGroupTransferPropValuesList = new ArrayList<Double>();
+		List<Double> activityGroupTransmissionRatioValuesList = new ArrayList<Double>();
 
 
 		
@@ -219,7 +219,7 @@ public class BatchRun {
 		
 
 		try {
-			propHighRiskValuesList = calibrated.getPropHighRiskValues();
+			propHighActivityValuesList = calibrated.getPropActivityRiskValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -294,14 +294,14 @@ public class BatchRun {
 		
 		
 		try {
-			riskGroupTransferPropValuesList = calibrated.getRiskGroupTransferPropValues();
+			activityGroupTransferPropValuesList = calibrated.getActivityGroupTransferPropValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		try {
-			riskGroupTransmissionRatioValuesList = calibrated.getRiskGroupTransmissionRatioValues();
+			activityGroupTransmissionRatioValuesList = calibrated.getActivityGroupTransmissionRatioValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -406,7 +406,7 @@ public class BatchRun {
 			comboStream = Stream.concat(comboStream,
 					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
 							initialInfectedValuesList.get(i), 
-							propHighRiskValuesList.get(i),
+							propHighActivityValuesList.get(i),
 							transmissionMSMValuesList.get(i),
 							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
@@ -414,8 +414,8 @@ public class BatchRun {
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
 							assortativityValuesList.get(i),
-							riskGroupTransferPropValuesList.get(i),
-							riskGroupTransmissionRatioValuesList.get(i),
+							activityGroupTransferPropValuesList.get(i),
+							activityGroupTransmissionRatioValuesList.get(i),
 							percentResistantAValuesList.get(i),
 							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
 							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
@@ -441,7 +441,7 @@ public class BatchRun {
 	}
 	
 	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime) {
-		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 80, 0.33, 0.33, 0.34);
+		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.45, 0.45, 0.10);
 	}
 
 	public void eachRun(String batchDirPath, 
@@ -465,14 +465,14 @@ public class BatchRun {
 
 		
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
-				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), paramConfig.getPropHighRisk(),
+				paramConfig.getCounterfactual(), paramConfig.getYearX(), switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, paramConfig.getInitialInfected(), paramConfig.getPropHighActivity(),
 				paramConfig.getTransmissionMSM(),
 				paramConfig.getRecoveryTime(), 
 				paramConfig.getProbSymptomaticMSM(), 
 				paramConfig.getScreenIntervalMSM(),
 				paramConfig.getDelayToSeekCareMSM(), 
 				paramConfig.getDelayToRetreatmentMSM(),
-				paramConfig.getAssortativity(), paramConfig.getRiskGroupTransferProp(), paramConfig.getRiskGroupTransmissionRatio(),
+				paramConfig.getAssortativity(), paramConfig.getActivityGroupTransferProp(), paramConfig.getActivityGroupTransmissionRatio(),
 				paramConfig.getPercentResistantA(), paramConfig.getBeginImportingB(),
 				paramConfig.getImportingBInterval(), paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
 				paramConfig.getcareCost(), paramConfig.getTestCost(),
@@ -497,7 +497,7 @@ public class BatchRun {
 	public Parameters setParameters(int runNumber, int endTime, int seed, 
 			String resistance, String counterfactual, int yearX, 
 			int initialInfected, 
-			double propHighRisk,
+			double propHighActivity,
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
@@ -505,13 +505,13 @@ public class BatchRun {
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
-			double riskGrouptransferProp,
-			double riskGroupTransmissionRatio,
+			double activityGrouptransferProp,
+			double activityGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
-				initialInfected, propHighRisk, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, riskGrouptransferProp, riskGroupTransmissionRatio,
+				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
 	
@@ -520,7 +520,7 @@ public class BatchRun {
 			String resistance, String counterfactual, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt,
 			double realisticRandom, double realisticTOC, double realisticDST,
 			int initialInfected, 
-			double propHighRisk,
+			double propHighActivity,
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
@@ -528,8 +528,8 @@ public class BatchRun {
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
-			double riskGroupTransferProp,
-			double riskGroupTransmissionRatio,
+			double activityGroupTransferProp,
+			double activityGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
@@ -558,8 +558,8 @@ public class BatchRun {
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
 		params.addParameter("delay_to_retreatment_msm", "DelayToRetreatmentMSM", double.class, delayToRetreatmentMSM, false);
 		params.addParameter("assortativity", "assortativity", double.class, assortativity, false);
-		params.addParameter("risk_group_transfer_prop", "RiskGroupTransferProp", double.class, riskGroupTransferProp, false);
-		params.addParameter("risk_group_transmission_ratio", "RiskGroupTransmissionRatio", double.class, riskGroupTransmissionRatio, false);
+		params.addParameter("activity_group_transfer_prop", "ActivityGroupTransferProp", double.class, activityGroupTransferProp, false);
+		params.addParameter("activity_group_transmission_ratio", "ActivityGroupTransmissionRatio", double.class, activityGroupTransmissionRatio, false);
 
 
 		params.addParameter("percent_resistant_A", "percent_resistant_A", double.class, percentResistantA, false);
@@ -572,7 +572,7 @@ public class BatchRun {
 
 		params.addParameter("population_size", "Pop Size", int.class, 100000, false);
 		params.addParameter("infected_count_init", "Initial Infected", int.class, initialInfected, false);
-		params.addParameter("propHighRisk", "propHighRisk", double.class, propHighRisk, false);
+		params.addParameter("propHighActivity", "propHighActivity", double.class, propHighActivity, false);
 		params.addParameter("end_time", "EndTime", int.class, endTime, false);
 
 	
@@ -600,7 +600,7 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/MARCH_5_2025_overnight_";
+		String dirname = "/Users/me597/Documents/MSMoutput/MARCH_26_2025_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
 

@@ -33,11 +33,11 @@ public class CalibratedParameters {
 		return dataAsInts;
 	}
 	
-	public List<Double> getPropHighRiskValues() throws IOException {
+	public List<Double> getPropActivityRiskValues() throws IOException {
 		//reads the resampled Annual Contacts values from file, and gives them back as a list of doubles
 
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path +"propHighRisk_resample.txt"));
+		dataAsStrings = Files.readAllLines(Paths.get(path +"propHighActivity_resample.txt"));
 		//System.out.println(dataAsStrings);
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		//System.out.println(dataAsDoubles);
@@ -221,7 +221,7 @@ public class CalibratedParameters {
 	
 	
 	
-	public List<Double> getRiskGroupTransferPropValues() throws IOException{
+	public List<Double> getActivityGroupTransferPropValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
@@ -231,7 +231,7 @@ public class CalibratedParameters {
 		
 	}
 	
-	public List<Double> getRiskGroupTransmissionRatioValues() throws IOException{
+	public List<Double> getActivityGroupTransmissionRatioValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();

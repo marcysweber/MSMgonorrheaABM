@@ -272,7 +272,7 @@ public class SequelaeTest {
 			indiv.setPop(testRun.population());
 		}	
 		
-		testRun.population().updateRiskGroups();
+		testRun.population().updateActivityGroups();
 	
 		testRun.population().allIndivs().limit(500).forEach(indiv -> indiv.infect("Both"));
 			
@@ -357,7 +357,7 @@ public class SequelaeTest {
 			indiv.setPop(testRun.population());
 		}	
 		
-		testRun.population().updateRiskGroups();
+		testRun.population().updateActivityGroups();
 	
 		testRun.population().allIndivs().limit(500).forEach(indiv -> indiv.infect("Both"));
 			

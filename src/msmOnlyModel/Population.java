@@ -19,8 +19,8 @@ public class Population {
 //	public List<Indiv> msmwList;
 //	public List<Indiv> nbList;
 	
-	public List <Indiv> highRiskGroup;
-	public List <Indiv> lowRiskGroup;
+	public List <Indiv> highActivityGroup;
+	public List <Indiv> lowActivityGroup;
 	
 	
 	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
@@ -29,24 +29,24 @@ public class Population {
 		String subPop = "msm";
 		//all MSM
 		
-		double propHighRisk = parameters.getDouble("propHighRisk");
-		int countHighRisk = (int) (propHighRisk * IndivCount);
-		int countLowRisk = IndivCount - countHighRisk;
+		double propHighActivity = parameters.getDouble("propHighActivity");
+		int countHighActivity = (int) (propHighActivity * IndivCount);
+		int countLowActivity = IndivCount - countHighActivity;
 		
-		for ( int i = 0; i < countHighRisk; i ++) {
+		for ( int i = 0; i < countHighActivity; i ++) {
 			//initialize as susceptible, to start
 			indivs.add(new Indiv(parameters, subPop, "high", randomHelper, observer, schedule));
 		}
 		
-		for ( int i = 0; i < countLowRisk; i ++) {
+		for ( int i = 0; i < countLowActivity; i ++) {
 			//initialize as susceptible, to start
 			indivs.add(new Indiv(parameters, subPop, "low", randomHelper, observer, schedule));
 		}
 		
 		msmList = msm();
 		
-		highRiskGroup = highRiskGroup();
-		lowRiskGroup = lowRiskGroup();
+		highActivityGroup = highActivityGroup();
+		lowActivityGroup = lowActivityGroup();
 		
 
 		
@@ -68,14 +68,14 @@ public class Population {
 		
 	}
 	
-	public void updateRiskGroups() {
-		highRiskGroup = highRiskGroup();
-		lowRiskGroup = lowRiskGroup();
+	public void updateActivityGroups() {
+		highActivityGroup = highActivityGroup();
+		lowActivityGroup = lowActivityGroup();
 
 		
 	}
 	
-	public List<Indiv> lowRiskGroup(){
+	public List<Indiv> lowActivityGroup(){
 		List<Indiv> lowRiskGroup = indivs.stream().unordered().
 				filter(indiv -> 
 				//((Indiv) indiv).getGenderPref() < 0.25 && 
@@ -85,7 +85,7 @@ public class Population {
 		return lowRiskGroup;
 	}
 	
-	public List<Indiv> highRiskGroup(){
+	public List<Indiv> highActivityGroup(){
 		List<Indiv> highRiskGroup = indivs.stream().unordered().
 				filter(indiv -> 
 				//((Indiv) indiv).getGenderPref() < 0.25 && 
@@ -96,24 +96,24 @@ public class Population {
 	}
 	
 
-	public Stream<Indiv> lowRiskGroupStream(){
-		return lowRiskGroup.stream().unordered();
+	public Stream<Indiv> lowActivityGroupStream(){
+		return lowActivityGroup.stream().unordered();
 	}
 
 	public int lowRiskCount() {
-		return lowRiskGroup.size();
+		return lowActivityGroup.size();
 	}
 
 
 	public Stream <Indiv> highRiskGroupStream(){
 		
 		
-		return highRiskGroup.stream().unordered();
+		return highActivityGroup.stream().unordered();
 	}
 	
 
 	public int highRiskCount() {
-		return highRiskGroup.size();
+		return highActivityGroup.size();
 	}
 
 	
@@ -131,12 +131,12 @@ public class Population {
 	
 	
 	public Stream <Indiv> lowRiskInfected(){
-		return lowRiskGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
+		return lowActivityGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 
 	}
 	
 	public Stream <Indiv> highRiskInfected(){
-		return highRiskGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
+		return highActivityGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
 
 	}
 	

@@ -24,7 +24,7 @@ public class Indiv {
 	//private double genderPref; //0.0 is strictly same-gender; 1.0 is strictly different-gender
 	
 	private String subPop; //discrete category of gender/sexuality
-	private String riskGroup; //if true, excluded from sexual pool
+	private String activityGroup; //if true, excluded from sexual pool
 
 	private int state;
 	//private boolean abstaining;
@@ -71,7 +71,7 @@ public class Indiv {
 	}
 	 
 	//this is the version that is actually getting used currently
-	public Indiv(Parameters allParameters, String subPop, String riskGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Indiv(Parameters allParameters, String subPop, String activityGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
 		this.subPop = subPop;
 
 		if (subPop.startsWith("m")) {
@@ -87,7 +87,7 @@ public class Indiv {
 		this.observer = observer;
 		this.schedule = schedule;
 		
-		this.riskGroup = riskGroup;
+		this.activityGroup = activityGroup;
 		
 		this.state = 0;
 		//this.abstaining = false;
@@ -242,8 +242,8 @@ public class Indiv {
 			
 		double weeklyProb = 1 - Math.exp(-transmission * 1/52);
 		
-		if (riskGroup.equals("low")) {
-			weeklyProb = weeklyProb * allParameters.getDouble("risk_group_transmission_ratio");
+		if (activityGroup.equals("low")) {
+			weeklyProb = weeklyProb * allParameters.getDouble("activity_group_transmission_ratio");
 		}
 		
 		if (weeklyProb > randomValue) { //50% chance of seeking a contact this timestep
@@ -272,26 +272,26 @@ public class Indiv {
 			double assort = this.allParameters.getDouble("assortativity");
 			//greater than 0.5 means more likely to choose same risk group
 			//so the random number should be less than assort for the indiv to look in their own risk group
-			Uniform uniformDist = (Uniform) randomHelper.getDistribution("partnerRiskGroupUniform");
+			Uniform uniformDist = (Uniform) randomHelper.getDistribution("partnerActivityGroupUniform");
 			
 			double value = uniformDist.nextDouble();
 			
 			
 			
 			if (value <= assort) {
-				if (this.riskGroup.equals("low")) {
-					potentialPartners = population.lowRiskGroup;
+				if (this.activityGroup.equals("low")) {
+					potentialPartners = population.lowActivityGroup;
 
 				} else {
-					potentialPartners = population.highRiskGroup;
+					potentialPartners = population.highActivityGroup;
 
 				}
 			} else {
-				if (this.riskGroup.equals("high")) {
-					potentialPartners = population.lowRiskGroup;
+				if (this.activityGroup.equals("high")) {
+					potentialPartners = population.lowActivityGroup;
 
 				} else {
-					potentialPartners = population.highRiskGroup;
+					potentialPartners = population.highActivityGroup;
 
 				}
 			}
@@ -525,10 +525,10 @@ public class Indiv {
 	}
 	
 	public void changeRiskGroup() {
-		if (this.riskGroup.equals("low")){
-			this.riskGroup = "high";
-		} else if (this.riskGroup.equals("high")) {
-			this.riskGroup = "low";
+		if (this.activityGroup.equals("low")){
+			this.activityGroup = "high";
+		} else if (this.activityGroup.equals("high")) {
+			this.activityGroup = "low";
 		}
 	}
 	
@@ -690,7 +690,7 @@ public class Indiv {
 	}
 	
 	public String getRiskGroup() {
-		return this.riskGroup;
+		return this.activityGroup;
 	}
 	
 	public boolean inTreatment() {
