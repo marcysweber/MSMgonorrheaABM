@@ -50,6 +50,7 @@ public class CustomParameterSweep {
 	}
 		
 	
+	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
 		double annualContactsMin = 3.5;
@@ -83,6 +84,15 @@ public class CustomParameterSweep {
 		double screenIntervalMin = 0.75;
 		double screenIntervalMax = 3.0;
 		int seed = (int) System.currentTimeMillis() + 9;
+		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+	}
+	
+
+	//screen interval parameters
+	public List<Double> getScreenIntervalMSMHighValues(int samples){
+		double screenIntervalMin = 0.2;
+		double screenIntervalMax = 0.5;
+		int seed = (int) System.currentTimeMillis() + 90;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
 	

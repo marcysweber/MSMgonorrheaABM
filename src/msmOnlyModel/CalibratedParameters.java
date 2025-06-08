@@ -33,7 +33,7 @@ public class CalibratedParameters {
 		return dataAsInts;
 	}
 	
-	public List<Double> getPropActivityRiskValues() throws IOException {
+	public List<Double> getPropHighActivityValues() throws IOException {
 		//reads the resampled Annual Contacts values from file, and gives them back as a list of doubles
 
 		List<String> dataAsStrings = new ArrayList<String>();
@@ -123,11 +123,25 @@ public class CalibratedParameters {
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_low_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		
 	}
+	
+
+	
+	public List<Double> getScreenIntervalMSMHighValues() throws IOException{
+		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
+		
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_high_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+		
+	}
+	
+	
 	public List<Double> getScreenIntervalMSWValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		

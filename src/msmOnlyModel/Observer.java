@@ -248,7 +248,7 @@ public class Observer {
 				
 				
 				this.parameters.getInteger("infected_count_init"),
-				this.parameters.getDouble("propHighRisk"),
+				this.parameters.getDouble("propHighActivity"),
 				
 				this.parameters.getDouble("transmissionMSM"),
 				
@@ -259,6 +259,7 @@ public class Observer {
 		
 						
 				this.parameters.getDouble("screen_interval_MSM"),
+				this.parameters.getDouble("screen_interval_MSM_high"),
 				
 
 				this.parameters.getDouble("delay_to_seek_care_msm"), 
@@ -267,8 +268,8 @@ public class Observer {
 				this.parameters.getDouble("delay_to_retreatment_msm"),
 				
 				this.parameters.getDouble("assortativity"),
-				this.parameters.getDouble("risk_group_transfer_prop"),
-				this.parameters.getDouble("risk_group_transmission_ratio"),
+				this.parameters.getDouble("activity_group_transfer_prop"),
+				this.parameters.getDouble("activity_group_transmission_ratio"),
 
 
 				this.parameters.getDouble("percent_resistant_A"),
@@ -822,11 +823,11 @@ public class Observer {
 				schedule.setFinishing(true);
 			
 			} else if (lowRiskPrev > 4.0) {
-				System.out.print("I should stop now!!! Low risk prev was too high.");
+				System.out.print("I should stop now!!! Low activity prev was too high.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			} else if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
-				System.out.print("I should stop now!!! High Risk prev was too extreme.");
+				System.out.print("I should stop now!!! High activity prev was too extreme.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			}

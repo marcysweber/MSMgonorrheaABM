@@ -53,6 +53,7 @@ public class BatchRun {
 		
 		List<Double> propHighActivityValuesList = sweeper.getPropHighActivityValues(reps);
 		
+		
 		List<Double> transmissionMSMValuesList = sweeper.getTransmissionMSMValues(reps);
 		
 		List<Double> recoveryTimeValuesList = sweeper.getNaturalRecoveryTimeValues(reps);
@@ -60,7 +61,8 @@ public class BatchRun {
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
 		List<Double> screenIntervalMSMValuesList = sweeper.getScreenIntervalMSMValues(reps);
-		
+		List<Double> screenIntervalMSMHighValuesList = sweeper.getScreenIntervalMSMHighValues(reps);
+
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
 		List<Double> delayToRetreatmentMSMValuesList = sweeper.getDelayToRetreatmentMSMValues(reps);
@@ -99,6 +101,7 @@ public class BatchRun {
 							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
 							screenIntervalMSMValuesList.get(i), 
+							screenIntervalMSMHighValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
 							assortativityValuesList.get(i),
@@ -175,6 +178,7 @@ public class BatchRun {
 		
 		List<Integer> initialInfectedValuesList = new ArrayList<Integer>();
 		List <Double> propHighActivityValuesList = new ArrayList<Double>();
+
 		
 		List<Double> transmissionMSMValuesList = new ArrayList<Double>();
 		
@@ -183,6 +187,7 @@ public class BatchRun {
 		List<Double> probSymptomaticMSMValuesList = new ArrayList<Double>();
 		
 		List<Double> screenIntervalMSMValuesList = new ArrayList<Double>();
+		List<Double> screenIntervalMSMHighValuesList = new ArrayList<Double>();
 
 		List<Double> delayToSeekCareMSMValuesList = new ArrayList<Double>();
 
@@ -219,7 +224,7 @@ public class BatchRun {
 		
 
 		try {
-			propHighActivityValuesList = calibrated.getPropActivityRiskValues();
+			propHighActivityValuesList = calibrated.getPropHighActivityValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -259,6 +264,15 @@ public class BatchRun {
 		///screen interval parameters
 		try {
 			screenIntervalMSMValuesList = calibrated.getScreenIntervalMSMValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		///screen interval parameters
+		try {
+			screenIntervalMSMHighValuesList = calibrated.getScreenIntervalMSMHighValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -411,6 +425,7 @@ public class BatchRun {
 							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
 							screenIntervalMSMValuesList.get(i), 
+							screenIntervalMSMHighValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
 							assortativityValuesList.get(i),
@@ -470,6 +485,7 @@ public class BatchRun {
 				paramConfig.getRecoveryTime(), 
 				paramConfig.getProbSymptomaticMSM(), 
 				paramConfig.getScreenIntervalMSM(),
+				paramConfig.getScreenIntervalMSMHigh(),
 				paramConfig.getDelayToSeekCareMSM(), 
 				paramConfig.getDelayToRetreatmentMSM(),
 				paramConfig.getAssortativity(), paramConfig.getActivityGroupTransferProp(), paramConfig.getActivityGroupTransmissionRatio(),
@@ -502,16 +518,19 @@ public class BatchRun {
 			double recoveryTime, 
 			double probSymptomaticMSM, 
 			double screenIntervalMSM,  
+			double screenIntervalMSMHigh,
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
 			double activityGrouptransferProp,
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
-			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
+			int beginImportingB, double importingBInterval, 
+			double DSTsensitivity, double DSTspecificity, 
+			double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
-				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
+				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, screenIntervalMSMHigh, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
 	
@@ -525,6 +544,7 @@ public class BatchRun {
 			double recoveryTime, 
 			double probSymptomaticMSM, 
 			double screenIntervalMSM,  
+			double screenIntervalMSMHigh,
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
@@ -555,6 +575,7 @@ public class BatchRun {
 		params.addParameter("recovery_time", "RecoveryTime", double.class, recoveryTime, false);
 		params.addParameter("prob_symptomatic_msm", "ProbSymptomaticMSM", double.class, probSymptomaticMSM, false);
 		params.addParameter("screen_interval_MSM", "ScreenIntervalMSM", double.class, screenIntervalMSM, false);
+		params.addParameter("screen_interval_MSM_high", "ScreenIntervalMSMHigh", double.class, screenIntervalMSMHigh, false);
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
 		params.addParameter("delay_to_retreatment_msm", "DelayToRetreatmentMSM", double.class, delayToRetreatmentMSM, false);
 		params.addParameter("assortativity", "assortativity", double.class, assortativity, false);
@@ -598,9 +619,9 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
+		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_5_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/MARCH_26_2025_overnight_";
+		String dirname = "/Users/me597/Documents/MSMoutput/JUNE_8_2025_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
 

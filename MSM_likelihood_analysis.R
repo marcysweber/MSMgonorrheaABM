@@ -4516,8 +4516,8 @@ viz_initial_infected = function(df, n, max, min){
 viz_prop_high_risk = function(df, n, max, min){
   unit <- (max-min)/n
   return(ggplot(df) + 
-    geom_histogram(aes(x = propHighRisk), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "propHighRisk",
+    geom_histogram(aes(x = propHighActivity), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
+    labs(x = "propHighActivity",
          y = "Count", 
          title = "B.") +
     scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
@@ -4565,11 +4565,11 @@ viz_prob_symptomatic = function(df, n, max, min){
     theme_bw())
 }
 
-viz_screen_interval = function(df, n, max, min){
+viz_screen_interval_low = function(df, n, max, min){
   unit <- (max-min)/n
   return(ggplot(df) + 
-    geom_histogram(aes(x = ScreenIntervalMSM), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "ScreenIntervalMSM",
+    geom_histogram(aes(x = ScreenIntervalMSMLow), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
+    labs(x = "ScreenIntervalMSMLow",
          y = "Count", 
          title = "F.") +
     scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
@@ -4605,7 +4605,7 @@ visualize_parameters = function(df){
     
   e <- viz_prob_symptomatic(df, 4, 0.25, 0.1)
 
- f <- viz_screen_interval(df, 5, 3, 0.75)
+ f <- viz_screen_interval_low(df, 5, 3, 0.75)
   
  g <- viz_delay_care(df,4, 0.02307692, 0.005479452)
   
@@ -4643,8 +4643,8 @@ visualize_parameters = function(df){
   min <- 0.01
   unit <- (max-min)/n
   j<-ggplot(df) + 
-    geom_histogram(aes(x = riskGroupTransferProp), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "riskGroupTransferProp",
+    geom_histogram(aes(x = activityGroupTransferProp), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
+    labs(x = "activityGroupTransferProp",
          y = "Count", 
          title = "J.") +
     scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
@@ -4658,8 +4658,8 @@ visualize_parameters = function(df){
   min <- 0.05
   unit <- (max-min)/n
   k<-ggplot(df) + 
-    geom_histogram(aes(x = riskGroupTransmissionRatio), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "riskGroupTransmissionRatio",
+    geom_histogram(aes(x = activityGroupTransmissionRatio), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
+    labs(x = "activityGroupTransmissionRatio",
          y = "Count", 
          title = "K.") +
     scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
@@ -5902,21 +5902,22 @@ write_calibrated = function(df, path){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
-  resamplePropHighRisk <- df$propHighRisk
+  resamplePropHighActivity <- df$propHighActivity
   resampleTransmissionMSM <- df$TransmissionMSM
  
   resampleRecoveryLambda <- df$NaturalRecoveryTime
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
  
-  resampleScreenIntervalMSM <- df$ScreenIntervalMSM
+  resampleScreenIntervalMSMLow <- df$ScreenIntervalMSMLow
+  resampleScreenIntervalMSMHigh <- df$ScreenIntervalMSMHigh
   
   resampleAssortativity <- df$Assortativity
   
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
  
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-  resampleRiskGroupTransferProp <- df$riskGroupTransferProp
-  resampleRiskGroupTransmissionRatio <- df$riskGroupTransmissionRatio
+  resampleActivityGroupTransferProp <- df$activityGroupTransferProp
+  resampleActivityGroupTransmissionRatio <- df$activityGroupTransmissionRatio
    
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
@@ -5934,11 +5935,12 @@ write_calibrated = function(df, path){
   
   fwrite(list(resampleSeed), file = paste(path, "seed_resample.txt", sep=""))
   fwrite(list(resampleInitialInfected), file = paste(path, "initial_infected_resample.txt", sep=""))
-  fwrite(list(resamplePropHighRisk), file = paste(path, "propHighRisk_resample.txt", sep=""))
+  fwrite(list(resamplePropHighRisk), file = paste(path, "propHighActivity_resample.txt", sep=""))
   fwrite(list(resampleTransmissionMSM), file = paste(path, "transmissionMSM_resample.txt", sep=""))
   fwrite(list(resampleRecoveryLambda), file = paste(path, "recovery_lambda_resample.txt", sep=""))
   fwrite(list(resampleProbSymptomaticMSM), file = paste(path, "prob_symptomatic_MSM_resample.txt", sep=""))
-  fwrite(list(resampleScreenIntervalMSM), file = paste(path, "screen_interval_MSM_resample.txt", sep=""))
+  fwrite(list(resampleScreenIntervalMSMLow), file = paste(path, "screen_interval_MSM_low_resample.txt", sep=""))
+  fwrite(list(resampleScreenIntervalMSMHigh), file = paste(path, "screen_interval_MSM_high_resample.txt", sep=""))
   fwrite(list(resampleDelayToSeekCareMSM), file = paste(path, "delay_to_seek_care_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToRetreatmentMSM), file = paste(path, "delay_to_retreatment_MSM_resample.txt", sep=""))
   fwrite(list(resampleRiskGroupTransferProp), file = paste(path, "risk_group_transfer_prop_resample.txt", sep=""))
@@ -14098,3 +14100,43 @@ summary_plot_smdm(dfGISP25, dfTOC25, dfDST25, dfreal25)
 visualize_cea_weighted_real_nort("", df_best_ends,dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200))
 
 ###########
+
+
+# june 2025, multiple screening intervals
+#######
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_4_2025_debug_5_sweep_none/sweepnone0supercombined.csv")
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 100)
+
+#save the resample including the replicates
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates4june25.csv")
+
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
+colnames(df_best_ends_unique) <- colnames(df_best_ends)
+
+unique_resamples <- unique(df_best_ends$uniqueID)
+for (unique_ID in unique_resamples){
+  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
+df_best_traj <- identify(df_best_traj, df_best_ends)
+
+visualize_calibration_MSM(df_best_traj)
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates4june25.csv")
+visualize_parameters(df_best_ends)
+
+write_calibrated(df_best_ends_unique, "/Users/me597/Documents/MSM_calibrated_params/")
+
+
+
+
+
+
+
+######

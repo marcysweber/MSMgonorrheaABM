@@ -148,6 +148,15 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
 			
+			
+			Normal screenIntervalMSMHigh = new Normal(parameters.getDouble("screen_interval_MSM_high")*52, 52*parameters.getDouble("screen_interval_MSM_high")/10, eng);
+			randomHelper.registerDistribution("screenIntervalMSMHigh", screenIntervalMSMHigh);
+			Uniform screenFirstValueMSMHigh = new Uniform(0, parameters.getDouble("screen_interval_MSM_high")*52, eng);
+			randomHelper.registerDistribution("screenFirstValueMSMHigh", screenFirstValueMSMHigh);
+			
+			
+			
+			
 			Normal activityGroupTransferPropNormal = new Normal(parameters.getDouble("activity_group_transfer_prop"), parameters.getDouble("activity_group_transfer_prop")/10, eng);
 			randomHelper.registerDistribution("activityGroupTransferPropNormal", activityGroupTransferPropNormal);
 		
@@ -281,7 +290,7 @@ public void infectInitialInfected(int InfectiousCount, int IndivCount, Populatio
 	
 	double amountToInfectLowRisk = InfectiousCount - amountToInfectHighRisk;
 	
-	List <Object> highRisktoInfect = population.highRiskGroupStream().limit((long) amountToInfectHighRisk).collect(Collectors.toList());
+	List <Object> highRisktoInfect = population.highActivityGroupStream().limit((long) amountToInfectHighRisk).collect(Collectors.toList());
 	indivToInfectList.addAll(highRisktoInfect);
 	
 	List <Object> lowRisktoInfect = population.lowActivityGroupStream().limit((long) amountToInfectLowRisk).collect(Collectors.toList());

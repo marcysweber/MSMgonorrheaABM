@@ -36,23 +36,43 @@ public class Screener {
 		}
 	}
 	
-	public List<Integer> makeScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
+	public List<Integer> makeLowScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
 		Normal screenIntervalDist = null;
 		Uniform firstValueDist = null;
 		
 		if (subPop.equals("msm")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSMNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSMUniform");
-		} else if (subPop.equals("msw")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSWUniform");
-		} else if (subPop.equals("w")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
-		} else {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
+				screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSMNormal");
+				firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSMUniform");
+		} 
+
+		//Parameters params = RunEnvironment.getInstance().getParameters();
+		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
+		
+		List screenings = new ArrayList<Integer>();
+		screenings.add(firstValueDist.nextInt());
+		
+		//while the last value is still less than 1300
+		while ((int) screenings.get(screenings.size()-1) < endTime) {
+			//draw a new interval value from distribution
+			int newInterval = screenIntervalDist.nextInt();
+			//add that interval to the last value
+			int newValue = newInterval + (int) screenings.get(screenings.size()-1);
+			//add this new value to the list
+			screenings.add(newValue);
+			
 		}
+		
+		return screenings;
+	}
+	
+	public List<Integer> makeHighScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
+		Normal screenIntervalDist = null;
+		Uniform firstValueDist = null;
+		
+		if (subPop.equals("msm")) {
+				screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSMHigh");
+				firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSMHigh");
+		} 
 
 		//Parameters params = RunEnvironment.getInstance().getParameters();
 		double endTime = 1560; //need to set to max, or else slight var between sweep and cal

@@ -23,6 +23,7 @@ public class Population {
 	public List <Indiv> lowActivityGroup;
 	
 	
+	
 	public Population(Parameters parameters, int IndivCount, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		indivs = new ArrayList<Indiv>();
 		
@@ -35,12 +36,12 @@ public class Population {
 		
 		for ( int i = 0; i < countHighActivity; i ++) {
 			//initialize as susceptible, to start
-			indivs.add(new Indiv(parameters, subPop, "high", randomHelper, observer, schedule));
+			indivs.add(new Indiv(parameters, subPop, "high", "high", randomHelper, observer, schedule));
 		}
 		
 		for ( int i = 0; i < countLowActivity; i ++) {
 			//initialize as susceptible, to start
-			indivs.add(new Indiv(parameters, subPop, "low", randomHelper, observer, schedule));
+			indivs.add(new Indiv(parameters, subPop, "low", "low", randomHelper, observer, schedule));
 		}
 		
 		msmList = msm();
@@ -95,23 +96,25 @@ public class Population {
 		return highRiskGroup;
 	}
 	
+	
+
 
 	public Stream<Indiv> lowActivityGroupStream(){
 		return lowActivityGroup.stream().unordered();
 	}
+
 
 	public int lowRiskCount() {
 		return lowActivityGroup.size();
 	}
 
 
-	public Stream <Indiv> highRiskGroupStream(){
+	public Stream <Indiv> highActivityGroupStream(){
 		
 		
 		return highActivityGroup.stream().unordered();
 	}
 	
-
 	public int highRiskCount() {
 		return highActivityGroup.size();
 	}

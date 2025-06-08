@@ -29,7 +29,9 @@ public class Indiv {
 	private int state;
 	//private boolean abstaining;
 	private Infection infection;
-	private List<Integer> screenings;
+	private List<Integer> lowScreenings;
+	private List<Integer> highScreenings;
+	
 	private boolean seekCareScheduled;
 	private boolean inTreatment;
 	//private int timeInfected;
@@ -67,11 +69,12 @@ public class Indiv {
 		this.schedule = schedule;
 		
 		Screener screenScheduler = new Screener();
-		this.screenings = screenScheduler.makeScreenSchedule(randomHelper, subPop);
+		this.lowScreenings = screenScheduler.makeLowScreenSchedule(randomHelper, subPop);
+		this.highScreenings = screenScheduler.makeHighScreenSchedule(randomHelper, subPop);
 	}
 	 
 	//this is the version that is actually getting used currently
-	public Indiv(Parameters allParameters, String subPop, String activityGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Indiv(Parameters allParameters, String subPop, String activityGroup, String screeningGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
 		this.subPop = subPop;
 
 		if (subPop.startsWith("m")) {
@@ -114,7 +117,9 @@ public class Indiv {
 		this.infection = null;
 		
 		Screener screenScheduler = new Screener();
-		this.screenings = screenScheduler.makeScreenSchedule(randomHelper, subPop);
+		this.lowScreenings = screenScheduler.makeLowScreenSchedule(randomHelper, subPop);
+		this.highScreenings = screenScheduler.makeHighScreenSchedule(randomHelper, subPop);
+	
 	}
 	
 	//for testing, so that gender and genderPref can be prescribed
@@ -145,7 +150,8 @@ public class Indiv {
 
 		
 		Screener screenScheduler = new Screener();
-		this.screenings = screenScheduler.makeScreenSchedule(randomHelper, subPop);
+		this.lowScreenings = screenScheduler.makeLowScreenSchedule(randomHelper, subPop);
+		this.highScreenings = screenScheduler.makeHighScreenSchedule(randomHelper, subPop);
 	}
 
 	public void setPop(Population population) {
@@ -198,6 +204,8 @@ public class Indiv {
 	
 	public void infectiousActions() {
 		int roundedTick = (int) tickNow();
+		
+		List<Integer> screenings = currentScreenings();
 
 		if (this.infectious()) {
 			
@@ -524,7 +532,7 @@ public class Indiv {
 		//this.stopAbstaining();
 	}
 	
-	public void changeRiskGroup() {
+	public void changeActivityGroup() {
 		if (this.activityGroup.equals("low")){
 			this.activityGroup = "high";
 		} else if (this.activityGroup.equals("high")) {
@@ -532,9 +540,7 @@ public class Indiv {
 		}
 	}
 	
-	
-	
-	
+
 	
 	//RECORDER METHODS
 	
@@ -693,10 +699,22 @@ public class Indiv {
 		return this.activityGroup;
 	}
 	
+	
 	public boolean inTreatment() {
 		return this.inTreatment;
 	}
 	
+	
+	public List<Integer> currentScreenings(){
+		List<Integer> screenings;
+		if (activityGroup.equals("low")){
+			screenings = lowScreenings;
+		} else {
+			screenings = highScreenings;
+		}
+		
+		return (screenings);
+	}
 	
 }
 

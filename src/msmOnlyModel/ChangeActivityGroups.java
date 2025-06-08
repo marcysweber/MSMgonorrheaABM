@@ -18,7 +18,7 @@ public class ChangeActivityGroups {
 		this.randomHelper = randomHelper;
 		this.schedule = schedule;
 		this.population = population;
-		this.propDist = (Normal) randomHelper.getDistribution("riskGroupTransferPropNormal");
+		this.propDist = (Normal) randomHelper.getDistribution("activityGroupTransferPropNormal");
 	}
 	
 	public void changeActivityGroups() {
@@ -43,15 +43,16 @@ public class ChangeActivityGroups {
 		long numberToTransferHigh = Math.round(numberToTransfer / 2);
 		//System.out.println("Transfering " + numberToTransferHigh + " from high to low.");
 
-		Stream <Indiv> highToTransfer = population.highRiskGroupStream().limit(numberToTransferHigh);
+		Stream <Indiv> highToTransfer = population.highActivityGroupStream().limit(numberToTransferHigh);
 				
-		Stream.concat(lowToTransfer, highToTransfer).forEach(indiv -> indiv.changeRiskGroup());
+		Stream.concat(lowToTransfer, highToTransfer).forEach(indiv -> indiv.changeActivityGroup());
 		//System.out.println("New high risk count: " + population.highRiskCount());
 
 		population.updateActivityGroups();
 		
-		
 	}
+	
+	
 	
 	public void setPopulation(Population pop) {
 		this.population = pop;

@@ -47,6 +47,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25, //screenIntervalHigh
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity
@@ -125,6 +126,7 @@ public class RiskGroupTest {
 					1 , //recoveryLambda
 					0.5, //probSymptomatic
 					2, //screenInterval
+					0.25,
 					1, //delaytoseekcare
 					2, //delaytoretreatment
 					1.0,//assortativity
@@ -177,6 +179,7 @@ public class RiskGroupTest {
 					1 , //recoveryLambda
 					0.5, //probSymptomatic
 					2, //screenInterval
+					0.25,
 					1, //delaytoseekcare
 					2, //delaytoretreatment
 					1.0,//assortativity
@@ -202,7 +205,7 @@ public class RiskGroupTest {
 			testRun.observer().setPopulation(testRun.population());
 			testRun.riskGroupChanger().setPopulation(testRun.population());
 
-			System.out.println("RiskGroupTransferProp: " + params.getDouble("risk_group_transfer_prop"));
+			System.out.println("RiskGroupTransferProp: " + params.getDouble("activity_group_transfer_prop"));
 			System.out.println("high: " + testRun.population().highRiskCount());
 			System.out.println("low: " + testRun.population().lowRiskCount());
 			
@@ -235,6 +238,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25,
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity
@@ -294,6 +298,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25,
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity
@@ -321,7 +326,7 @@ public class RiskGroupTest {
 		System.out.println("high: " + testRun.population().highRiskCount());
 		System.out.println("low: " + testRun.population().lowRiskCount());
 				
-		testRun.population().highRiskGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
+		testRun.population().highActivityGroupStream().limit(1).forEach(indiv -> indiv.infectInit());
 		
 		System.out.println("high infected: " + testRun.population().highRiskInfected().count());
 		System.out.println("low infected: " + testRun.population().lowRiskInfected().count());
@@ -356,6 +361,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25,
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity
@@ -415,6 +421,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25,
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				0.0,//assortativity
@@ -475,6 +482,7 @@ public class RiskGroupTest {
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
 				2, //screenInterval
+				0.25,
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				0.5,//assortativity
@@ -519,5 +527,58 @@ public class RiskGroupTest {
 		
 		
 	}
+	
+	@Test 
+	public void testActivityScreening() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(1,//runNumber
+				1000,//endtime
+				1, //seed
+				"combo", //resistance
+				"none", //counterfactual
+				10, //yearX
+				10, //initial infected
+				0.1, //propHighRisk
+				100, //transmission
+				1 , //recoveryLambda
+				0.5, //probSymptomatic
+				2, //screenInterval
+				0.25,
+				1, //delaytoseekcare
+				2, //delaytoretreatment
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
+				0.1,//riskGroupTransmissionRatio
+				25, //amount resistant A
+				10, //being importing B
+				10,//importing B interval
+				95, //sensitivity
+				97,//specificity
+				1, //care cost
+				2,//testcost
+				3,//straintestcost
+				4, //treatmentAcost
+				5, //treatmentBcost
+				6, //treatmentXcost
+				7);//treatmentEcost);
+		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+
+		testRun.testSetUp(52);
+		
+		testRun.createIndivs(100);
+		testRun.observer().setPopulation(testRun.population());
+				
+		
+		System.out.println("low: ");
+		testRun.population().lowActivityGroupStream().limit(1).forEach(indiv -> System.out.println(indiv.currentScreenings()));
+		
+		
+		System.out.println("high: ");
+		testRun.population().highActivityGroupStream().limit(1).forEach(indiv -> System.out.println(indiv.currentScreenings()));
+
+		
+		
+	}
+
 
 }

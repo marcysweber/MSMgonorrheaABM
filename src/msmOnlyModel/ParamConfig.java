@@ -18,7 +18,6 @@ public class ParamConfig {
 	private int initialInfected;
 	
 	private double propHighActivity;
-	private double propHighScreening;
 	
 	private double TransmissionMSM;
 
@@ -29,7 +28,7 @@ public class ParamConfig {
 
 	
 	private double ScreenIntervalMSM;
-	
+	private double ScreenIntervalMSMHigh;
 	
 	private double delayToSeekCareMSM;
 	
@@ -64,13 +63,13 @@ public class ParamConfig {
 			int yearX,
 			int initialInfected,
 			double propHighActivity,
-			double propHighScreening,
 			double TransmissionMSM, 
 		
 			double RecoveryLambda, 
 			double ProbSymptomaticMSM, 
 
 			double ScreenIntervalMSM,
+			double ScreenIntervalMSMHigh,
 		
 			double delayToSeekCareMSM,
 
@@ -100,13 +99,13 @@ public class ParamConfig {
 		this.yearX = yearX;
 		this.initialInfected = initialInfected;
 		this.propHighActivity = propHighActivity;
-		this.propHighScreening = propHighScreening;
 		this.TransmissionMSM = TransmissionMSM;
 
 		this.RecoveryLambda = RecoveryLambda;
 		this.ProbSymptomaticMSM = ProbSymptomaticMSM;
 	
 		this.ScreenIntervalMSM = ScreenIntervalMSM;
+		this.ScreenIntervalMSMHigh = ScreenIntervalMSMHigh;
 		
 		this.delayToSeekCareMSM = delayToSeekCareMSM;
 		
@@ -160,10 +159,6 @@ public class ParamConfig {
 		return this.propHighActivity;
 	}
 	
-	public double getPropHighScreening() {
-		return this.propHighScreening;
-	}
-	
 	public double getTransmissionMSM() {
 		return this.TransmissionMSM;
 	}
@@ -179,6 +174,12 @@ public class ParamConfig {
 	
 	public double getScreenIntervalMSM() {
 		return this.ScreenIntervalMSM;
+	}
+	
+
+	
+	public double getScreenIntervalMSMHigh() {
+		return this.ScreenIntervalMSMHigh;
 	}
 	
 	public double getDelayToSeekCareMSM() {

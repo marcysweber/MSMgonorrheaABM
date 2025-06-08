@@ -123,7 +123,7 @@ public class CustomFileOutput {
 
 
 					"InitialInfected",
-					"propHighRisk",
+					"propHighActivity",
 
 					"TransmissionMSM",
 
@@ -133,7 +133,8 @@ public class CustomFileOutput {
 					"ProbSymptomaticMSM",
 
 
-					"ScreenIntervalMSM",
+					"ScreenIntervalMSMLow",
+					"ScreenIntervalMSMHigh",
 
 
 
@@ -142,8 +143,8 @@ public class CustomFileOutput {
 					"DelayToRetreatmentMSM",
 
 					"Assortativity",
-					"riskGroupTransferProp",
-					"riskGroupTransmissionRatio",
+					"activityGroupTransferProp",
+					"activityGroupTransmissionRatio",
 
 					"PercentResistantA",
 					"BeginImportingB",
@@ -277,6 +278,8 @@ public class CustomFileOutput {
 			double ProbSymptomaticMSM,
 
 			double ScreenIntervalMSM,
+			double ScreenIntervalMSMHigh,
+
 
 
 			double delayToSeekCareMSM,
@@ -399,6 +402,7 @@ public class CustomFileOutput {
 						String.valueOf(ProbSymptomaticMSM),
 
 						String.valueOf(ScreenIntervalMSM),
+						String.valueOf(ScreenIntervalMSMHigh),
 
 						String.valueOf(delayToSeekCareMSM),
 
