@@ -75,9 +75,9 @@ public class Main {
 			
 			executeCounterfactualScenarios(scenariofile);
 
-			executeSensitivityAnalysisBatch(scenariofile);			
+			//executeSensitivityAnalysisBatch(scenariofile);			
 			
-			executeSensitivityAnalysisBatchnoDST(scenariofile);			
+			//executeSensitivityAnalysisBatchnoDST(scenariofile);			
 
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -99,7 +99,9 @@ public class Main {
 		
 		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_45_45_10");
+		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_50_50_00");
+
+		//batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_45_45_10");
 
 		System.out.println("completed all counterfactual scenarios!");
 
@@ -114,7 +116,7 @@ public class Main {
 	public static void executeCalibratedNoResistanceBatch(File scenario) {
 		BatchRun batchRunner = new BatchRun("none", "none");
 
-		batchRunner.executeCalibratedBatch(scenario, "none", "none", 25, 5, 80, 80, 50, 0.45, 0.45, 0.10);
+		batchRunner.executeCalibratedBatch(scenario, "none", "none", 25, 5, 80, 80, 50, 0.5, 0.5, 0.00);
 
 	}
 	

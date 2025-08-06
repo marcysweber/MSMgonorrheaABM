@@ -44,7 +44,7 @@ public class CustomParameterSweep {
 	
 	public List<Double> getPropHighActivityValues(int samples){
 		double min = 0.05;
-		double max = 0.35;
+		double max = 0.25;
 		int seed = (int) System.currentTimeMillis() + 25;
 		return getUniformSweepValues(seed, samples, min, max);
 	}
@@ -53,7 +53,7 @@ public class CustomParameterSweep {
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
-		double annualContactsMin = 3.5;
+		double annualContactsMin = 0.1;
 		double annualContactsMax = 20;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
@@ -72,17 +72,19 @@ public class CustomParameterSweep {
 	
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.25;
+		double probSymptomaticMin = 0.05;
+		double probSymptomaticMax = 0.4;
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
 		
 	
 	//screen interval parameters
-	public List<Double> getScreenIntervalMSMValues(int samples){
-		double screenIntervalMin = 0.75;
-		double screenIntervalMax = 3.0;
+	public List<Double> getScreenIntervalMSMRatioValues(int samples){
+		//the high activity screening interval is multiplied by this value
+		//to produce the low activity screening interval
+		double screenIntervalMin = 1.0;
+		double screenIntervalMax = 10.0;
 		int seed = (int) System.currentTimeMillis() + 9;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
@@ -90,11 +92,13 @@ public class CustomParameterSweep {
 
 	//screen interval parameters
 	public List<Double> getScreenIntervalMSMHighValues(int samples){
-		double screenIntervalMin = 0.2;
-		double screenIntervalMax = 0.5;
+		double screenIntervalMin = 0.1;
+		double screenIntervalMax = 1.5;
 		int seed = (int) System.currentTimeMillis() + 90;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
+	
+	
 	
 	
 	// delay to seek care parameters
@@ -136,7 +140,7 @@ public class CustomParameterSweep {
 	
 	public List<Double> getActivityGroupTransmissionRatioValues(int samples){
 		double RiskGroupTransmissionRatioMin = 0.05;
-		double RiskGroupTransmissionRatioMax = 0.5;
+		double RiskGroupTransmissionRatioMax = 0.75;
 		int seed = (int) System.currentTimeMillis() + 31;
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}
@@ -145,7 +149,7 @@ public class CustomParameterSweep {
 	//resistance parameters
 	public List<Double> getPercentResistantA(int samples){
 		double min = 0.001;
-		double max = 0.02;
+		double max = 0.05;
 		int seed = (int) System.currentTimeMillis() + 18;
 		return getUniformSweepValues(seed, samples, min, max);
 	}

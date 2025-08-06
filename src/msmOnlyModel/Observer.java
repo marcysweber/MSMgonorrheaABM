@@ -258,7 +258,7 @@ public class Observer {
 				this.parameters.getDouble("prob_symptomatic_msm"), 
 		
 						
-				this.parameters.getDouble("screen_interval_MSM"),
+				this.parameters.getDouble("screen_interval_MSM_ratio"),
 				this.parameters.getDouble("screen_interval_MSM_high"),
 				
 

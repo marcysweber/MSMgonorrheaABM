@@ -876,17 +876,17 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
   counter_levels <- c("realistic_combo_45_45_10", "drug_sus_testing_80","test-of-cure_80", "random","GISP")
   counter_labels <- c("MT", "rDST", "TOC", "RT", "GISP")
   
-  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
+  inc <- ggplot(data = allends, aes(x=cumulativeInc/1000000, y = factor(counterfactual, levels = counter_levels))) +
    # geom_point() +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
     labs(
       title = "A.",
       y = "",
-      x="Cumulative incidence over 20 years\nper 100,000 (thousands)"
+      x="Cumulative incidence over 20 years\nper 100,000 (millions)"
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 1500))
+    coord_cartesian(xlim=c(0, 3))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -897,7 +897,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 50))
+    coord_cartesian(xlim=c(0, 100))
   
   x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -908,7 +908,7 @@ new_summary_plot = function(df1, df2, df3, df4, df5){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 7500))
+    coord_cartesian(xlim=c(0, 200000))
   
   
   summary <- ggarrange(inc +
@@ -955,7 +955,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 1500))
+    coord_cartesian(xlim=c(0, 2000))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -966,7 +966,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 50))
+    coord_cartesian(xlim=c(0, 100))
   
   x <- ggplot(data = allends, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -977,7 +977,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 7500))
+    coord_cartesian(xlim=c(0, 50000))
   
   
   summary <- ggarrange(inc +
@@ -3675,7 +3675,7 @@ viz_prev_MSM_cal = function(df, title){
 viz_prev_MSW = function(df, title, yearX){
   df <- df %>% filter(tick > 260)
   prev <- ggplot(data = df, aes(x = tick / 52, group = RunNumber)) + 
-    geom_line(aes(y = prevMSW),size = 0.05, color = "black") +
+    geom_line(aes(y = prevMSW),size = 0.025, color = "black") +
     
     labs(title = title,
          x = "Year",
@@ -4565,17 +4565,30 @@ viz_prob_symptomatic = function(df, n, max, min){
     theme_bw())
 }
 
-viz_screen_interval_low = function(df, n, max, min){
-  unit <- (max-min)/n
+viz_screen_interval_ratio = function(df, n, max, min){
+  unit <- (max-0.2)/n
   return(ggplot(df) + 
-    geom_histogram(aes(x = ScreenIntervalMSMLow), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "ScreenIntervalMSMLow",
+    geom_histogram(aes(x = ScreenIntervalMSMRatio), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = 0.2) +
+    labs(x = "ScreenIntervalMSMRatio",
          y = "Count", 
-         title = "F.") +
-    scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
+         title = "L.") +
+    scale_x_continuous(breaks = seq(0.2,max,unit), labels = seq(0.2,max, unit))+
     geom_vline(xintercept=min, linetype="dashed")+
     geom_vline(xintercept=max, linetype="dashed")+
     theme_bw())
+}
+
+viz_screen_interval_high = function(df, n, max, min){
+  unit <- (max-min)/n
+  return(ggplot(df) + 
+           geom_histogram(aes(x = ScreenIntervalMSMHigh), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
+           labs(x = "ScreenIntervalMSMHigh",
+                y = "Count", 
+                title = "M.") +
+           scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
+           geom_vline(xintercept=min, linetype="dashed")+
+           geom_vline(xintercept=max, linetype="dashed")+
+           theme_bw())
 }
 
 viz_delay_care = function(df, n, max, min){
@@ -4597,15 +4610,14 @@ visualize_parameters = function(df){
  a <- viz_initial_infected(df, 4, 5500, 4000)
   
   #propHighRisk
-  b <- viz_prop_high_risk(df, 4, 0.35, 0.05)
+  b <- viz_prop_high_risk(df, 4, 0.25, 0.05)
   
-  c <- viz_transmission(df, 4, 20, 3.5)
+  c <- viz_transmission(df, 4, 20, 0)
 
  d <- viz_recovery_time(df, 4, 20, 2.5)
     
-  e <- viz_prob_symptomatic(df, 4, 0.25, 0.1)
+  e <- viz_prob_symptomatic(df, 4, 0.4, 0.05)
 
- f <- viz_screen_interval_low(df, 5, 3, 0.75)
   
  g <- viz_delay_care(df,4, 0.02307692, 0.005479452)
   
@@ -4654,7 +4666,7 @@ visualize_parameters = function(df){
   
   
   #riskGroupTransmissionRatio
-  max<-0.5
+  max<-0.75
   min <- 0.05
   unit <- (max-min)/n
   k<-ggplot(df) + 
@@ -4686,8 +4698,13 @@ visualize_parameters = function(df){
     xlim(0.9, 1.0)+ 
     theme_bw()
   
+  f <- viz_screen_interval_ratio(df, 5, 10, 1)
   
-    return(multiplot(a,b,c,d,e,f,g,h,i, j, k, l, m, cols = 3))
+  n <- viz_screen_interval_high(df, 5, 1.0, 0.1)
+  
+  
+  
+    return(multiplot(a,b,c,d,e,g,h,i, j, k, f, n, cols = 3))
 }
 
 visualize_six_panel = function(df){
@@ -4822,19 +4839,21 @@ return(gg)
 }
 
 new_figure_four_noDST = function(df1, df2, df3, df4, yearX){
+  Eylim <- 20000
+  
   a <- viz_inc(df1, "A. GISP", yearX) + theme(axis.title.x = element_blank())
   e<-viz_detected_resist_A(df1, "E.", yearX)+ theme(axis.title.x = element_blank()) 
   i<-viz_detected_resist_B(df1, "I.", yearX)+ theme(axis.title.x = element_blank())
   m<-viz_detected_resist_both(df1, "M.", yearX)+ theme(axis.title.x = element_blank())
   q<-viz_all_failed(df1, "Q.", yearX)+ theme(axis.title.x = element_blank())
-  u<-viz_E(df1, "U.", yearX, 9000)
+  u<-viz_E(df1, "U.", yearX, Eylim)
   
   b<- viz_inc(df2, "B. RT", yearX) + theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank())
   f<-viz_detected_resist_A(df2, "F.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
   j<-viz_detected_resist_B(df2, "J.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.x = element_blank())
   n<-viz_detected_resist_both(df2, "N.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
   r<-viz_all_failed(df2, "R.", yearX)+ theme(axis.title.y = element_blank(), axis.text.y = element_blank(),  axis.ticks.y = element_blank(),axis.title.x = element_blank())
-  v<-viz_E(df2, "V.", yearX, 9000)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
+  v<-viz_E(df2, "V.", yearX, Eylim)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
   
   
   c<-viz_inc(df3, "C. TOC", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
@@ -4842,14 +4861,14 @@ new_figure_four_noDST = function(df1, df2, df3, df4, yearX){
   k<-viz_detected_resist_B(df3, "K.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
   o<-viz_detected_resist_both(df3, "O.", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.x = element_blank())
   s<-viz_all_failed(df3, "S.", yearX)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank(), axis.title.x = element_blank())
-  w<-viz_E(df3, "W.", yearX, 9000)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
+  w<-viz_E(df3, "W.", yearX, Eylim)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank())
   
   d<-viz_inc(df4, "D. Combo", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
   h<-viz_detected_resist_A(df4, "H.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
   l<-viz_detected_resist_B(df4, "L.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
   p<-viz_detected_resist_both(df4, "P.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
   t<-viz_all_failed(df4, "T.", yearX)+ theme(axis.title.y = element_blank(),  axis.ticks.y = element_blank(),axis.text.y = element_blank(), axis.title.x = element_blank())
-  x<-viz_E(df4, "X.", yearX, 9000)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank())
+  x<-viz_E(df4, "X.", yearX, Eylim)+ theme(axis.title.y = element_blank(), axis.ticks.y = element_blank(), axis.text.y = element_blank())
   
   
   
@@ -5908,7 +5927,7 @@ write_calibrated = function(df, path){
   resampleRecoveryLambda <- df$NaturalRecoveryTime
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
  
-  resampleScreenIntervalMSMLow <- df$ScreenIntervalMSMLow
+  resampleScreenIntervalMSMRatio <- df$ScreenIntervalMSMRatio
   resampleScreenIntervalMSMHigh <- df$ScreenIntervalMSMHigh
   
   resampleAssortativity <- df$Assortativity
@@ -5935,16 +5954,16 @@ write_calibrated = function(df, path){
   
   fwrite(list(resampleSeed), file = paste(path, "seed_resample.txt", sep=""))
   fwrite(list(resampleInitialInfected), file = paste(path, "initial_infected_resample.txt", sep=""))
-  fwrite(list(resamplePropHighRisk), file = paste(path, "propHighActivity_resample.txt", sep=""))
+  fwrite(list(resamplePropHighActivity), file = paste(path, "propHighActivity_resample.txt", sep=""))
   fwrite(list(resampleTransmissionMSM), file = paste(path, "transmissionMSM_resample.txt", sep=""))
   fwrite(list(resampleRecoveryLambda), file = paste(path, "recovery_lambda_resample.txt", sep=""))
   fwrite(list(resampleProbSymptomaticMSM), file = paste(path, "prob_symptomatic_MSM_resample.txt", sep=""))
-  fwrite(list(resampleScreenIntervalMSMLow), file = paste(path, "screen_interval_MSM_low_resample.txt", sep=""))
+  fwrite(list(resampleScreenIntervalMSMRatio), file = paste(path, "screen_interval_MSM_ratio_resample.txt", sep=""))
   fwrite(list(resampleScreenIntervalMSMHigh), file = paste(path, "screen_interval_MSM_high_resample.txt", sep=""))
   fwrite(list(resampleDelayToSeekCareMSM), file = paste(path, "delay_to_seek_care_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToRetreatmentMSM), file = paste(path, "delay_to_retreatment_MSM_resample.txt", sep=""))
-  fwrite(list(resampleRiskGroupTransferProp), file = paste(path, "risk_group_transfer_prop_resample.txt", sep=""))
-  fwrite(list(resampleRiskGroupTransmissionRatio), file = paste(path, "risk_group_transmission_ratio_resample.txt", sep=""))
+  fwrite(list(resampleActivityGroupTransferProp), file = paste(path, "risk_group_transfer_prop_resample.txt", sep=""))
+  fwrite(list(resampleActivityGroupTransmissionRatio), file = paste(path, "risk_group_transmission_ratio_resample.txt", sep=""))
   fwrite(list(resampleAssortativity), file = paste(path, "assortativity_resample.txt", sep=""))
   
   fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
@@ -14105,13 +14124,18 @@ visualize_cea_weighted_real_nort("", df_best_ends,dfreal25, dfGISP25, dfrandom25
 # june 2025, multiple screening intervals
 #######
 
-dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/output_JUNE_4_2025_debug_5_sweep_none/sweepnone0supercombined.csv")
+
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates17july25.csv")
+visualize_parameters(df_best_ends)
+
+
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/JULY_31_2025_overnight_sweep_none/sweepnone0supercombined.csv")
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 df_ends <- calc_weights(dfsweep)
-df_best_ends <- resample(df_ends, 100)
+df_best_ends <- resample(df_ends, 1000)
 
 #save the resample including the replicates
-write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates4june25.csv")
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates31july25.csv")
 
 df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
 colnames(df_best_ends_unique) <- colnames(df_best_ends)
@@ -14128,12 +14152,181 @@ df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
 df_best_traj <- identify(df_best_traj, df_best_ends)
 
 visualize_calibration_MSM(df_best_traj)
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates4june25.csv")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates31july25.csv")
 visualize_parameters(df_best_ends)
 
 write_calibrated(df_best_ends_unique, "/Users/me597/Documents/MSM_calibrated_params/")
 
 
+
+#calibration runs
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/AUG_1_2025_overnight_none_none/nonenone251combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
+
+#figure 2
+visualize_calibration_MSM(dfcalibrated)
+
+
+visualize_calibration_risk_groups(dfcalibrated)
+
+
+directory <- "/Users/me597/Documents/MSMoutput/AUG_1_2025_overnight_all_all/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISPrand_05combo251combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo251combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo251combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfDST25 <-  read.csv(paste(directory,"drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST25 <- identify(dfDST25, df_best_ends)
+
+directoryRC <- "/Users/me597/Documents/MSMoutput/AUG_1_2025_overnight_realistic_combo_combo/"
+dfreal25 <- read.csv(paste(directory,"realistic_combo_50_50_00combo251combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+#figure 3
+summary_plot_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25)
+
+
+#figure 4
+new_figure_four_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25, 25)
+
+#figure 5
+
+visualize_cea_weighted_real_noDST("", df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25)+ 
+  theme(legend.position = "bottom", legend.title = element_blank())
+
+nmb(cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25), "")
+
+
+ceadf_sum <- cea_real_weighted(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST25)
+ceadf_sum$DSTincrementalcost <- ceadf_sum$DSTcumulativeCosts - ceadf_sum$GISPcumulativeCosts
+ceadf_sum$DSTincrementalQALYs <- ceadf_sum$DSTcumulativeQALYs - ceadf_sum$GISPcumulativeQALYs
+
+
+quantile(ceadf_sum$GISPcumulativeCostsAdj/1000000, probs = c(0.025, 0.975))
+quantile(-ceadf_sum$GISPcumulativeQALYsAdj, probs = c(0.025, 0.975))
+
+quantile(ceadf_sum$DSTincrementalcost/1000000, probs = c(0.025, 0.975))
+quantile(-ceadf_sum$DSTincrementalQALYs, probs = c(0.025, 0.975))
+
+
+summary_GISP <- cumulative_everything(dfGISP25)
+summary_random <-cumulative_everything(dfrandom25)
+summary_TOC <-cumulative_everything(dfTOC25)
+summary_DST <-cumulative_everything(dfDST25)
+summary_real <-cumulative_everything(dfreal25)
+
+
+mean(summary_GISP$cumulativeFailure *100)
+quantile(summary_GISP$cumulativeFailure *100, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeFailure*100)
+quantile(summary_random$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeFailure*100)
+quantile(summary_TOC$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeFailure*100)
+quantile(summary_DST$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeFailure*100)
+quantile(summary_real$cumulativeFailure*100, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeE)
+quantile(summary_GISP$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeE)
+quantile(summary_random$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeE)
+quantile(summary_TOC$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeE)
+quantile(summary_DST$cumulativeE, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeE)
+quantile(summary_real$cumulativeE, probs = c(0.025, 0.975))
+
+
+
+
+mean(summary_GISP$cumulativeInc)
+quantile(summary_GISP$cumulativeInc, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeInc)
+quantile(summary_random$cumulativeInc, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeInc)
+quantile(summary_TOC$cumulativeInc, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeInc)
+quantile(summary_real$cumulativeInc, probs = c(0.025, 0.975))
+
+
+
+
+
+mean(summary_GISP$cumulativeResist)
+quantile(summary_GISP$cumulativeResist, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeResist)
+quantile(summary_random$cumulativeResist, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeResist)
+quantile(summary_TOC$cumulativeResist, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeResist)
+quantile(summary_real$cumulativeResist, probs = c(0.025, 0.975))
+
+
+
+mean(summary_GISP$cumulativeCosts) / 1000000
+quantile(summary_GISP$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeCosts) / 1000000
+quantile(summary_random$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+
+
+mean(summary_TOC$cumulativeCosts)/ 1000000
+quantile(summary_TOC$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+
+
+mean(summary_real$cumulativeCosts)/ 1000000
+quantile(summary_real$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+
+
+mean(summary_GISP$cumulativeQALYs)
+quantile(summary_GISP$cumulativeQALYs, probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeQALYs)
+quantile(summary_random$cumulativeQALYs, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeQALYs)
+quantile(summary_TOC$cumulativeQALYs, probs = c(0.025, 0.975))
+
+
+mean(summary_real$cumulativeQALYs)
+quantile(summary_real$cumulativeQALYs, probs = c(0.025, 0.975))
+
+
+
+mean(summary_GISP$cumulativeQALYs / (summary_GISP$cumulativeCosts/1000000))
+quantile(summary_GISP$cumulativeQALYs / (summary_GISP$cumulativeCosts/1000000), probs = c(0.025, 0.975))
+
+mean(summary_random$cumulativeQALYs / (summary_random$cumulativeCosts/1000000))
+quantile(summary_random$cumulativeQALYs / (summary_random$cumulativeCosts/1000000), probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeQALYs / (summary_TOC$cumulativeCosts/1000000))
+quantile(summary_TOC$cumulativeQALYs / (summary_TOC$cumulativeCosts/1000000), probs = c(0.025, 0.975))
+
+mean(summary_DST$cumulativeQALYs / (summary_DST$cumulativeCosts/1000000))
+quantile(summary_DST$cumulativeQALYs / (summary_DST$cumulativeCosts/1000000), probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeQALYs / (summary_real$cumulativeCosts/1000000))
+quantile(summary_real$cumulativeQALYs / (summary_real$cumulativeCosts/1000000), probs = c(0.025, 0.975))
 
 
 

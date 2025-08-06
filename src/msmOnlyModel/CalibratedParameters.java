@@ -119,11 +119,11 @@ public class CalibratedParameters {
 		
 	}
 	
-	public List<Double> getScreenIntervalMSMValues() throws IOException{
+	public List<Double> getScreenIntervalMSMRatioValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_low_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_ratio_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		

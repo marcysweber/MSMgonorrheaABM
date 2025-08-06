@@ -143,15 +143,21 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform symptomaticUniform = new Uniform(0.0,1.0, eng);
 			randomHelper.registerDistribution("symptomaticUniform", symptomaticUniform);
 			
-			Normal screenIntervalMSMNormal = new Normal(parameters.getDouble("screen_interval_MSM")*52, 52*parameters.getDouble("screen_interval_MSM")/10, eng);
+			
+			double highActivityScreeningIntWeeks = parameters.getDouble("screen_interval_MSM_high")*52.0;
+			double lowActivityScreeningModifier = parameters.getDouble("screen_interval_MSM_ratio");
+			double lowActivityScreeningIntWeeks = highActivityScreeningIntWeeks * lowActivityScreeningModifier;
+			
+			
+			Normal screenIntervalMSMNormal = new Normal(lowActivityScreeningIntWeeks, lowActivityScreeningIntWeeks/10, eng);
 			randomHelper.registerDistribution("screenIntervalMSMNormal", screenIntervalMSMNormal);
-			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
+			Uniform screenFirstValueMSMUniform = new Uniform(0, lowActivityScreeningIntWeeks, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
 			
 			
-			Normal screenIntervalMSMHigh = new Normal(parameters.getDouble("screen_interval_MSM_high")*52, 52*parameters.getDouble("screen_interval_MSM_high")/10, eng);
+			Normal screenIntervalMSMHigh = new Normal(highActivityScreeningIntWeeks, highActivityScreeningIntWeeks/10, eng);
 			randomHelper.registerDistribution("screenIntervalMSMHigh", screenIntervalMSMHigh);
-			Uniform screenFirstValueMSMHigh = new Uniform(0, parameters.getDouble("screen_interval_MSM_high")*52, eng);
+			Uniform screenFirstValueMSMHigh = new Uniform(0, highActivityScreeningIntWeeks, eng);
 			randomHelper.registerDistribution("screenFirstValueMSMHigh", screenFirstValueMSMHigh);
 			
 			
