@@ -4700,7 +4700,7 @@ visualize_parameters = function(df){
   
   f <- viz_screen_interval_ratio(df, 5, 10, 1)
   
-  n <- viz_screen_interval_high(df, 5, 1.0, 0.1)
+  n <- viz_screen_interval_high(df, 5, 1.5, 0.1)
   
   
   
@@ -14228,9 +14228,6 @@ quantile(summary_random$cumulativeFailure*100, probs = c(0.025, 0.975))
 mean(summary_TOC$cumulativeFailure*100)
 quantile(summary_TOC$cumulativeFailure*100, probs = c(0.025, 0.975))
 
-mean(summary_DST$cumulativeFailure*100)
-quantile(summary_DST$cumulativeFailure*100, probs = c(0.025, 0.975))
-
 mean(summary_real$cumulativeFailure*100)
 quantile(summary_real$cumulativeFailure*100, probs = c(0.025, 0.975))
 
@@ -14243,9 +14240,6 @@ quantile(summary_random$cumulativeE, probs = c(0.025, 0.975))
 
 mean(summary_TOC$cumulativeE)
 quantile(summary_TOC$cumulativeE, probs = c(0.025, 0.975))
-
-mean(summary_DST$cumulativeE)
-quantile(summary_DST$cumulativeE, probs = c(0.025, 0.975))
 
 mean(summary_real$cumulativeE)
 quantile(summary_real$cumulativeE, probs = c(0.025, 0.975))
