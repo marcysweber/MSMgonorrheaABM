@@ -135,7 +135,7 @@ public class CustomParameterSweep {
 	//resistance parameters
 	public List<Double> getPercentResistantA(int samples){
 		double min = 0.001;
-		double max = 0.02;
+		double max = 0.05;
 		int seed = (int) System.currentTimeMillis() + 18;
 		return getUniformSweepValues(seed, samples, min, max);
 	}
