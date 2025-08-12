@@ -92,7 +92,11 @@ public class BatchRun {
 		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
 			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, 31,
+					Stream.of(new ParamConfig(i + 1, 
+							seedValuesList.get(i), 
+							resistance, 
+							counterfactual, 
+							31,
 							initialInfectedValuesList.get(i), 
 							propHighActivityValuesList.get(i),
 							transmissionMSMValuesList.get(i),
@@ -154,7 +158,7 @@ public class BatchRun {
 	
 	public void executeCalibratedBatch(File scenariofile, String counterfactual) {
 		//contains constants for default runs
-		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.45, 0.45, 0.10);
+		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.5, 0.5, 0.0);
 	}
 		
 		
@@ -441,7 +445,7 @@ public class BatchRun {
 	}
 	
 	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime) {
-		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.45, 0.45, 0.10);
+		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.5, 0.5, 0.0);
 	}
 
 	public void eachRun(String batchDirPath, 
@@ -510,7 +514,7 @@ public class BatchRun {
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
-		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.33, 0.33, 0.34,
+		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.5, 0.5, 0.0,
 				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
 	}
@@ -600,7 +604,7 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/MARCH_26_2025_overnight_";
+		String dirname = "/Users/me597/Documents/MSMoutput/AUG_12_2025_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
 

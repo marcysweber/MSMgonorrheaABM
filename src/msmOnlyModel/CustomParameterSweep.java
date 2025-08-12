@@ -126,7 +126,7 @@ public class CustomParameterSweep {
 	
 	public List<Double> getActivityGroupTransmissionRatioValues(int samples){
 		double RiskGroupTransmissionRatioMin = 0.05;
-		double RiskGroupTransmissionRatioMax = 0.5;
+		double RiskGroupTransmissionRatioMax = 0.35;
 		int seed = (int) System.currentTimeMillis() + 31;
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}

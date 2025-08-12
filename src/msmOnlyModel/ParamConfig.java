@@ -18,7 +18,7 @@ public class ParamConfig {
 	private int initialInfected;
 	
 	private double propHighActivity;
-	private double propHighScreening;
+	//private double propHighScreening;
 	
 	private double TransmissionMSM;
 
@@ -64,7 +64,6 @@ public class ParamConfig {
 			int yearX,
 			int initialInfected,
 			double propHighActivity,
-			double propHighScreening,
 			double TransmissionMSM, 
 		
 			double RecoveryLambda, 
@@ -100,7 +99,7 @@ public class ParamConfig {
 		this.yearX = yearX;
 		this.initialInfected = initialInfected;
 		this.propHighActivity = propHighActivity;
-		this.propHighScreening = propHighScreening;
+		//this.propHighScreening = propHighScreening;
 		this.TransmissionMSM = TransmissionMSM;
 
 		this.RecoveryLambda = RecoveryLambda;
@@ -160,9 +159,9 @@ public class ParamConfig {
 		return this.propHighActivity;
 	}
 	
-	public double getPropHighScreening() {
-		return this.propHighScreening;
-	}
+	//public double getPropHighScreening() {
+	//	return this.propHighScreening;
+	//}
 	
 	public double getTransmissionMSM() {
 		return this.TransmissionMSM;

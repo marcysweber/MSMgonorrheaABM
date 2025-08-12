@@ -5898,7 +5898,7 @@ write_calibrated = function(df, path){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
-  resamplePropHighRisk <- df$propHighRisk
+  resamplePropHighActivity <- df$propHighRisk
   resampleTransmissionMSM <- df$TransmissionMSM
  
   resampleRecoveryLambda <- df$NaturalRecoveryTime
@@ -5911,8 +5911,8 @@ write_calibrated = function(df, path){
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
  
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-  resampleRiskGroupTransferProp <- df$riskGroupTransferProp
-  resampleRiskGroupTransmissionRatio <- df$riskGroupTransmissionRatio
+  resampleActivityGroupTransferProp <- df$riskGroupTransferProp
+  resampleActivityGroupTransmissionRatio <- df$riskGroupTransmissionRatio
    
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
@@ -5930,15 +5930,15 @@ write_calibrated = function(df, path){
   
   fwrite(list(resampleSeed), file = paste(path, "seed_resample.txt", sep=""))
   fwrite(list(resampleInitialInfected), file = paste(path, "initial_infected_resample.txt", sep=""))
-  fwrite(list(resamplePropHighRisk), file = paste(path, "propHighRisk_resample.txt", sep=""))
+  fwrite(list(resamplePropHighActivity), file = paste(path, "propHighActivity_resample.txt", sep=""))
   fwrite(list(resampleTransmissionMSM), file = paste(path, "transmissionMSM_resample.txt", sep=""))
   fwrite(list(resampleRecoveryLambda), file = paste(path, "recovery_lambda_resample.txt", sep=""))
   fwrite(list(resampleProbSymptomaticMSM), file = paste(path, "prob_symptomatic_MSM_resample.txt", sep=""))
   fwrite(list(resampleScreenIntervalMSM), file = paste(path, "screen_interval_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToSeekCareMSM), file = paste(path, "delay_to_seek_care_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToRetreatmentMSM), file = paste(path, "delay_to_retreatment_MSM_resample.txt", sep=""))
-  fwrite(list(resampleRiskGroupTransferProp), file = paste(path, "risk_group_transfer_prop_resample.txt", sep=""))
-  fwrite(list(resampleRiskGroupTransmissionRatio), file = paste(path, "risk_group_transmission_ratio_resample.txt", sep=""))
+  fwrite(list(resampleActivityGroupTransferProp), file = paste(path, "activity_group_transfer_prop_resample.txt", sep=""))
+  fwrite(list(resampleActivityGroupTransmissionRatio), file = paste(path, "activity_group_transmission_ratio_resample.txt", sep=""))
   fwrite(list(resampleAssortativity), file = paste(path, "assortativity_resample.txt", sep=""))
   
   fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
@@ -14075,13 +14075,13 @@ visualize_cea_weighted_real_nort("", df_best_ends,dfreal25, dfGISP25, dfrandom25
 ###############
 
 #parameter sweep
-dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/AUG_8_2025_overnight_sweep_none/sweepnone0supercombined.csv")
+dfsweep <- read.csv("/Users/me597/Documents/MSMoutput/AUG_11_2025_overnight_sweep_none/sweepnone0supercombined.csv")
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 df_ends <- calc_weights(dfsweep)
 df_best_ends <- resample(df_ends, 1000)
 
 #save the resample including the replicates
-write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates8aug25.csv")
+write.csv(df_best_ends, file = "/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates11aug25.csv")
 
 df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0))
 colnames(df_best_ends_unique) <- colnames(df_best_ends)
@@ -14098,7 +14098,7 @@ df_best_traj <- best_traj(dfsweep,df_best_ends_unique)
 df_best_traj <- identify(df_best_traj, df_best_ends)
 
 visualize_calibration_MSM(df_best_traj)
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates8aug25.csv")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates11aug25.csv")
 visualize_parameters(df_best_ends)
 
 write_calibrated(df_best_ends_unique, "/Users/me597/Documents/MSM_calibrated_params/")

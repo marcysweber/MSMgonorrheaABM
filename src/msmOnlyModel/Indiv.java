@@ -524,7 +524,7 @@ public class Indiv {
 		//this.stopAbstaining();
 	}
 	
-	public void changeRiskGroup() {
+	public void changeActivityGroup() {
 		if (this.activityGroup.equals("low")){
 			this.activityGroup = "high";
 		} else if (this.activityGroup.equals("high")) {

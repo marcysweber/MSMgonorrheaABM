@@ -248,7 +248,7 @@ public class Observer {
 				
 				
 				this.parameters.getInteger("infected_count_init"),
-				this.parameters.getDouble("propHighRisk"),
+				this.parameters.getDouble("propHighActivity"),
 				
 				this.parameters.getDouble("transmissionMSM"),
 				
@@ -267,8 +267,8 @@ public class Observer {
 				this.parameters.getDouble("delay_to_retreatment_msm"),
 				
 				this.parameters.getDouble("assortativity"),
-				this.parameters.getDouble("risk_group_transfer_prop"),
-				this.parameters.getDouble("risk_group_transmission_ratio"),
+				this.parameters.getDouble("activity_group_transfer_prop"),
+				this.parameters.getDouble("activity_group_transmission_ratio"),
 
 
 				this.parameters.getDouble("percent_resistant_A"),

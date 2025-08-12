@@ -123,7 +123,7 @@ public class CustomFileOutput {
 
 
 					"InitialInfected",
-					"propHighRisk",
+					"propHighActivity",
 
 					"TransmissionMSM",
 
@@ -142,8 +142,8 @@ public class CustomFileOutput {
 					"DelayToRetreatmentMSM",
 
 					"Assortativity",
-					"riskGroupTransferProp",
-					"riskGroupTransmissionRatio",
+					"activityGroupTransferProp",
+					"activityGroupTransmissionRatio",
 
 					"PercentResistantA",
 					"BeginImportingB",
