@@ -158,11 +158,11 @@ public class BatchRun {
 	
 	public void executeCalibratedBatch(File scenariofile, String counterfactual) {
 		//contains constants for default runs
-		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.5, 0.5, 0.0);
+		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.5, 0.5, 0.0, 0.0, 0.0);
 	}
 		
 		
-	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST) {
+	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST, double fitnessCostA, double fitnessCostB) {
 		
 
 		
@@ -430,7 +430,7 @@ public class BatchRun {
 
 		comboStream.
 		parallel().
-		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST));
+		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, fitnessCostA, fitnessCostB));
 		System.out.println("completed " + reps + " runs!");
 		
 		
@@ -445,7 +445,7 @@ public class BatchRun {
 	}
 	
 	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime) {
-		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.5, 0.5, 0.0);
+		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.5, 0.5, 0.0, 0.0, 0.0);
 	}
 
 	public void eachRun(String batchDirPath, 
@@ -458,7 +458,7 @@ public class BatchRun {
 			int adhereTOCasympt, 
 			double realisticRandom,
 			double realisticTOC,
-			double realisticDST) {
+			double realisticDST, double fitnessCostA, double fitnessCostB) {
 //		try {
 //			runner.load(scenariofile); // load the repast scenario
 //		} catch (Exception e) {
@@ -480,7 +480,8 @@ public class BatchRun {
 				paramConfig.getPercentResistantA(), paramConfig.getBeginImportingB(),
 				paramConfig.getImportingBInterval(), paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
 				paramConfig.getcareCost(), paramConfig.getTestCost(),
-				paramConfig.getstrainTestCost(), paramConfig.getTreatmentACost(), paramConfig.getTreatmentBCost(), paramConfig.getTreatmentXCost(), paramConfig.getTreatmentECost()));
+				paramConfig.getstrainTestCost(), paramConfig.getTreatmentACost(), paramConfig.getTreatmentBCost(), paramConfig.getTreatmentXCost(), paramConfig.getTreatmentECost(),
+				fitnessCostA, fitnessCostB));
 		
 		thisRun.setUp(endTime);
 		
@@ -513,10 +514,12 @@ public class BatchRun {
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
-			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
+			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
+			double fitnessCostA, double fitnessCostB) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.5, 0.5, 0.0,
 				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
-				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
+				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost,
+				fitnessCostA, fitnessCostB);
 	}
 	
 
@@ -536,7 +539,8 @@ public class BatchRun {
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
 			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
-			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
+			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
+			double fitnessCostA, double fitnessCostB) {
 		DefaultParameters params = new DefaultParameters();
 		params.addParameter("runNumber", "runNumber", int.class, runNumber, false);
 		params.addParameter("randomSeed", "random seed", int.class, 1, false);
@@ -587,6 +591,9 @@ public class BatchRun {
 		params.addParameter("treatment_B_cost", "treatment_B_cost", double.class, treatmentBCost, false);
 		params.addParameter("treatment_X_cost", "treatment_X_cost", double.class, treatmentXCost, false);
 		params.addParameter("treatment_E_cost", "treatment_E_cost", double.class, treatmentECost, false);
+
+		params.addParameter("fitnessCostA", "fitnessCostA", double.class, fitnessCostA, false);
+		params.addParameter("fitnessCostB", "fitnessCostB", double.class, fitnessCostB, false);
 
 		// System.out.println(params.getSchema().parameterNames());
 

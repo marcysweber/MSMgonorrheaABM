@@ -242,6 +242,20 @@ public class Indiv {
 			
 		double weeklyProb = 1 - Math.exp(-transmission * 1/52);
 		
+		double fitnessCost = 0.0;
+		
+		if (infection.resistantToA()) {
+			fitnessCost += allParameters.getDouble("fitnessCostA");
+		}
+		
+		if (infection.resistantToB()) {
+			fitnessCost += allParameters.getDouble("fitnessCostB");
+		}
+		
+		double fitnessProbDec = fitnessCost * weeklyProb;
+		
+		weeklyProb = weeklyProb - fitnessProbDec;
+		
 		if (activityGroup.equals("low")) {
 			weeklyProb = weeklyProb * allParameters.getDouble("activity_group_transmission_ratio");
 		}
