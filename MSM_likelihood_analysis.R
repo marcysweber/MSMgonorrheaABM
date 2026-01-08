@@ -697,6 +697,20 @@ cumulative_E = function(df){
   
 }
 
+cumulative_mutated = function(df){
+  cumulative <- c()
+  runs <- unique(df$uniqueID)
+  
+  for (i in runs){
+    thisRunData <- df %>% filter(uniqueID==i)
+    thisRunCumulative <- sum(thisRunData$DevelopedResistance)
+    cumulative <- c(cumulative, thisRunCumulative)
+  }
+  
+  return(cumulative)
+}
+  
+  
 discountedInc = function(df){
   discountedValues <- c()
   i <- df$tick/52
@@ -840,6 +854,7 @@ cumulative_everything = function(df){
   dfends$cumulativeResist <- cumulative_resist(df)
   dfends$cumulativeFailure <- cumulative_failure(df)
   dfends$cumulativeE <- cumulative_E(df)
+  dfends$cumulativeMutated <- cumulative_mutated(df)
 
   #weight with resampled
   newdf <- dfends
@@ -14246,9 +14261,19 @@ mean(summary_real$AttemptTreatmentsX)
 quantile(summary_real$AttemptTreatmentsX, probs = c(0.025, 0.975))
 
 
-#table 1 row 2- AMR incidence
 
+# for reviewer: mutants
+mean(summary_GISP$cumulativeMutated)
+quantile(summary_GISP$cumulativeMutated, probs = c(0.025, 0.975))
 
+mean(summary_random$cumulativeMutated)
+quantile(summary_random$cumulativeMutated, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeMutated)
+quantile(summary_TOC$cumulativeMutated, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeMutated)
+quantile(summary_real$cumulativeMutated, probs = c(0.025, 0.975))
 
 
 
