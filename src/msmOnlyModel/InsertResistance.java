@@ -186,12 +186,7 @@ public class InsertResistance {
 		double randomValue = developResistanceUniform.nextDouble();
 		
 		double chanceDevelopResistance = 0.0001;
-		
-		if (treatment.contains("A")) {
-			chanceDevelopResistance = params.getDouble("rateDevelopResistanceA");
-		} else if (treatment.contains("B")) {
-			chanceDevelopResistance = params.getDouble("rateDevelopResistanceB");
-		}
+
 		
 		if (treatment.equals("AandB")) {
 			double randomValueA = randomValue;
