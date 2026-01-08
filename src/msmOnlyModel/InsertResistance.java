@@ -44,7 +44,7 @@ public class InsertResistance {
 		if (resistanceMethod.equals("combo")) {
 			this.percentResistantACombo = params.getDouble("percent_resistant_A");
 			this.beginImportingBCombo = params.getInteger("begin_importing_B");
-			this.importingBIntervalCombo = params.getDouble("importing_B_interval");
+			this.importingBIntervalCombo = params.getDouble("importing_B_interval") / 5;
 			this.chanceToDevelopResistance = true;
 			developResistanceUniform = (Uniform) randomHelper.getDistribution("developResistanceUniform");
 

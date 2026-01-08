@@ -71,13 +71,13 @@ public class Main {
 		if (with_calibrated) {
 
 			// to run everything:
-			executeCalibratedNoResistanceBatch(scenariofile);
+			//executeCalibratedNoResistanceBatch(scenariofile);
 			
 			executeCounterfactualScenarios(scenariofile);
 
-			executeSensitivityAnalysisBatch(scenariofile);			
+			//executeSensitivityAnalysisBatch(scenariofile);			
 			
-			executeSensitivityAnalysisBatchnoDST(scenariofile);			
+			//executeSensitivityAnalysisBatchnoDST(scenariofile);			
 
 			
 			//executeCompareResistanceInserters(scenariofile);
@@ -97,7 +97,7 @@ public class Main {
 		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
 		
 		
-		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
+		//batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 		
 		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_50_50_00");
 
