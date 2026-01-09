@@ -73,7 +73,7 @@ public class Main {
 			// to run everything:
 			//executeCalibratedNoResistanceBatch(scenariofile);
 			
-			executeCounterfactualScenarios(scenariofile);
+			//executeCounterfactualScenarios(scenariofile);
 
 			//executeSensitivityAnalysisBatch(scenariofile);			
 			
@@ -82,7 +82,7 @@ public class Main {
 			
 			//executeCompareResistanceInserters(scenariofile);
 //			
-//			
+			executeFitnessCostSA(scenariofile);
 		}
 	}
 
@@ -450,8 +450,69 @@ public class Main {
 	}
 	
 
+public static void executeFitnessCostSA(File scenariofile) {
+	
+	//fitness costs of A and B are equal
+	//no fitness costs
+	fitnessCostCounterfactuals(scenariofile, 0.0, 0.0);
+	
+	//extremely high fitness costs
+	fitnessCostCounterfactuals(scenariofile, 0.5, 0.5);
+
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.25, 0.25);
+	
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.10, 0.10);
 
 
+	//fitness costs of A are higher
+	fitnessCostCounterfactuals(scenariofile, 0.5, 0.25);
+
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.25, 0.1);
+	
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.10, 0.0);
+	
+	
+	//fitness costs of B are higher
+	fitnessCostCounterfactuals(scenariofile, 0.25, 0.5);
+
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.1, 0.25);
+	
+	//
+	fitnessCostCounterfactuals(scenariofile, 0.0, 0.10);
+	
+}
+
+public static void fitnessCostCounterfactuals(File scenariofile, double costA, double costB) {
+	BatchRun batchRunner = new BatchRun("all", "combo");
+
+	int yearX = 25;
+	int switchThres = 5;
+	int availrDST = 80;
+	int adhereTOCsympt = 80;
+	int adhereTOCasympt = 50;
+	
+	double realisticRandom = 0.45;
+	double realisticTOC = 0.45;
+	double realisticDST = 0.10;
+	
+	batchRunner.executeCalibratedBatch(scenariofile, "GISPrand_05", "combo",yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 
+			costA, costB);
+	
+	batchRunner.executeCalibratedBatch(scenariofile, "random", "combo",yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 
+			costA, costB);
+	
+	batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80", "combo", yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 
+			costA, costB);
+	
+	batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_50_50_00", "combo",yearX, switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 
+			costA, costB);
+	
+}
 
 //	public static void setUpOne(MyRunner runner, ParamConfig paramConfig, int endTime) {
 //
