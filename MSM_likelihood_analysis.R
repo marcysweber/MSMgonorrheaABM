@@ -9,6 +9,17 @@ library(egg)
 library(epiR)
 library(patchwork)
 
+save(dfsweep, 
+     df_best_ends, 
+     df_best_ends_unique, 
+     df_best_traj,
+     dfcalibrated, 
+     dfGISP25,
+     dfrandom25,
+     dfTOC25,
+     dfreal25,
+     file = "allFigureData.RData")
+
 #copied from cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
