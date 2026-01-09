@@ -1,8 +1,9 @@
 ---
 title: "Analysis and visualization"
-output: html_document
+output:
+  html_document: default
+  word_document: default
 date: "2026-01-08"
-
 ---
 
 This is an R Markdown document for easy access to and recreation of the figures
@@ -20,6 +21,7 @@ library(egg)
 library(epiR)
 library(patchwork)
 library(knitr)
+library(caret)
 
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
@@ -283,9 +285,115 @@ viz_sympt_MSM_cal = function(df, title){
 
 ```
 
+
 ```{r figure2, echo = FALSE, fig.width=8, fig.height=3}
 visualize_calibration_MSM(dfcalibrated)
 ```
+
+
+
+
+```{r calibrationQuant, echo = FALSE}
+
+df <- df_best_traj %>% filter(tick > 261) #years 6, 7, 8, 9, 10
+
+calculate_calibration_fit <- function(posterior_samples, 
+                                     empirical_point, 
+                                     empirical_ci_lower = NULL, 
+                                     empirical_ci_upper = NULL) {
+  
+  # Posterior summary
+  post_mean <- mean(posterior_samples)
+  post_median <- median(posterior_samples)
+  post_sd <- sd(posterior_samples)
+  post_ci_95 <- quantile(posterior_samples, c(0.025, 0.975))
+  post_ci_50 <- quantile(posterior_samples, c(0.25, 0.75))
+  
+  # Coverage checks
+  in_95ci <- empirical_point >= post_ci_95[1] & empirical_point <= post_ci_95[2]
+  in_50ci <- empirical_point >= post_ci_50[1] & empirical_point <= post_ci_50[2]
+  
+  # Distance metrics
+  abs_error <- abs(empirical_point - post_mean)
+  rel_error <- (abs_error / empirical_point) * 100
+  
+  # Posterior predictive p-value
+  ppp <- mean(posterior_samples >= empirical_point)
+  ppp_centered <- 2 * min(ppp, 1 - ppp)  # two-tailed version
+  
+  # Z-score
+  z_score <- (empirical_point - post_mean) / post_sd
+  
+  # CI overlap (if empirical CI provided)
+  if (!is.null(empirical_ci_lower) & !is.null(empirical_ci_upper)) {
+    overlap_lower <- max(empirical_ci_lower, post_ci_95[1])
+    overlap_upper <- min(empirical_ci_upper, post_ci_95[2])
+    
+    if (overlap_upper > overlap_lower) {
+      overlap_width <- overlap_upper - overlap_lower
+      empirical_width <- empirical_ci_upper - empirical_ci_lower
+      ci_overlap_prop <- overlap_width / empirical_width
+    } else {
+      ci_overlap_prop <- 0
+    }
+  } else {
+    ci_overlap_prop <- NA
+  }
+  
+  
+   # Format posterior CIs as single strings
+  post_ci_95_formatted <- sprintf("(%.2f, %.2f)", post_ci_95[1], post_ci_95[2])
+  post_ci_50_formatted <- sprintf("(%.2f, %.2f)", post_ci_50[1], post_ci_50[2])
+  
+  
+  # Return results
+  results <- data.frame(
+    empirical_point = empirical_point,
+    posterior_mean = post_mean,
+    #posterior_median = post_median,
+    #posterior_sd = post_sd,
+    post_ci_95 = post_ci_95_formatted,
+    post_ci_50 = post_ci_50_formatted,
+    in_95_ci = in_95ci,
+    in_50_ci = in_50ci,
+    abs_error = abs_error,
+    relative_error_pct = rel_error,
+    z_score = z_score,
+    ppp_value = ppp,
+    #ppp_two_tailed = ppp_centered,
+    ci_overlap_proportion = ci_overlap_prop
+  )
+  
+  return(results)
+}
+
+
+calibration_fit_df <- rbind(calculate_calibration_fit(df$Prevalence, 4.5, 3.6, 5.0),
+      calculate_calibration_fit(df$Detected, 6508, 5206, 7809),
+      calculate_calibration_fit(df$DetectedAndSymptoms/df$Detected, 0.679, 0.628, 0.7265)
+)
+
+rownames(calibration_fit_df) <- c("Prevalence", 
+                                  "Detected cases", 
+                                  "Proportion detected cases symptomatic")
+
+colnames(calibration_fit_df) <- c("Calibration Target", 
+                                  "Posterior estimate (mean)", 
+                                  "Posterior 95% CI", 
+                                  "Posterior 50% CI", 
+                                  "Target Within 95% CI?", 
+                                  "Target Within 50% CI?", 
+                                  "Absolute Error",
+                                  "Relative Error (%)",
+                                  "Z-score",
+                                  "Posterior Predictive P-value",
+                                  "95% CI Overlap")
+
+kable(calibration_fit_df, digits = 2)
+```
+
+
+
 
 # Figure 3
 
@@ -1041,9 +1149,71 @@ quantile(summary_real$cumulativeQALYs, probs = c(0.025, 0.975))
 
 
 
-
+Supplement
 
 ```{r setupForSupplement, include = FALSE}
+
+
+```
+
+Validation: results of the partial-rank correlation coefficient (PRCC) analysis
+
+```{r PRCC, echo = FALSE}
+prcc_arrange = function(df, outcome_col){
+  #for PRCC, each outcome needs its own df
+  #the only columns should be parameters for analysis + the one outcome
+  df <- get_ends(df)
+  
+  new_df <- df[,12:34]
+  
+  new_df <- cbind(new_df, df[,outcome_col])
+  
+  return(new_df)
+}
+
+prcc = function(df, outcome_col){
+  epi.prcc(prcc_arrange(df, outcome_col))
+}
+
+prcc_prev = function(df){
+  return(prcc(df, 36))
+}
+
+prcc_inc = function(df){
+  return(prcc(df, 37))}
+
+prcc_sympt = function(df){
+  return(prcc(df, 41))}
+
+prcc_cost = function(df){
+  return(prcc(df, 80))}
+
+prcc_qalys = function(df){
+  return(prcc(df, 81))}
+
+
+prcc_all = function(df){
+  prevalence <- prcc_prev(df)
+  incidence <- prcc_inc(df)
+  symptomprop <- prcc_sympt(df)
+  monetaryCost <- prcc_cost(df)
+  qalys <- prcc_qalys(df)
+  return(list(prevalance=prevalence, incidence=incidence, symptomprop=symptomprop, monetaryCost=monetaryCost, QALYs=qalys))
+}
+
+combineddf <- rbind(dfGISP25, dfrandom25, dfTOC25, dfreal25)
+
+prevalencePRCC <- prcc_prev(combineddf)
+incidencePRCC <- prcc_inc(combineddf)
+symptompropPRCC <- prcc_sympt(combineddf)
+monetaryCostPRCC <- prcc_cost(combineddf)
+qalysPRCC <- prcc_qalys(combineddf)
+
+kable(prevalencePRCC[order(-abs(prevalencePRCC$est)),], caption = "Prevalence PRCC")
+kable(incidencePRCC[order(-abs(incidencePRCC$est)),], caption = "Incidence PRCC")
+kable(symptompropPRCC[order(-abs(symptompropPRCC$est)),], caption = "Symptomatic Proportion PRCC")
+kable(monetaryCostPRCC[order(-abs(monetaryCostPRCC$est)),], caption = "Costs PRCC")
+kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "QALYs PRCC")
 
 
 ```
