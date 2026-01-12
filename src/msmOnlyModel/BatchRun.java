@@ -28,13 +28,26 @@ public class BatchRun {
 	
 	private String counterfactual;
 	private String resistance;
-	private int yearX;
+	private double fitnessA;
+	private double fitnessB;
+
+	public BatchRun(String counterfactual, String resistance, double fitnessA, double fitnessB) {
+		this.counterfactual = counterfactual;
+		this.resistance = resistance;
+		this.fitnessA = fitnessA;
+		this.fitnessB = fitnessB;
+
+		batchNumber = 1;
+		expdir = makeExperimentDir();
+		
+	}
 	
 	public BatchRun(String counterfactual, String resistance) {
 		this.counterfactual = counterfactual;
 		this.resistance = resistance;
-		this.yearX = yearX;
-		
+		this.fitnessA = 0;
+		this.fitnessB = 0;
+
 		batchNumber = 1;
 		expdir = makeExperimentDir();
 		
@@ -170,7 +183,8 @@ public class BatchRun {
 		
 		this.counterfactual=counterfactual;
 		this.resistance=resistance;
-		this.yearX=yearX;
+		this.fitnessA = fitnessCostA;
+		this.fitnessB = fitnessCostB;
 
 		String batchDirPath = makeBatchDir();
 		
@@ -405,34 +419,42 @@ public class BatchRun {
 
 		// puts together sets of parameters
 		List<ParamConfig> lst = new ArrayList<ParamConfig>();
-		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
-			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
-							initialInfectedValuesList.get(i), 
-							propHighActivityValuesList.get(i),
-							transmissionMSMValuesList.get(i),
-							recoveryTimeValuesList.get(i), 
-							probSymptomaticMSMValuesList.get(i),
-							screenIntervalMSMValuesList.get(i), 
-							delayToSeekCareMSMValuesList.get(i),
-							delayToRetreatmentMSMValuesList.get(i), 
-							assortativityValuesList.get(i),
-							activityGroupTransferPropValuesList.get(i),
-							activityGroupTransmissionRatioValuesList.get(i),
-							percentResistantAValuesList.get(i),
-							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
-							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
-							careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
-							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
-							treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i))));
+		    lst.add(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
+		            initialInfectedValuesList.get(i),
+		            propHighActivityValuesList.get(i),
+		            transmissionMSMValuesList.get(i),
+		            recoveryTimeValuesList.get(i),
+		            probSymptomaticMSMValuesList.get(i),
+		            screenIntervalMSMValuesList.get(i),
+		            delayToSeekCareMSMValuesList.get(i),
+		            delayToRetreatmentMSMValuesList.get(i),
+		            assortativityValuesList.get(i),
+		            activityGroupTransferPropValuesList.get(i),
+		            activityGroupTransmissionRatioValuesList.get(i),
+		            percentResistantAValuesList.get(i),
+		            beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+		            DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
+		            careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
+		            treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
+		            treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
 
-		comboStream.
-		parallel().
-		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, fitnessCostA, fitnessCostB));
+		int numThreads = 20; // Set to desired number of threads
+		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
+		try {
+		    customThreadPool.submit(() ->
+		        lst.stream().parallel().forEach(parameterConfiguration -> 
+		            eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, 
+		                    availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, 
+		                    realisticDST, fitnessCostA, fitnessCostB))
+		    ).get();
+		} catch (InterruptedException | ExecutionException e) {
+		    e.printStackTrace();
+		} finally {
+		    customThreadPool.shutdown();
+		}
 		System.out.println("completed " + reps + " runs!");
-		
 		
 		try {
 			combineCSVs(batchDirPath);
@@ -611,7 +633,7 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/Users/me597/Documents/MSMoutput/JAN_9_2026_overnight_";
+		String dirname = "/usr/local/MSMoutput/JAN_12_2026_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
 
@@ -622,9 +644,13 @@ public class BatchRun {
 		
 		dirname += resistance;
 		
-		//dirname += "_";
+		dirname += "_";
 		
-		//dirname += String.valueOf(yearX);
+		dirname += String.valueOf(fitnessA);
+		
+		dirname += "_";
+		
+		dirname += String.valueOf(fitnessB);
 		
 		new File(dirname).mkdir();
 		
@@ -646,7 +672,11 @@ public class BatchRun {
 	
 		dirname += "_";
 		
-		dirname += yearX;
+		dirname += String.valueOf(fitnessA);
+		
+		dirname += "_";
+		
+		dirname += String.valueOf(fitnessB);
 
 		
 		//for debugging large number of files: 
@@ -668,7 +698,7 @@ public class BatchRun {
         }
 
         // Combined CSV file
-        String combinedFile = (expdir + counterfactual + resistance + yearX + batchNumber + "combined.csv");
+        String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + batchNumber + "combined.csv");
        
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
         	boolean headerWritten = false;
@@ -733,7 +763,7 @@ public class BatchRun {
 	        }
 	        
 	        
-	     String combinedFile = (expdir + counterfactual + resistance + yearX + batchNumber + "combinedTPW.csv");
+	     String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + batchNumber + "combinedTPW.csv");
 	     
 	     try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
 
@@ -836,7 +866,7 @@ public class BatchRun {
 	        }
 
 	        // Combined CSV file
-	        String combinedFile = (expdir + counterfactual + resistance + yearX + "supercombined.csv");
+	        String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + "supercombined.csv");
 	       
 	        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
 	        	boolean headerWritten = false;

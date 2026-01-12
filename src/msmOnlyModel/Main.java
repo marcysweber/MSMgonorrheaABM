@@ -488,7 +488,7 @@ public static void executeFitnessCostSA(File scenariofile) {
 }
 
 public static void fitnessCostCounterfactuals(File scenariofile, double costA, double costB) {
-	BatchRun batchRunner = new BatchRun("all", "combo");
+	BatchRun batchRunner = new BatchRun("all", "combo", costA, costB);
 
 	int yearX = 25;
 	int switchThres = 5;

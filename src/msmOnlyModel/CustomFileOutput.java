@@ -226,24 +226,24 @@ public class CustomFileOutput {
 			e.printStackTrace();
 		} 
 		
-		File file2 = new File(outputDir + outputTransmissionFileName);
-		FileWriter outputfile2;
-		
-		try {
-			outputfile2 = new FileWriter(file2, true);
-			CSVWriter writer2 = new CSVWriter(outputfile2); 
-			
-			String[] header2 = { 
-					"CountTransmissions", 
-					"InfectionDuration",
-					"RiskGroup"};
-			writer2.writeNext(header2);
-			writer2.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		File file2 = new File(outputDir + outputTransmissionFileName);
+//		FileWriter outputfile2;
+//		
+//		try {
+//			outputfile2 = new FileWriter(file2, true);
+//			CSVWriter writer2 = new CSVWriter(outputfile2); 
+//			
+//			String[] header2 = { 
+//					"CountTransmissions", 
+//					"InfectionDuration",
+//					"RiskGroup"};
+//			writer2.writeNext(header2);
+//			writer2.close();
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		
 		
 	}
