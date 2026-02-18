@@ -410,7 +410,7 @@ public class Observer {
 	}
 	
 	public void processCompleteInfection(Infection infection) throws Exception {
-		//System.out.println("processing");
+		//System.out.println("processing complete infection");
 		
 		newCases++;
 		newCasesList.add(infection);
@@ -457,6 +457,8 @@ public class Observer {
 			}};
 			
 			int outcomes = finalOutcomes.values().stream().map(a -> a ? 1 : 0).reduce(0, (a,b) -> a+b);
+			
+			System.out.println(outcomes);
 			
 			if (outcomes != 1) {
 				if (outcomes == 0 && !infection.failedTreatment()) {
@@ -950,4 +952,13 @@ public int getCasesEpi() {
 public int getCasesBothSequelae() {
 	return casesBothSequelae;
 }
+
+public int getCasesRecoveredNaturally() {
+	return this.recoveredNaturally;
+}
+
+public int getReinfectedCount() {
+	return this.reInfected;
+}
+
 }

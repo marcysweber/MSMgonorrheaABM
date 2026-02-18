@@ -366,6 +366,10 @@ public void assignSchedule(ThreadSafeSchedule schedule) {
 	this.schedule = schedule; //for testing
 }
 
+public void assignRandomHelper(ThreadSafeRandomHelper randomHelper) {
+	this.randomHelper = randomHelper;
+}
+
 public void assignOutputter(CustomFileOutput outputter) {
 	this.fileOutputter = outputter;
 }

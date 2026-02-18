@@ -219,6 +219,7 @@ public class Indiv {
 				if (attemptContact()) {//stochastic logic gate from annualContacts param
 					infection.recordTransmission();
 					Indiv partner = partnerSelect(); //find a partner
+					//System.out.println(partner);
 					if (this != partner) {//doublecheck that it's not myself
 						if (partner.infectious()) {
 							partner.infect(this.infection.getStrain(), "reinfect");
@@ -241,6 +242,7 @@ public class Indiv {
 		double randomValue = contactUniform.nextDouble();
 			
 		double weeklyProb = 1 - Math.exp(-transmission * 1/52);
+		//System.out.println(weeklyProb);
 		
 		double fitnessCost = 0.0;
 		
@@ -256,10 +258,13 @@ public class Indiv {
 		
 		weeklyProb = weeklyProb - fitnessProbDec;
 		
+		//System.out.println(weeklyProb);
+
 		if (activityGroup.equals("low")) {
 			weeklyProb = weeklyProb * allParameters.getDouble("activity_group_transmission_ratio");
 		}
-		
+		//System.out.println(weeklyProb);
+
 		if (weeklyProb > randomValue) { //50% chance of seeking a contact this timestep
 			result = true;
 		}
@@ -394,6 +399,8 @@ public class Indiv {
 		//this method infects a susceptible partner, 
 		//and schedules them to contact other agents until they recover,
 		//and schedules their recovery
+		
+		//System.out.println("Infecting!");
 		
 		//if (this.state == 0) { //can get infected if sus 
 		double recoveryTime = getRecoveryTime();

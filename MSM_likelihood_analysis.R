@@ -14952,7 +14952,10 @@ multiplot(
   cols = 2
 )
 
+weeklyProb = function(transmission){
+  return(1 - exp(-transmission * 1/52))
+}
 
-
+weeklyProb(300) 
 
 #############
