@@ -633,9 +633,9 @@ public class BatchRun {
 
 		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
-		String dirname = "/usr/local/MSMoutput/JAN_12_2026_overnight_";
+		//String dirname = "/usr/local/MSMoutput/JAN_12_2026_overnight_";
 	
-		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
+		String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 
 		
 		dirname += counterfactual;
@@ -698,7 +698,7 @@ public class BatchRun {
         }
 
         // Combined CSV file
-        String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + batchNumber + "combined.csv");
+        String combinedFile = (expdir + counterfactual + resistance + fitnessA + "_" + fitnessB + "_" + batchNumber + "combined.csv");
        
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
         	boolean headerWritten = false;

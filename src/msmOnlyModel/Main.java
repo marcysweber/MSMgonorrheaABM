@@ -452,38 +452,44 @@ public class Main {
 
 public static void executeFitnessCostSA(File scenariofile) {
 	
-	//fitness costs of A and B are equal
-	//no fitness costs
-	fitnessCostCounterfactuals(scenariofile, 0.0, 0.0);
+//	//fitness costs of A and B are equal
+//	//no fitness costs
+//	fitnessCostCounterfactuals(scenariofile, 0.0, 0.0);
+//	
+//	//extremely high fitness costs
+//	fitnessCostCounterfactuals(scenariofile, 0.5, 0.5);
+//
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.25, 0.25);
+//	
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.10, 0.10);
+//
+//
+//	//fitness costs of A are higher
+//	fitnessCostCounterfactuals(scenariofile, 0.5, 0.25);
+//
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.25, 0.1);
+//	
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.10, 0.0);
+//	
+//	
+//	//fitness costs of B are higher
+//	fitnessCostCounterfactuals(scenariofile, 0.25, 0.5);
+//
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.1, 0.25);
+//	
+//	//
+//	fitnessCostCounterfactuals(scenariofile, 0.0, 0.10);
+//	
 	
-	//extremely high fitness costs
-	fitnessCostCounterfactuals(scenariofile, 0.5, 0.5);
-
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.25, 0.25);
+	//varying between 0 and 10%
 	
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.10, 0.10);
-
-
-	//fitness costs of A are higher
-	fitnessCostCounterfactuals(scenariofile, 0.5, 0.25);
-
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.25, 0.1);
-	
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.10, 0.0);
-	
-	
-	//fitness costs of B are higher
-	fitnessCostCounterfactuals(scenariofile, 0.25, 0.5);
-
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.1, 0.25);
-	
-	//
-	fitnessCostCounterfactuals(scenariofile, 0.0, 0.10);
+	fitnessCostCounterfactuals(scenariofile, 0.05, 0.05);
+	fitnessCostCounterfactuals(scenariofile, 0.025, 0.025);
 	
 }
 

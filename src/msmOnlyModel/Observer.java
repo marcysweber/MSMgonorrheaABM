@@ -458,7 +458,7 @@ public class Observer {
 			
 			int outcomes = finalOutcomes.values().stream().map(a -> a ? 1 : 0).reduce(0, (a,b) -> a+b);
 			
-			System.out.println(outcomes);
+			//System.out.println(outcomes);
 			
 			if (outcomes != 1) {
 				if (outcomes == 0 && !infection.failedTreatment()) {
