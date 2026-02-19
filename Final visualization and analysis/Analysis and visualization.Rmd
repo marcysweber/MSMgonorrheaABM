@@ -1262,6 +1262,52 @@ for (cost_value in fitness_costs) {
            envir = .GlobalEnv)
   }
 }
+
+  fitness_costs <- c("0.01_0.01", "0.025_0.025")  
+for (cost_value in fitness_costs) {
+  #cost_code <- str_replace_all(cost_value, "_", "")
+  
+  dir_path <- paste0(fitnesspath, "FEBRUARY_19_2026_overnight_all_combo_", cost_value, "/")
+  
+  for (strat_name in names(strategies)) {
+    strat_prefix <- strategies[[strat_name]]
+    
+    # Build filename
+    filename <- paste0(strat_prefix, "combo", cost_value, "_1combined.csv")
+    filepath <- paste0(dir_path, filename)
+    
+    # Create dataframe name (using cost_value directly)
+    df_name <- paste0("df", strat_name, "fitnessCost", cost_value)
+    
+    # Read and assign to global environment
+    assign(df_name, 
+           identify(read.csv(filepath), df_best_ends),
+           envir = .GlobalEnv)
+  }
+  
+}
+  setwd("/Users/me591666/Documents/GitHub/MSMgonorrheaABM/Final visualization and analysis/")
+  save(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0,
+       dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01,
+       dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025,
+        dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05,
+
+       dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1,
+       dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25,
+       dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5,
+       
+       dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0,
+       dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1,
+       dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25,
+       dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1,
+       dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25,
+       dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5,
+       
+       
+    file = "fitnessCostData.RData")
+  
+load("fitnessCostData.RData")
+  
 ```
 
 ```{r fitnessfunctions, echo=FALSE}
@@ -1371,63 +1417,93 @@ nmb_noDST = function(cea_df, title){
 
 ```{r fitnessCostSA, echo = FALSE, warnings=FALSE, message=FALSE}
 
+# 
+# summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
+# summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
+# summary_plot_noDST(dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25)
+# summary_plot_noDST(dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5)
+# 
+# 
+# new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
+# 
+# 
+# 
+# multiplot(
+#   
+#   visualize_cea_weighted_real_noDST("A. Fitness costs 0.0-0.0", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+#   visualize_cea_weighted_real_noDST("C. Fitness costs 0.1-0.1", df_best_ends,dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+#   visualize_cea_weighted_real_noDST("E. Fitness costs 0.25-0.25", df_best_ends,dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
+#   
+#   visualize_cea_weighted_real_noDST("G. Fitness costs 0.5-0.5",df_best_ends, dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#    
+#   
+# 
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#     nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "B.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25), "D.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5), "F.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#  
+# 
+#   cols = 2
+# )
+# 
+# multiplot(
+# visualize_cea_weighted_real_noDST("H. Fitness costs 0.1-0.0 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+#   visualize_cea_weighted_real_noDST("J. Fitness costs 0.25-0.1 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+#   visualize_cea_weighted_real_noDST("L. Fitness costs 0.5-0.25 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
+#   
+#   visualize_cea_weighted_real_noDST("N. Fitness costs 0.0-0.1 (higher cost for resistance to B)",df_best_ends, dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+#    visualize_cea_weighted_real_noDST("P. Fitness costs 0.1-0.25 (higher cost for resistance to B)", df_best_ends,dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#  
+#   visualize_cea_weighted_real_noDST("R. Fitness costs 0.25-0.5 (higher cost for resistance to B)", df_best_ends,dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+#   
+# 
+#  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0), "I.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#     nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1), "K.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+# 
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25), "M.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1), "O.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#     nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25), "Q.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+#   nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5), "S.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+# 
+# 
+#     cols = 2
+# )
+# 
+
+
 
 summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
-summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
-summary_plot_noDST(dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25)
-summary_plot_noDST(dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5)
+summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)
+summary_plot_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)
 
-
-new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
-
+new_figure_four_noDST(dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0, dfrealfitnessCost0.0_0.0, 25)
+new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025, dfrealfitnessCost0.025_0.025, 25)
+new_figure_four_noDST(dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01, dfrealfitnessCost0.01_0.01, 25)
 
 
 multiplot(
   
   visualize_cea_weighted_real_noDST("A. Fitness costs 0.0-0.0", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+ 
+  visualize_cea_weighted_real_noDST("C. Fitness costs 0.025-0.025", df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
   
-  visualize_cea_weighted_real_noDST("C. Fitness costs 0.1-0.1", df_best_ends,dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
-  
-  visualize_cea_weighted_real_noDST("E. Fitness costs 0.25-0.25", df_best_ends,dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
-  
-  visualize_cea_weighted_real_noDST("G. Fitness costs 0.5-0.5",df_best_ends, dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+  visualize_cea_weighted_real_noDST("E. Fitness costs 0.01-0.01",df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
    
   
 
   nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-    nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "B.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25), "D.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5), "F.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025), "D.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01), "F.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
  
 
   cols = 2
 )
-
-multiplot(
-visualize_cea_weighted_real_noDST("H. Fitness costs 0.1-0.0 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
-  
-  visualize_cea_weighted_real_noDST("J. Fitness costs 0.25-0.1 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
-  
-  visualize_cea_weighted_real_noDST("L. Fitness costs 0.5-0.25 (higher cost for resistance to A)", df_best_ends,dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
-  
-  visualize_cea_weighted_real_noDST("N. Fitness costs 0.0-0.1 (higher cost for resistance to B)",df_best_ends, dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
-  
-   visualize_cea_weighted_real_noDST("P. Fitness costs 0.1-0.25 (higher cost for resistance to B)", df_best_ends,dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
- 
-  visualize_cea_weighted_real_noDST("R. Fitness costs 0.25-0.5 (higher cost for resistance to B)", df_best_ends,dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
-  
-
- nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0), "I.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-    nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1), "K.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25), "M.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1), "O.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-    nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25), "Q.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5), "S.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-
-
-    cols = 2
-)
-
 
 ```

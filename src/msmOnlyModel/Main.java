@@ -488,8 +488,12 @@ public static void executeFitnessCostSA(File scenariofile) {
 	
 	//varying between 0 and 10%
 	
-	fitnessCostCounterfactuals(scenariofile, 0.05, 0.05);
-	fitnessCostCounterfactuals(scenariofile, 0.025, 0.025);
+	//fitnessCostCounterfactuals(scenariofile, 0.05, 0.05);
+	//fitnessCostCounterfactuals(scenariofile, 0.025, 0.025);
+	
+	fitnessCostCounterfactuals(scenariofile, 0.01, 0.01);
+
+	
 	
 }
 
