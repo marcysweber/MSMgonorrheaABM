@@ -84,10 +84,6 @@ public class FitnessCostsTest {
 		observer.setPopulation(testRun.population());
 		
 		
-		
-		
-		
-		
 		int infections = popsize/10; //10% seeded infections
 
 		for (int index = 0; index < infections; index++) {
@@ -97,7 +93,6 @@ public class FitnessCostsTest {
 		}
 		
 		assertTrue(testRun.population().msmInfected().count()==100);
-
 		
 		for (int index = 0; index < infections; index++) {
 			Indiv indiv = testRun.population().allIndivs().collect(Collectors.toList()).get(index);
@@ -105,7 +100,6 @@ public class FitnessCostsTest {
 			indiv.infectiousActions(); // the 10% should infect another 10%
 		}
 		assertTrue(observer.getReinfectedCount()==10);
-
 		assertTrue(testRun.population().msmInfected().count()==190);
 		
 		//Baseline transmission - with these parameters, we are able to get 
