@@ -5924,7 +5924,7 @@ write_calibrated = function(df, path){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
-  resamplePropHighActivity <- df$propHighRisk
+  resamplePropHighActivity <- df$propHighActivity
   resampleTransmissionMSM <- df$TransmissionMSM
  
   resampleRecoveryLambda <- df$NaturalRecoveryTime
@@ -5937,8 +5937,8 @@ write_calibrated = function(df, path){
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
  
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-  resampleActivityGroupTransferProp <- df$riskGroupTransferProp
-  resampleActivityGroupTransmissionRatio <- df$riskGroupTransmissionRatio
+  resampleActivityGroupTransferProp <- df$activityGroupTransferProp
+  resampleActivityGroupTransmissionRatio <- df$activityGroupTransmissionRatio
    
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB

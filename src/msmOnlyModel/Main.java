@@ -16,10 +16,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		int reps = 0;
+		boolean parcalibrated = true;
 
 		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("If sweeping, enter true. For calibrated, enter false.");
+		System.out.println("If sweeping, enter true. For parcalibrated or calibrated, enter false.");
 
 		// the following booleans control what type of runs these will be:
 		boolean sweeping = scanner.nextBoolean();
@@ -34,6 +35,8 @@ public class Main {
 		} else {
 			with_calibrated = true;
 			resistance = "combo";
+			System.out.println("For parcalibrated, enter true. For full calibrated, enter false.");
+			parcalibrated = scanner.nextBoolean();
 		}
 		
 		scanner.close();
@@ -45,44 +48,45 @@ public class Main {
 		RandomHelper.setSeed(1);
 		
 		if (sweeping) {
-			
-			
 			BatchRun batchRunner = new BatchRun("sweep", resistance);
-			
 			int batches = 20;
 			
 			for (int i = 0; i < batches; i++) {
 				batchRunner.executeSweep(scenariofile, reps, resistance);
-
-				
-				
 			}
-			
-			
 			try {
 				batchRunner.combineBatchFiles();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 
 		if (with_calibrated) {
+			if (parcalibrated) {
+				BatchRun batchRunner = new BatchRun("GISPparcal", resistance);
+				batchRunner.executeCalibratedBatch(scenariofile, "GISPrand_05");
 
-			// to run everything:
-			//executeCalibratedNoResistanceBatch(scenariofile);
-			
-			//executeCounterfactualScenarios(scenariofile);
+				
+			} else {
+				// to run everything:
+				//executeCalibratedNoResistanceBatch(scenariofile);
+				
+				//executeCounterfactualScenarios(scenariofile);
 
-			//executeSensitivityAnalysisBatch(scenariofile);			
+				//executeSensitivityAnalysisBatch(scenariofile);			
+				
+				//executeSensitivityAnalysisBatchnoDST(scenariofile);			
+
+				
+				//executeCompareResistanceInserters(scenariofile);
+//				
+				executeFitnessCostSA(scenariofile);
+			}
 			
-			//executeSensitivityAnalysisBatchnoDST(scenariofile);			
+			
 
 			
-			//executeCompareResistanceInserters(scenariofile);
-//			
-			executeFitnessCostSA(scenariofile);
 		}
 	}
 

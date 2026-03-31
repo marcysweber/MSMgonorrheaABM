@@ -194,6 +194,93 @@ resample = function(df, n){
 ![**Figure 1.** ](Figure 1.jpg)
 
 # Figure 2
+```{r calibrationProcedureStep1, include = false}
+
+#load the sweep data, and give each run a unique identifier
+sweepdir <- "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
+dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+
+#calculate weights based on the 3 calibration targets, and resample w replacement
+df_ends <- calc_weights(dfsweep)
+df_best_ends <- resample(df_ends, 300)
+
+#save the resample so it can be re-accessed (includes duplicate entries)
+parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
+write.csv(df_best_ends, file = paste(parcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
+
+#get the unique trajectories, so that duplicates do not need to be re-run
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0)) #empty DF with all needed cols
+colnames(df_best_ends_unique) <- colnames(df_best_ends) #copy over the col names
+unique_resamples <- unique(df_best_ends$uniqueID) #get the vector of just uniqueIDs without duplicates
+
+#populate the dataframe based on the uniqueID from the resamples
+for (unique_ID in unique_resamples){ #use the unduplicated IDs to populate the new DF
+  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+}
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+
+df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for the resampled trajs
+df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
+
+
+
+#write parcalibrated parameter sets to file
+write_calibrated(df_best_ends_unique, parcaldir)
+```
+
+
+
+```{r loadParCalibration, include=FALSE}
+
+#read old parcalibration runs
+#df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates7mar25.csv")
+#visualize_parameters(df_best_ends)
+#dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
+#dfcalibrated <- identify(dfcalibrated, df_best_ends)
+```
+
+
+```{r calibrationProcedureStep2, include=FALSE}
+
+#load resistance cal data
+dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- identify(dfGISPparcal, df_best_ends)
+
+#exclude trajectories where no switch for Drug A happened and resistance is 0 at t=25years
+endOfSimGISP <- dfGISPparcal[dfGISPparcal$tick==1560,] #last time step
+noResistanceDF <- endOfSimGISP[endOfSimGISP$ResistAIncidence == 0,] #no resistance
+runNumberNoResist <- noResistanceDF$RunNumber
+  #trajNoResist <- dfGISPparcal[dfGISPparcal$RunNumber %in% runNumberNoResist,] #grab the whole traj, not just the last time step
+  #viz_detected_resist_A(trajNoResist, "GISP trajectories with 0 resistance at end of sim", 25) 
+noSwitchDF <- endOfSimGISP[endOfSimGISP$RemovedA == "false",] #never removed A as treatment option
+runNumberNoSwitch <- noSwitchDF$RunNumber
+  #trajNoSwitch <- dfGISPparcal[dfGISPparcal$RunNumber %in% runNumberNoSwitch,] #grab the whole traj, not just the last time step
+  #viz_detected_resist_A(trajNoSwitch, "GISP trajectories that never stopped using Drug A", 25) 
+runNumbernoSwitchNoResist <- runNumberNoResist[runNumberNoResist %in% runNumberNoSwitch] #combining the criteria
+  #trajNoSwitchNoResist <- dfGISPparcal[dfGISPparcal$RunNumber %in% runNumbernoSwitchNoResist,]
+  #viz_detected_resist_A(trajNoSwitchNoResist, "GISP trajectories that never stopped using Drug A and end the sim with 0 resistance", 25) 
+
+dfFinalCal <- dfGISPparcal[!dfGISPparcal$RunNumber %in% runNumbernoSwitchNoResist,] #grab the rows NOT in the excluded set
+dfFinalCalEnds <- dfFinalCal[dfFinalCal$tick==1560,] #grab just the last time step, because that's how its written to csv
+
+
+#write final calibrated parameter sets
+finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/
+write_calibrated(dfFinalCalEnds, finalcaldir)
+
+```
+
+```{r loadFinalCalibration, include=FALSE}
+#MAKE SURE THE PATHS ARE ALIGNED AND ACCURATE
+#read old final calibration runs
+#df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates7mar25.csv")
+#visualize_parameters(df_best_ends)
+#dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
+#dfcalibrated <- identify(dfcalibrated, df_best_ends)
+```
+
 ```{r setupFigure2, include = FALSE}
 # This chunk contains functions for the calibration figure (Figure 2).
 visualize_calibration_MSM = function(dfcalibrated){
@@ -1614,3 +1701,27 @@ multiplot(
 
 Figure. Cost-effectiveness analysis for different levels of fitness costs for resistant strains. A and B, 0% (same as main text results). C and D, 1%. E and F, 2.5%. G and H, 10%. As resistance becomes more costly for the bacteria, and therefore resistant strains are less prevalent, the counterfactuals converge in both costs and QALYs. GISP and randomized treatment are similar in terms of cost when there is little to no resistance in the population. Given that available evidence indicates that *N gonorhoeae* has very low fitness costs, and/or might quickly evolve compensatory mechanisms to overcome fitness costs, we maintain our conclusion that GISP is preferable over alternatives.
 
+
+```{r resistanceNotEmerging}
+endOfSimGISP <- dfGISP25[dfGISP25$tick==1560,]
+noResistanceDF <- endOfSimGISP[endOfSimGISP$ResistAIncidence == 0,]
+runNumberNoResist <- noResistanceDF$RunNumber
+trajNoResist <- dfGISP25[dfGISP25$RunNumber %in% runNumberNoResist,]
+
+viz_detected_resist_A(trajNoResist, "GISP trajectories with 0 resistance at end of sim", 25) 
+
+
+endOfSimGISP <- dfGISP25[dfGISP25$tick==1560,]
+noSwitchDF <- endOfSimGISP[endOfSimGISP$RemovedA == "false",]
+runNumberNoSwitch <- noSwitchDF$RunNumber
+trajNoSwitch <- dfGISP25[dfGISP25$RunNumber %in% runNumberNoSwitch,]
+
+viz_detected_resist_A(trajNoSwitch, "GISP trajectories that never stopped using Drug A", 25) 
+
+runNumbernoSwitchNoResist <- runNumberNoResist[runNumberNoResist %in% runNumberNoSwitch]
+trajNoSwitchNoResist <- dfGISP25[dfGISP25$RunNumber %in% runNumbernoSwitchNoResist,]
+viz_detected_resist_A(trajNoSwitchNoResist, "GISP trajectories that never stopped using Drug A and end the sim with 0 resistance", 25) 
+
+withResistGISP <- dfGISP25[!dfGISP25$RunNumber %in% runNumbernoSwitchNoResist,]
+viz_detected_resist_A(withResistGISP, "remaining traj", 25)
+```

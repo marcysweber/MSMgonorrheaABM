@@ -819,16 +819,16 @@ public class Observer {
 		
 		if (counterfactual.equals("sweep")){ //strict constraints for sweeps
 			if (prev > 10.0 || prev < 0.05) {
-				System.out.print("I should stop now!!! Overall prev was too extreme.");
+				//System.out.print("I should stop now!!! Overall prev was too extreme.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			
 			} else if (lowRiskPrev > 4.0) {
-				System.out.print("I should stop now!!! Low risk prev was too high.");
+				//System.out.print("I should stop now!!! Low risk prev was too high.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			} else if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
-				System.out.print("I should stop now!!! High Risk prev was too extreme.");
+				//System.out.print("I should stop now!!! High Risk prev was too extreme.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			}
@@ -838,7 +838,7 @@ public class Observer {
 				
 		} else if (prev > 99.0) {		//if it's not a sweep, only exclude most extreme trajectories.
 
-				System.out.print("I should stop now!!! ");
+				//System.out.print("I should stop now!!! ");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			}

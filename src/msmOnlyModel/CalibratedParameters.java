@@ -20,9 +20,17 @@ public class CalibratedParameters {
 	
 	
 	
-	CalibratedParameters(){
-		path = "/usr/local/MSM_calibrated_params/";
-		//path = "/Users/me597/Documents/MSM_calibrated_params/";
+	CalibratedParameters(String expdir){
+		//path = "/usr/local/MSM_calibrated_params/";
+		
+		if (expdir.contains("parcal")) {
+			path = "/Users/me597/Documents/MSM_parcalibrated_params/";
+
+		} else {
+			path = "/Users/me597/Documents/MSM_final_calibrated_params/";
+
+		}
+		
 	}
 	
 	public List<Integer> getInitialInfectedValues() throws IOException {
@@ -226,7 +234,7 @@ public class CalibratedParameters {
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "risk_group_transfer_prop_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "activity_group_transfer_prop_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		
@@ -236,7 +244,7 @@ public class CalibratedParameters {
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "risk_group_transmission_ratio_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "activity_group_transmission_ratio_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		

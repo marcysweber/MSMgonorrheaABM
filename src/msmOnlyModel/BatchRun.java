@@ -226,7 +226,7 @@ public class BatchRun {
 		List<Double> treatmentBCostValuesList = new ArrayList<Double>();
 		List<Double> treatmentXCostValuesList = new ArrayList<Double>();
 		List<Double> treatmentECostValuesList = new ArrayList<Double>();
-		CalibratedParameters calibrated = new CalibratedParameters();
+		CalibratedParameters calibrated = new CalibratedParameters(expdir);
 
 		try {
 			initialInfectedValuesList = calibrated.getInitialInfectedValues();
@@ -631,9 +631,9 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
+		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_1_";
 		
-		String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
+		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 
@@ -723,7 +723,7 @@ public class BatchRun {
         						writer.write(line);
         						writer.newLine();
         						headerWritten = true;
-        						System.out.println("Header written from" + csvFile);
+        						//System.out.println("Header written from" + csvFile);
         					}
         				} else {
         					writer.write(line);
