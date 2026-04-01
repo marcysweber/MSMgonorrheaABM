@@ -194,9 +194,13 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("delayToClearanceExp", delayToClearanceExp);
 			
 			
-			
 			Uniform testsUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("testsUniform", testsUniform);
+			
+			
+			//distribution for doubling or tripling testing cost, to reflect multisite testing
+			Uniform testSitesUniform = new Uniform(0.0, 3.0, eng);
+			randomHelper.registerDistribution("testSitesUniform", testSitesUniform);
 			
 			return randomHelper;
 			

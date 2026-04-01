@@ -422,7 +422,34 @@ public class Infection {
 	}
 	
 	public void recordDiagnosticTest() {
-		diagnosticTests++;
+		Uniform testSitesUniform = (Uniform) this.randomHelper.getDistribution("testSitesUniform");
+		double value = testSitesUniform.nextDouble();
+		//System.out.println(value);
+		if (value < 1.0) {
+			//only a urogenital test
+			//System.out.println("only a urogenital test");
+			diagnosticTests++;
+
+		} else if (value < 2.0) {
+			//urogenital test + another site
+			//System.out.println("urogenital test + another site");
+
+			diagnosticTests++;
+			diagnosticTests++;
+
+		} else {
+			//testing at all three sites (urogenital, pharynx, rectum)
+			//System.out.println("testing at all three sites (urogenital, pharynx, rectum)");
+
+			diagnosticTests++;
+			diagnosticTests++;
+			diagnosticTests++;
+		}
+		
+		
+		
+		
+		
 	}
 	
 	
