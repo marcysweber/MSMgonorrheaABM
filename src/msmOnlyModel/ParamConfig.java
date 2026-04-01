@@ -44,6 +44,8 @@ public class ParamConfig {
 	private double percentResistantA;
 	private int beginImportingB;
 	private double importingBInterval;
+	private double probDevelopResistanceA;
+	private double probDevelopResistanceB;
 	
 	private double DSTsensitivity;
 	private double DSTspecificity;
@@ -83,6 +85,8 @@ public class ParamConfig {
 			double amountResistantA,
 			int beginImportingB,
 			double importingBInterval,
+			double probDevelopResistanceA,
+			double probDevelopResistanceB,
 			
 			double DSTsensitivity,
 			double DSTspecificity,
@@ -121,6 +125,8 @@ public class ParamConfig {
 		this.percentResistantA = amountResistantA;
 		this.beginImportingB = beginImportingB;
 		this.importingBInterval = importingBInterval;
+		this.probDevelopResistanceA = probDevelopResistanceA;
+		this.probDevelopResistanceB = probDevelopResistanceB;
 		
 		
 		this.DSTsensitivity = DSTsensitivity;
@@ -215,6 +221,14 @@ public class ParamConfig {
 	
 	public double getImportingBInterval() {
 		return this.importingBInterval;
+	}
+	
+	public double getProbDevelopResistanceA() {
+		return this.probDevelopResistanceA;
+	}
+	
+	public double getProbDevelopResistanceB() {
+		return this.probDevelopResistanceB;
 	}
 	
 	

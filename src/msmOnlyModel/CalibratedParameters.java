@@ -285,6 +285,23 @@ public class CalibratedParameters {
 	
 	
 	
+	
+	
+	
+	public List<Double> getProbDevelopResistanceAExponentValues() throws IOException{
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get(path + "prob_develop_resistance_A_exponent_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+	}
+	
+	public List<Double> getProbDevelopResistanceBExponentValues() throws IOException{
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get(path + "prob_develop_resistance_B_exponent_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+	}
+	
 	public List<Double> getDSTsensitivityValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		

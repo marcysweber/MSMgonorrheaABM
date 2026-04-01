@@ -5943,6 +5943,9 @@ write_calibrated = function(df, path){
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
   resampleImportingBInterval <- df$ImportingBInterval
+  resampleProbDevelopResistanceAExponent <- df$ProbDevelopResistanceAExponent
+  resampleProbDevelopResistanceBExponent <- df$ProbDevelopResistanceBExponent
+  
   resampleDSTsensitivity <- df$DSTsensitivity
   resampleDSTspecifictiy <- df$DSTspecificity
   
@@ -5970,6 +5973,10 @@ write_calibrated = function(df, path){
   fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
   fwrite(list(resampleBeginImportingB), file = paste(path, "begin_importing_B_resample.txt", sep=""))
   fwrite(list(resampleImportingBInterval), file = paste(path, "importing_B_interval_resample.txt", sep=""))
+  fwrite(list(resampleresampleProbDevelopResistanceAExponent), file = paste(path, "prob_develop_resistance_A_exponent_resample.txt", sep=""))
+  fwrite(list(resampleresampleProbDevelopResistanceBExponent), file = paste(path, "prob_develop_resistance_B_exponent_resample.txt", sep=""))
+  
+  
   fwrite(list(resampleDSTsensitivity), file = paste(path, "DSTsensitivity_resample.txt", sep=""))
   fwrite(list(resampleDSTspecifictiy), file = paste(path, "DSTspecificity_resample.txt", sep=""))
   

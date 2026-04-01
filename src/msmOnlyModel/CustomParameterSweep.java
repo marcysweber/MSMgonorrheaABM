@@ -156,6 +156,20 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, min, max);
 	}
 	
+	public List<Double> getProbDevelopResistanceAExponent(int samples){
+		double min = -6;
+		double max = -3;
+		int seed = (int) System.currentTimeMillis() + 30;
+		return getUniformSweepValues(seed, samples, min, max);
+	}
+	
+	public List<Double> getProbDevelopResistanceBExponent(int samples){
+		double min = -6;
+		double max = -3;
+		int seed = (int) System.currentTimeMillis() + 31;
+		return getUniformSweepValues(seed, samples, min, max);
+	}
+	
 	
 	
 	

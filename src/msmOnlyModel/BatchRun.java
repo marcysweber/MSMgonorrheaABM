@@ -87,6 +87,9 @@ public class BatchRun {
 		List<Double> percentResistantAValuesList = sweeper.getPercentResistantA(reps);
 		List<Integer> beginImportingBValuesList = sweeper.getBeginImportingB(reps);
 		List<Double> importingBIntervalValuesList = sweeper.getImportingBInterval(reps);
+		List<Double> probDevelopResistanceAExponentValuesList = sweeper.getProbDevelopResistanceAExponent(reps);
+		List<Double> probDevelopResistanceBExponentValuesList = sweeper.getProbDevelopResistanceBExponent(reps);
+
 		List<Double> DSTsensitivityValuesList = sweeper.getDSTsensitivity(reps);
 		List<Double> DSTspecificityValuesList = sweeper.getDSTspecificity(reps);
 
@@ -123,6 +126,8 @@ public class BatchRun {
 							activityGroupTransmissionRatioValuesList.get(i),
 							percentResistantAValuesList.get(i),
 							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+							probDevelopResistanceAExponentValuesList.get(i),
+							probDevelopResistanceBExponentValuesList.get(i),
 							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
 							careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
 							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
@@ -215,6 +220,9 @@ public class BatchRun {
 		List<Double> percentResistantAValuesList = new ArrayList<Double>();
 		List<Integer> beginImportingBValuesList = new ArrayList<Integer>();
 		List<Double> importingBIntervalValuesList = new ArrayList<Double>();
+		List<Double> probDevelopResistanceAExponentValuesList = new ArrayList<Double>();
+		List<Double> probDevelopResistanceBExponentValuesList = new ArrayList<Double>();
+		
 		List<Double> DSTsensitivityValuesList = new ArrayList<Double>();
 		List<Double> DSTspecificityValuesList = new ArrayList<Double>();
 
@@ -348,6 +356,22 @@ public class BatchRun {
 			e.printStackTrace();
 		}
 
+		try {
+			probDevelopResistanceAExponentValuesList = calibrated.getProbDevelopResistanceAExponentValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			probDevelopResistanceBExponentValuesList = calibrated.getProbDevelopResistanceBExponentValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 
 		try {
 			DSTsensitivityValuesList = calibrated.getDSTsensitivityValues();
@@ -434,6 +458,8 @@ public class BatchRun {
 		            activityGroupTransmissionRatioValuesList.get(i),
 		            percentResistantAValuesList.get(i),
 		            beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+		            probDevelopResistanceAExponentValuesList.get(i),
+					probDevelopResistanceBExponentValuesList.get(i),
 		            DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
 		            careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
 		            treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
@@ -500,7 +526,8 @@ public class BatchRun {
 				paramConfig.getDelayToRetreatmentMSM(),
 				paramConfig.getAssortativity(), paramConfig.getActivityGroupTransferProp(), paramConfig.getActivityGroupTransmissionRatio(),
 				paramConfig.getPercentResistantA(), paramConfig.getBeginImportingB(),
-				paramConfig.getImportingBInterval(), paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
+				paramConfig.getImportingBInterval(), paramConfig.getProbDevelopResistanceA(), paramConfig.getProbDevelopResistanceB(),
+				paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
 				paramConfig.getcareCost(), paramConfig.getTestCost(),
 				paramConfig.getstrainTestCost(), paramConfig.getTreatmentACost(), paramConfig.getTreatmentBCost(), paramConfig.getTreatmentXCost(), paramConfig.getTreatmentECost(),
 				fitnessCostA, fitnessCostB));
@@ -535,12 +562,14 @@ public class BatchRun {
 			double activityGrouptransferProp,
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
-			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
+			int beginImportingB, double importingBInterval, 
+			double probDevelopResistanceAExponent, double probDevelopResistanceBExponent,
+			double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
 			double fitnessCostA, double fitnessCostB) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.5, 0.5, 0.0,
 				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
-				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost,
+				percentResistantA, beginImportingB, importingBInterval, probDevelopResistanceAExponent, probDevelopResistanceBExponent, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost,
 				fitnessCostA, fitnessCostB);
 	}
 	
@@ -560,7 +589,10 @@ public class BatchRun {
 			double activityGroupTransferProp,
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
-			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
+			int beginImportingB, double importingBInterval, 
+			double probDevelopResistanceAExponent,
+			double probDevelopResistanceBExponent,
+			double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
 			double fitnessCostA, double fitnessCostB) {
 		DefaultParameters params = new DefaultParameters();
@@ -595,6 +627,9 @@ public class BatchRun {
 		params.addParameter("percent_resistant_A", "percent_resistant_A", double.class, percentResistantA, false);
 		params.addParameter("begin_importing_B", "begin_importing_B", int.class, beginImportingB, false);
 		params.addParameter("importing_B_interval", "importing_B_interval", double.class, importingBInterval, false);
+		params.addParameter("prob_develop_resistance_A_exponent", "prob_develop_resistance_A_exponent", double.class, probDevelopResistanceAExponent, false);
+		params.addParameter("prob_develop_resistance_B_exponent", "prob_develop_resistance_B_exponent", double.class, probDevelopResistanceBExponent, false);
+
 		params.addParameter("DSTsensitivity", "DSTsensitivity,", double.class, DSTsensitivity, false);
 		params.addParameter("DSTspecificity", "DSTspecificity,", double.class, DSTspecificity, false);
 		

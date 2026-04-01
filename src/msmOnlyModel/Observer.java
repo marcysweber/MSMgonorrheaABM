@@ -274,6 +274,9 @@ public class Observer {
 				this.parameters.getDouble("percent_resistant_A"),
 				this.parameters.getInteger("begin_importing_B"), 
 				this.parameters.getDouble("importing_B_interval"),
+				this.parameters.getDouble("prob_develop_resistance_A_exponent"),
+				this.parameters.getDouble("prob_develop_resistance_B_exponent"),
+				
 				this.parameters.getDouble("DSTsensitivity"),
 				this.parameters.getDouble("DSTspecificity"),
 				

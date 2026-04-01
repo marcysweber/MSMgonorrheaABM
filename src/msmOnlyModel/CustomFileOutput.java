@@ -148,6 +148,9 @@ public class CustomFileOutput {
 					"PercentResistantA",
 					"BeginImportingB",
 					"ImportingBInterval",
+					"ProbDevelopResistanceAExponent",
+					"ProbDevelopResistanceBExponent",
+					
 					"DSTsensitivity", 
 					"DSTspecificity",
 					"CareCost",
@@ -292,6 +295,9 @@ public class CustomFileOutput {
 			double percentResistantA,
 			int beginImportingB,
 			double importingBInterval,
+			double probDevelopResistanceAExponent,
+			double probDevelopResistanceBExponent,
+			
 			double DSTsensitivity,
 			double DSTspecificity,
 
@@ -412,6 +418,9 @@ public class CustomFileOutput {
 						String.valueOf(percentResistantA),
 						String.valueOf(beginImportingB),
 						String.valueOf(importingBInterval),
+						String.valueOf(probDevelopResistanceAExponent),
+						String.valueOf(probDevelopResistanceBExponent),
+						
 						String.valueOf(DSTsensitivity),
 						String.valueOf(DSTspecificity),
 
