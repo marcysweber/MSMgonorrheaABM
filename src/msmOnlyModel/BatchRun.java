@@ -631,7 +631,7 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_1_";
+		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
 		
 		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	

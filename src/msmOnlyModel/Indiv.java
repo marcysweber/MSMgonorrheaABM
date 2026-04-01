@@ -450,6 +450,7 @@ public class Indiv {
 	//revert to susceptible
 	//previous infection DOES NOT convey protection
 	public void recoverOrDevelopResistance(String treatment) {
+		//System.out.println(this.hashCode() + " recovering");
 		String resistance = allParameters.getString("resistance");
 
 		if (tickNow() <=520) {

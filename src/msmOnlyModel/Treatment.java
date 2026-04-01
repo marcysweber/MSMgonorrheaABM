@@ -62,6 +62,19 @@ public class Treatment {
 		this.removedAandB = observer.getSurveillance().getRemovedAandB();
 	}
 	
+	public void scheduleClearance(String treatment) {
+		//even if the treatment is successful,
+		//the indiv remains infectious for an average of 3 days
+		
+		Indiv indiv = this.infection.host();
+		
+		Exponential delayToClearanceExp = null;
+		delayToClearanceExp = (Exponential) randomHelper.getDistribution("delayToClearanceExp");
+		double thisDelay = delayToClearanceExp.nextDouble();
+		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
+
+		schedule.schedule(schparams, indiv, "recoverOrDevelopResistance", treatment);
+	}
 	
 	public boolean administerA() {
 		//System.out.println("adminA");
@@ -90,7 +103,7 @@ public class Treatment {
 		boolean success = administerA();
 		
 		if (success) {
-			infection.host().recoverOrDevelopResistance("A");
+			this.scheduleClearance("A");
 		} else if (infection.symptoms()) {
 			symptomaticTreatmentFailure("A");
 		} else { // if asymptomatic, true fail
@@ -126,7 +139,7 @@ public class Treatment {
 		boolean success = administerB();
 
 		if (success) {
-			infection.host().recoverOrDevelopResistance("B");
+			this.scheduleClearance("B");
 		} else if (infection.symptoms()) { // if symptomatic, known failure, try again
 			symptomaticTreatmentFailure("B");
 		} else { // if asymptomatic, true fail
@@ -140,7 +153,7 @@ public class Treatment {
 	
 		if (a || b) {
 			
-			infection.host().recoverOrDevelopResistance("AandB");
+			this.scheduleClearance("AandB");
 			
 		} else if (infection.symptoms()) {
 			symptomaticTreatmentFailure("AandB");
@@ -152,14 +165,14 @@ public class Treatment {
 	
 	public boolean treatWithX() {
 		boolean success = true;
-		infection.host().actuallyRecoverwTreatment("X");
+		scheduleClearance("X");
 		
 		return success;
 	}
 	
 	public boolean treatWithE() {
 		boolean success = true;
-		infection.host().actuallyRecoverwTreatment("E");
+		scheduleClearance("E");
 		
 		return success;
 	}
@@ -481,7 +494,7 @@ public class Treatment {
 					boolean successA = administerA();
 				if (successA) {
 					success = "A";
-					infection.host().recoverOrDevelopResistance(success);
+					this.scheduleClearance(success);
 
 				} else {
 					// schedule retreatment with X
@@ -492,7 +505,7 @@ public class Treatment {
 				
 				if (successB) {
 					success = "B";
-					infection.host().recoverOrDevelopResistance(success);
+					this.scheduleClearance(success);
 
 				} else {
 					// schedule retreatment with X
@@ -562,7 +575,7 @@ public class Treatment {
 
 		if (infection.susceptibleToA()) {
 			infection.recordDiagnosticTest();
-			infection.host().recoverOrDevelopResistance("A");
+			this.scheduleClearance("A");
 
 		} else {
 			// initial treatment failure
@@ -600,7 +613,7 @@ public class Treatment {
 
 				if (infection.susceptibleToB()) {
 					infection.recordDiagnosticTest();
-					infection.host().recoverOrDevelopResistance("B");
+					this.scheduleClearance("B");
 				} else {
 					// schedule another retreatment
 					//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();

@@ -189,7 +189,9 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("delayToRetreatmentMSMExp", delayToRetreatmentMSMExp);
 			
 		
-			
+			double mean_delay_to_clearance = 3/7; //mean of three days, scaled to the week
+			Exponential delayToClearanceExp = new Exponential(1/mean_delay_to_clearance, eng);
+			randomHelper.registerDistribution("delayToClearanceExp", delayToClearanceExp);
 			
 			
 			
