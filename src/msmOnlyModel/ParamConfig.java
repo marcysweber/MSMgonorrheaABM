@@ -28,8 +28,9 @@ public class ParamConfig {
 	private double ProbSymptomaticMSM;
 
 	
-	private double ScreenIntervalMSM;
-	
+	private double ScreenIntervalMeanMSM;
+	private double ScreenIntervalVarMSM;
+
 	
 	private double delayToSeekCareMSM;
 	
@@ -72,8 +73,9 @@ public class ParamConfig {
 			double RecoveryLambda, 
 			double ProbSymptomaticMSM, 
 
-			double ScreenIntervalMSM,
-		
+			double ScreenIntervalMeanMSM,
+			double ScreenIntervalVarMSM,
+
 			double delayToSeekCareMSM,
 
 			double delayToRetreatmentMSM,
@@ -111,7 +113,9 @@ public class ParamConfig {
 		this.RecoveryLambda = RecoveryLambda;
 		this.ProbSymptomaticMSM = ProbSymptomaticMSM;
 	
-		this.ScreenIntervalMSM = ScreenIntervalMSM;
+		this.ScreenIntervalMeanMSM = ScreenIntervalMeanMSM;
+		this.ScreenIntervalVarMSM = ScreenIntervalVarMSM;
+
 		
 		this.delayToSeekCareMSM = delayToSeekCareMSM;
 		
@@ -186,8 +190,13 @@ public class ParamConfig {
 	}
 	
 	
-	public double getScreenIntervalMSM() {
-		return this.ScreenIntervalMSM;
+	public double getScreenIntervalMeanMSM() {
+		return this.ScreenIntervalMeanMSM;
+	}
+	
+
+	public double getScreenIntervalVarMSM() {
+		return this.ScreenIntervalVarMSM;
 	}
 	
 	public double getDelayToSeekCareMSM() {

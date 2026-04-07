@@ -8,6 +8,7 @@ import java.util.List;
 
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
+import cern.jet.random.Gamma;
 import repast.simphony.parameter.Parameters;
 
 /**
@@ -37,28 +38,23 @@ public class Screener {
 	}
 	
 	public List<Integer> makeScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
-		Normal screenIntervalDist = null;
-		Uniform firstValueDist = null;
+		Gamma screenIntervalDist = null;
 		
 		if (subPop.equals("msm")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSMNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSMUniform");
+			screenIntervalDist = (Gamma) randomHelper.getDistribution("screeningIntervalMSMGamma");
 		} else if (subPop.equals("msw")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalMSWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueMSWUniform");
+			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalMSWGamma");
 		} else if (subPop.equals("w")) {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
+			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalWGamma");
 		} else {
-			screenIntervalDist = (Normal) randomHelper.getDistribution("screenIntervalWNormal");
-			firstValueDist = (Uniform) randomHelper.getDistribution("screenFirstValueWUniform");
+			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalWGamma");
 		}
 
 		//Parameters params = RunEnvironment.getInstance().getParameters();
 		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
 		
 		List screenings = new ArrayList<Integer>();
-		screenings.add(firstValueDist.nextInt());
+		screenings.add(screenIntervalDist.nextInt());
 		
 		//while the last value is still less than 1300
 		while ((int) screenings.get(screenings.size()-1) < endTime) {

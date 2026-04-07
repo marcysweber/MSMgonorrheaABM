@@ -72,7 +72,8 @@ public class BatchRun {
 		
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
-		List<Double> screenIntervalMSMValuesList = sweeper.getScreenIntervalMSMValues(reps);
+		List<Double> screenIntervalMeanMSMValuesList = sweeper.getScreenIntervalMeanMSMValues(reps);
+		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(reps);
 		
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
@@ -118,7 +119,8 @@ public class BatchRun {
 							transmissionMSMValuesList.get(i),
 							recoveryTimeValuesList.get(i), 
 							probSymptomaticMSMValuesList.get(i),
-							screenIntervalMSMValuesList.get(i), 
+							screenIntervalMeanMSMValuesList.get(i), 
+							screenIntervalVarMSMValuesList.get(i), 
 							delayToSeekCareMSMValuesList.get(i),
 							delayToRetreatmentMSMValuesList.get(i), 
 							assortativityValuesList.get(i),
@@ -205,7 +207,8 @@ public class BatchRun {
 		
 		List<Double> probSymptomaticMSMValuesList = new ArrayList<Double>();
 		
-		List<Double> screenIntervalMSMValuesList = new ArrayList<Double>();
+		List<Double> screenIntervalMeanMSMValuesList = new ArrayList<Double>();
+		List<Double> screenIntervalVarMSMValuesList = new ArrayList<Double>();
 
 		List<Double> delayToSeekCareMSMValuesList = new ArrayList<Double>();
 
@@ -284,7 +287,16 @@ public class BatchRun {
 		
 		///screen interval parameters
 		try {
-			screenIntervalMSMValuesList = calibrated.getScreenIntervalMSMValues();
+			screenIntervalMeanMSMValuesList = calibrated.getScreenIntervalMeanMSMValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		///screen interval parameters
+		try {
+			screenIntervalVarMSMValuesList = calibrated.getScreenIntervalVarMSMValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -450,7 +462,8 @@ public class BatchRun {
 		            transmissionMSMValuesList.get(i),
 		            recoveryTimeValuesList.get(i),
 		            probSymptomaticMSMValuesList.get(i),
-		            screenIntervalMSMValuesList.get(i),
+		            screenIntervalMeanMSMValuesList.get(i),
+		            screenIntervalVarMSMValuesList.get(i),
 		            delayToSeekCareMSMValuesList.get(i),
 		            delayToRetreatmentMSMValuesList.get(i),
 		            assortativityValuesList.get(i),
@@ -521,7 +534,8 @@ public class BatchRun {
 				paramConfig.getTransmissionMSM(),
 				paramConfig.getRecoveryTime(), 
 				paramConfig.getProbSymptomaticMSM(), 
-				paramConfig.getScreenIntervalMSM(),
+				paramConfig.getScreenIntervalMeanMSM(),
+				paramConfig.getScreenIntervalVarMSM(),
 				paramConfig.getDelayToSeekCareMSM(), 
 				paramConfig.getDelayToRetreatmentMSM(),
 				paramConfig.getAssortativity(), paramConfig.getActivityGroupTransferProp(), paramConfig.getActivityGroupTransmissionRatio(),
@@ -555,7 +569,8 @@ public class BatchRun {
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
-			double screenIntervalMSM,  
+			double screenIntervalMeanMSM,  
+			double screenIntervalVarMSM,  
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
@@ -568,7 +583,7 @@ public class BatchRun {
 			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
 			double fitnessCostA, double fitnessCostB) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.5, 0.5, 0.0,
-				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
+				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMeanMSM, screenIntervalVarMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
 				percentResistantA, beginImportingB, importingBInterval, probDevelopResistanceAExponent, probDevelopResistanceBExponent, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost,
 				fitnessCostA, fitnessCostB);
 	}
@@ -582,7 +597,8 @@ public class BatchRun {
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
-			double screenIntervalMSM,  
+			double screenIntervalMeanMSM,
+			double screenIntervalVarMSM,
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
@@ -616,7 +632,9 @@ public class BatchRun {
 		params.addParameter("transmissionMSM", "TransmissionMSM", double.class, transmissionMSM, false);
 		params.addParameter("recovery_time", "RecoveryTime", double.class, recoveryTime, false);
 		params.addParameter("prob_symptomatic_msm", "ProbSymptomaticMSM", double.class, probSymptomaticMSM, false);
-		params.addParameter("screen_interval_MSM", "ScreenIntervalMSM", double.class, screenIntervalMSM, false);
+		params.addParameter("screen_interval_mean_MSM", "ScreenIntervalMeanMSM", double.class, screenIntervalMeanMSM, false);
+		params.addParameter("screen_interval_var_MSM", "ScreenIntervalVarMSM", double.class, screenIntervalVarMSM, false);
+
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
 		params.addParameter("delay_to_retreatment_msm", "DelayToRetreatmentMSM", double.class, delayToRetreatmentMSM, false);
 		params.addParameter("assortativity", "assortativity", double.class, assortativity, false);
@@ -670,7 +688,7 @@ public class BatchRun {
 		String root = "/usr/local/MSMoutput/";
 		//String root = "/Users/me597/Documents/MSMoutput/";
 
-		String dirname = root + "output_" + fullDate +"_debug_1_";
+		String dirname = root + "output_" + fullDate +"_debug_4_";
 		
 		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	

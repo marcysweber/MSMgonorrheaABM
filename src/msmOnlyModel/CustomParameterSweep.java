@@ -79,12 +79,21 @@ public class CustomParameterSweep {
 		
 	
 	//screen interval parameters
-	public List<Double> getScreenIntervalMSMValues(int samples){
+	public List<Double> getScreenIntervalMeanMSMValues(int samples){
 		double screenIntervalMin = 0.75;
 		double screenIntervalMax = 3.0;
 		int seed = (int) System.currentTimeMillis() + 9;
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
+	
+	public List<Double> getScreenIntervalVarMSMValues(int samples){
+		double screenIntervalMin = 0.75;
+		double screenIntervalMax = 3.0;
+		int seed = (int) System.currentTimeMillis() + 39;
+		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+	}
+	
+	
 	
 	
 	// delay to seek care parameters

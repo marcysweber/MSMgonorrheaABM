@@ -8,6 +8,7 @@ import cern.jet.random.Beta;
 import cern.jet.random.Exponential;
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
+import cern.jet.random.Gamma;
 import cern.jet.random.engine.RandomEngine;
 import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
@@ -143,14 +144,12 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform symptomaticUniform = new Uniform(0.0,1.0, eng);
 			randomHelper.registerDistribution("symptomaticUniform", symptomaticUniform);
 			
-			Normal screenIntervalMSMNormal = new Normal(parameters.getDouble("screen_interval_MSM")*52, 52*parameters.getDouble("screen_interval_MSM")/10, eng);
-			randomHelper.registerDistribution("screenIntervalMSMNormal", screenIntervalMSMNormal);
-			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
-			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
+			
+			this.makeScreenIntervalDistributions(randomHelper, eng);
+			
 			
 			Normal activityGroupTransferPropNormal = new Normal(parameters.getDouble("activity_group_transfer_prop"), parameters.getDouble("activity_group_transfer_prop")/10, eng);
 			randomHelper.registerDistribution("activityGroupTransferPropNormal", activityGroupTransferPropNormal);
-		
 			
 			Uniform sequelaeUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("sequelaeUniform", sequelaeUniform);
@@ -223,6 +222,19 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 			this.observer = observer;
 			return observer;
 
+}
+
+public void makeScreenIntervalDistributions(ThreadSafeRandomHelper randomHelper, RandomEngine eng) {
+	
+	double mean = parameters.getDouble("screen_interval_mean_MSM") * 52;
+	double var = parameters.getDouble("screen_interval_var_MSM") * 52;
+	
+	double lambda = 1 / (var / mean);
+	double alpha = (mean * mean) / var;
+	
+	Gamma screenIntervalMSMGamma = new Gamma(alpha, lambda, eng);
+	randomHelper.registerDistribution("screeningIntervalMSMGamma", screenIntervalMSMGamma);
+	
 }
 
 
