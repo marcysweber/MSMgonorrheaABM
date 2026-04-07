@@ -452,8 +452,9 @@ public class Indiv {
 	public void recoverOrDevelopResistance(String treatment) {
 		//System.out.println(this.hashCode() + " recovering");
 		String resistance = allParameters.getString("resistance");
+		//System.out.println("resistance: " + resistance);
 
-		if (tickNow() <=520) {
+		if (tickNow() <=520 && !allParameters.getString("counterfactual").contains("test")) {
 			actuallyRecoverwTreatment(treatment);
 		} else if (treatment.equals("X")) {
 			actuallyRecoverwTreatment(treatment);
@@ -462,6 +463,7 @@ public class Indiv {
 		} else {
 			if (treatment.equals("A")) {
 				if (resistance.equals("combo")) {
+					System.out.println("checking for develop resistance");
 					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 					resistanceInserter.checkForDevelopResistance(this, treatment);
 				} else {

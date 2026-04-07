@@ -197,13 +197,13 @@ resample = function(df, n){
 ```{r calibrationProcedureStep1, include = false}
 
 #load the sweep data, and give each run a unique identifier
-sweepdir <- "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir <- "/Users/me597/Documents/MSMoutput/output_APRIL_7_2026_debug_2_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
 dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 
 #calculate weights based on the 3 calibration targets, and resample w replacement
 df_ends <- calc_weights(dfsweep)
-df_best_ends <- resample(df_ends, 300)
+df_best_ends <- resample(df_ends, 3000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
 parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/

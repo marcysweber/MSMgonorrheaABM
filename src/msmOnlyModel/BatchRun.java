@@ -158,7 +158,7 @@ public class BatchRun {
 		
 		System.out.println("completed " + reps + " runs! ");
 
-		System.out.println("completed sweep!");
+		System.out.println("completed batch " + batchNumber + "!");
 		
 		try {
 			combineCSVs(batchDirPath);

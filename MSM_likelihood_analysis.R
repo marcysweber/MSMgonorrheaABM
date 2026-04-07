@@ -5973,8 +5973,8 @@ write_calibrated = function(df, path){
   fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
   fwrite(list(resampleBeginImportingB), file = paste(path, "begin_importing_B_resample.txt", sep=""))
   fwrite(list(resampleImportingBInterval), file = paste(path, "importing_B_interval_resample.txt", sep=""))
-  fwrite(list(resampleresampleProbDevelopResistanceAExponent), file = paste(path, "prob_develop_resistance_A_exponent_resample.txt", sep=""))
-  fwrite(list(resampleresampleProbDevelopResistanceBExponent), file = paste(path, "prob_develop_resistance_B_exponent_resample.txt", sep=""))
+  fwrite(list(resampleProbDevelopResistanceAExponent), file = paste(path, "prob_develop_resistance_A_exponent_resample.txt", sep=""))
+  fwrite(list(resampleProbDevelopResistanceBExponent), file = paste(path, "prob_develop_resistance_B_exponent_resample.txt", sep=""))
   
   
   fwrite(list(resampleDSTsensitivity), file = paste(path, "DSTsensitivity_resample.txt", sep=""))

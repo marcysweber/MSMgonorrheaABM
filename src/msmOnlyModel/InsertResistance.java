@@ -193,6 +193,10 @@ public class InsertResistance {
 		double chanceDevelopResistanceA = Math.pow(10.0, probDevelopResistanceAExponent);
 		double chanceDevelopResistanceB = Math.pow(10.0, probDevelopResistanceBExponent);
 		
+		//System.out.println("chanceDevelopResistanceA: " + chanceDevelopResistanceA);
+		//System.out.println("chanceDevelopResistanceB: " + chanceDevelopResistanceB);
+
+		
 		boolean developedResistanceA = false;
 		boolean developedResistanceB = false;
 		
