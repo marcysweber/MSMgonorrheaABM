@@ -685,10 +685,10 @@ public class BatchRun {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		// path root depends on machine. these are for my desktop and laptop respectively.
-		String root = "/usr/local/MSMoutput/";
-		//String root = "/Users/me597/Documents/MSMoutput/";
+		//String root = "/usr/local/MSMoutput/";
+		String root = "/Users/me597/Documents/MSMoutput/";
 
-		String dirname = root + "output_" + fullDate +"_debug_4_";
+		String dirname = root + "output_" + fullDate +"_debug_5_";
 		
 		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	

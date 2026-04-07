@@ -279,7 +279,8 @@ public class CustomFileOutput {
 
 			double ProbSymptomaticMSM,
 
-			double ScreenIntervalMSM,
+			double ScreenIntervalMeanMSM,
+			double ScreenIntervalVarMSM,
 
 
 			double delayToSeekCareMSM,
@@ -404,7 +405,9 @@ public class CustomFileOutput {
 
 						String.valueOf(ProbSymptomaticMSM),
 
-						String.valueOf(ScreenIntervalMSM),
+						String.valueOf(ScreenIntervalMeanMSM),
+						String.valueOf(ScreenIntervalVarMSM),
+
 
 						String.valueOf(delayToSeekCareMSM),
 
