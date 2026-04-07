@@ -133,8 +133,8 @@ public class CustomFileOutput {
 					"ProbSymptomaticMSM",
 
 
-					"ScreenIntervalMSM",
-
+					"ScreenIntervalMeanMSM",
+					"ScreenIntervalVarMSM",
 
 
 					"DelayToSeekCareMSM",
