@@ -463,7 +463,7 @@ public class Indiv {
 		} else {
 			if (treatment.equals("A")) {
 				if (resistance.equals("combo")) {
-					System.out.println("checking for develop resistance");
+					//System.out.println("checking for develop resistance");
 					InsertResistance resistanceInserter = new InsertResistance(resistance, allParameters, schedule, population, randomHelper);
 					resistanceInserter.checkForDevelopResistance(this, treatment);
 				} else {
@@ -523,14 +523,16 @@ public class Indiv {
 	
 	public void createInfection(String strain, boolean starting, double naturalRecoveryTime) {
 		String newStrain = strain;
+		Boolean reinfection = false;
 		//Context<Object> context = ContextUtils.getContext(this);
 		if (this.myInfection()!=null){
+			reinfection = true;
 			newStrain = myInfection().checkForDoubleResist(newStrain);
 			this.myInfection().overrideInfection(); //essentially remove the old infection, in case different strain
 			this.infection = null;
 		}
 		
-		Infection newInfection = new Infection(this, allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper, tickNow());
+		Infection newInfection = new Infection(this, allParameters, newStrain, starting, naturalRecoveryTime, this.subPop, randomHelper, tickNow(), reinfection);
 		//context.add(newInfection);
 		this.infection = newInfection;
 	}

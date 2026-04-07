@@ -204,8 +204,8 @@ public class SequelaeTest {
 			
 		for (Indiv indiv : testRun.population().allInfectious().collect(Collectors.toList())) {
 			Treatment treatment = new Treatment(indiv.myInfection(), observer);
-			treatment.tryDrugA();
-			treatment.tryDrugB();
+			treatment.prescribeDrugA();
+			treatment.prescribeDrugB();
 			indiv.recoverNaturally();
 		}
 //		System.out.println(observer.getChecksForSequelae());

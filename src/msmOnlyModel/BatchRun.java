@@ -665,8 +665,12 @@ public class BatchRun {
 		int year = date.getYear();
 		
 		String fullDate = month +"_"+ day +"_"+ year;
+		
+		// path root depends on machine. these are for my desktop and laptop respectively.
+		String root = "/usr/local/MSMoutput/";
+		//String root = "/Users/me597/Documents/MSMoutput/";
 
-		String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
+		String dirname = root + "output_" + fullDate +"_debug_1_";
 		
 		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	

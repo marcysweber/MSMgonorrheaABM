@@ -123,7 +123,7 @@ public class TreatementTest {
 		System.out.println(testRun.observer().calcPrev());
 		
 		Treatment treatment = new Treatment(indiv.myInfection(), testRun.observer());
-		treatment.tryDrugA();
+		treatment.prescribeDrugA();
 		
 		System.out.println(testRun.observer().calcPrev());
 
