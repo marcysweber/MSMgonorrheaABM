@@ -35,7 +35,7 @@ public class Main {
 		} else {
 			with_calibrated = true;
 			resistance = "combo";
-			System.out.println("For parcalibrated, enter true. For full calibrated, enter false.");
+			System.out.println("For parcalibrated, enter true. For final calibrated, enter false.");
 			parcalibrated = scanner.nextBoolean();
 		}
 		
@@ -70,9 +70,9 @@ public class Main {
 				
 			} else {
 				// to run everything:
-				//executeCalibratedNoResistanceBatch(scenariofile);
+				executeCalibratedNoResistanceBatch(scenariofile);
 				
-				//executeCounterfactualScenarios(scenariofile);
+				executeCounterfactualScenarios(scenariofile);
 
 				//executeSensitivityAnalysisBatch(scenariofile);			
 				
@@ -81,7 +81,7 @@ public class Main {
 				
 				//executeCompareResistanceInserters(scenariofile);
 //				
-				executeFitnessCostSA(scenariofile);
+				//executeFitnessCostSA(scenariofile);
 			}
 			
 			

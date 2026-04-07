@@ -196,8 +196,9 @@ write_calibrated = function(df, path){
   resampleRecoveryLambda <- df$NaturalRecoveryTime
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
  
-  resampleScreenIntervalMSM <- df$ScreenIntervalMSM
-  
+  resampleScreenIntervalMeanMSM <- df$ScreenIntervalMeanMSM
+    resampleScreenIntervalVarMSM <- df$ScreenIntervalVarMSM
+
   resampleAssortativity <- df$Assortativity
   
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
@@ -229,7 +230,8 @@ write_calibrated = function(df, path){
   fwrite(list(resampleTransmissionMSM), file = paste(path, "transmissionMSM_resample.txt", sep=""))
   fwrite(list(resampleRecoveryLambda), file = paste(path, "recovery_lambda_resample.txt", sep=""))
   fwrite(list(resampleProbSymptomaticMSM), file = paste(path, "prob_symptomatic_MSM_resample.txt", sep=""))
-  fwrite(list(resampleScreenIntervalMSM), file = paste(path, "screen_interval_MSM_resample.txt", sep=""))
+  fwrite(list(resampleScreenIntervalMeanMSM), file = paste(path, "screen_interval_mean_MSM_resample.txt", sep=""))
+    fwrite(list(resampleScreenIntervalVarMSM), file = paste(path, "screen_interval_var_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToSeekCareMSM), file = paste(path, "delay_to_seek_care_MSM_resample.txt", sep=""))
   fwrite(list(resampleDelayToRetreatmentMSM), file = paste(path, "delay_to_retreatment_MSM_resample.txt", sep=""))
   fwrite(list(resampleActivityGroupTransferProp), file = paste(path, "activity_group_transfer_prop_resample.txt", sep=""))
@@ -268,7 +270,7 @@ write_calibrated = function(df, path){
 
 #load the sweep data, and give each run a unique identifier
 #sweepdir <- "/Users/me597/Documents/MSMoutput/output_APRIL_7_2026_debug_2_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
-sweepdir <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_sweep_none_0.0_0.0/"
 
 dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
@@ -319,7 +321,7 @@ write_calibrated(df_best_ends_unique, parcaldir)
 
 #load resistance cal data
 #dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
-dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_7_2026_debug_1_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 
 dfGISPparcal <- identify(dfGISPparcal, df_best_ends)
 
@@ -554,6 +556,19 @@ kable(calibration_fit_df, digits = 2)
 ```
 
 
+```{r loadExperimentData, echo=FALSE}
+directory <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_all_all_0.0_0.0/"
+
+dfGISP25 <-   read.csv(paste(directory,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
+dfGISP25 <- identify(dfGISP25, df_best_ends)
+dfrandom25 <-  read.csv(paste(directory,"randomcombo0.0_0.0_1combined.csv", sep=""))
+dfrandom25 <- identify(dfrandom25, df_best_ends)
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
+dfTOC25 <- identify(dfTOC25, df_best_ends)
+dfreal25 <- read.csv(paste(directory,"realistic_combo_50_50_00combo0.0_0.0_1combined.csv", sep=""))
+dfreal25<-identify(dfreal25, df_best_ends)
+
+```
 
 
 # Figure 3
