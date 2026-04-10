@@ -688,7 +688,9 @@ public class BatchRun {
 		String root = "/usr/local/MSMoutput/";
 		//String root = "/Users/me597/Documents/MSMoutput/";
 
-		String dirname = root + "output_" + fullDate +"_debug_6_";
+		//String dirname = root + "output_" + fullDate +"_debug_6_";
+		
+		String dirname = root + "output_" + fullDate +"_overnight_";
 		
 		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
 	

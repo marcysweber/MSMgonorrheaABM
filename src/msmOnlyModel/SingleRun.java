@@ -227,10 +227,10 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 public void makeScreenIntervalDistributions(ThreadSafeRandomHelper randomHelper, RandomEngine eng) {
 	
 	double mean = parameters.getDouble("screen_interval_mean_MSM") * 52;
-	double var = parameters.getDouble("screen_interval_var_MSM") * 52;
+	double variance = parameters.getDouble("screen_interval_var_MSM") * 52;
 	
-	double lambda = 1 / (var / mean);
-	double alpha = (mean * mean) / var;
+	double lambda = 1 / (variance / mean);
+	double alpha = (mean * mean) / variance;
 	
 	Gamma screenIntervalMSMGamma = new Gamma(alpha, lambda, eng);
 	randomHelper.registerDistribution("screeningIntervalMSMGamma", screenIntervalMSMGamma);
