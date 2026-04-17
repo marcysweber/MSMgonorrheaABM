@@ -8,7 +8,7 @@ import java.util.List;
 import cern.jet.random.Beta;
 import cern.jet.random.Exponential;
 import cern.jet.random.Uniform;
-import repast.simphony.engine.schedule.ISchedule;
+import repast.simphony.engine.schedule.IAction;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.parameter.Parameters;
 
@@ -35,14 +35,16 @@ public class Indiv {
 	//private int timeInfected;
 	//private double tickInfected;
 	
+	private IAction infectiousActions = () -> infectiousActions();
+	
 	private ThreadSafeRandomHelper randomHelper;
 	private Observer observer;
-	private ISchedule schedule;
+	private ThreadSafeSchedule schedule;
 	
 	//params saved for convenience
 	private double transmission;	
 	
-	public Indiv(Parameters allParameters, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Indiv(Parameters allParameters, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		this.allParameters = allParameters;
 
 		this.gender = assignGender();
@@ -71,7 +73,7 @@ public class Indiv {
 	}
 	 
 	//this is the version that is actually getting used currently
-	public Indiv(Parameters allParameters, String subPop, String activityGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Indiv(Parameters allParameters, String subPop, String activityGroup, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 		this.subPop = subPop;
 
 		if (subPop.startsWith("m")) {
@@ -118,7 +120,7 @@ public class Indiv {
 	}
 	
 	//for testing, so that gender and genderPref can be prescribed
-	public Indiv(Parameters allParameters, String gender, double genderPref, ThreadSafeRandomHelper randomHelper, Observer observer, ISchedule schedule) {
+	public Indiv(Parameters allParameters, String gender, double genderPref, ThreadSafeRandomHelper randomHelper, Observer observer, ThreadSafeSchedule schedule) {
 
 		this.allParameters = allParameters;
 		this.gender = gender;
@@ -574,7 +576,7 @@ public class Indiv {
 		return this.randomHelper;
 	}
 	
-	public ISchedule getSchedule() {
+	public ThreadSafeSchedule getSchedule() {
 		return this.schedule;
 	}
 	
@@ -615,7 +617,7 @@ public class Indiv {
 		double nexttick = schedule.getTickCount() + 1;
 		
 		ScheduleParameters schparams = ScheduleParameters.createOneTime(nexttick);
-		schedule.schedule(schparams, this, "infectiousActions");
+		schedule.schedule(schparams, this.infectiousActions);
 		
 	}
 	

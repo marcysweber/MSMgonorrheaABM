@@ -616,14 +616,13 @@ public class Observer {
 		
 		//Stream<Object> indivs = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 
-		List<Object> infected = population.allIndivs()
+		long countInfected = population.allIndivs()
 				.filter(indiv -> ((Indiv) indiv).getState()==1)
-				.collect(Collectors.toList());
+				.count();
 		
 		//System.out.println("Infected:");
 		//System.out.println(infected.size());
 		
-		int countInfected = infected.size();
 		
 		double newPrev = (countInfected / popSize) * 100.0;
 		
@@ -789,13 +788,14 @@ public class Observer {
 	
 	
 	public double calcSymptomProportion() {
-		double prop = 0;
-		
-		Stream<Indiv> infectious = population.allIndivs().filter(inf -> ((Indiv) inf).infectious()); //grabs all objects of class Indiv
-		Stream<Indiv> withSymptoms = population.allIndivs().filter(inf -> ((Indiv) inf).infectious()).filter(infection -> ((Indiv) infection).symptoms());
-
-		prop = (double) withSymptoms.count() / (double) infectious.count();
-		return prop;
+		 long[] counts = {0, 0}; // [0] = infectious, [1] = symptomatic
+	      population.allIndivs()
+	          .filter(indiv -> indiv.infectious())
+	          .forEach(indiv -> {
+	              counts[0]++;
+	              if (indiv.symptoms()) counts[1]++;
+	          });
+	      return counts[0] == 0 ? 0.0 : (double) counts[1] / counts[0];
 	}
 	
 	public int ongoingTreatments() {
@@ -818,8 +818,6 @@ public class Observer {
 //				.filter(indiv -> ((Indiv) indiv).getState()==1)
 //				.count();
 		double prev = calcPrev();
-		double lowRiskPrev = calcLowRiskPrev();
-		double highRiskPrev = calcHighRiskPrev();
 		
 		if (counterfactual.equals("sweep")){ //strict constraints for sweeps
 			if (prev > 10.0 || prev < 0.05) {
@@ -827,17 +825,23 @@ public class Observer {
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			
-			} else if (lowRiskPrev > 4.0) {
-				//System.out.print("I should stop now!!! Low risk prev was too high.");
-				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-				schedule.setFinishing(true);
-			} else if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
+			} else {
+				double lowRiskPrev = calcLowRiskPrev();
+				
+				if (lowRiskPrev > 4.0) {
+					//System.out.print("I should stop now!!! Low risk prev was too high.");
+					//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+					schedule.setFinishing(true);
+				} else {
+					double highRiskPrev = calcHighRiskPrev();
+
+					if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
 				//System.out.print("I should stop now!!! High Risk prev was too extreme.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-				schedule.setFinishing(true);
-			}
-				
-				
+						schedule.setFinishing(true);
+					}
+				}
+			}	
 				
 				
 		} else if (prev > 99.0) {		//if it's not a sweep, only exclude most extreme trajectories.

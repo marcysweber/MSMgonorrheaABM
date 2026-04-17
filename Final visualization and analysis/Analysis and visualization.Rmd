@@ -280,7 +280,7 @@ viz_prop_high_risk = function(df, n, max, min){
   unit <- (max-min)/n
   return(ggplot(df) + 
     geom_histogram(aes(x = propHighActivity), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
-    labs(x = "propHighRisk",
+    labs(x = "propHighActivity",
          y = "Count", 
          title = "B.") +
     scale_x_continuous(breaks = seq(min,max,unit), labels = seq(min,max, unit))+
@@ -370,16 +370,16 @@ viz_delay_care = function(df, n, max, min){
 visualize_parameters = function(df){
 
   #InitialInfected
-# a <- viz_initial_infected(df, 4, 5500, 4000)
+ a <- viz_initial_infected(df, 4, 5500, 4000)
   
   #propHighRisk
-  b <- viz_prop_high_risk(df, 4, 0.35, 0.05)
+  b <- viz_prop_high_risk(df, 4, 0.5, 0.01)
   
-  c <- viz_transmission(df, 4, 20, 3.5)
+  c <- viz_transmission(df, 4, 60, 3.5)
 
  d <- viz_recovery_time(df, 4, 20, 2.5)
     
-  e <- viz_prob_symptomatic(df, 4, 0.25, 0.1)
+  e <- viz_prob_symptomatic(df, 4, 0.5, 0.01)
 
  f <- viz_screen_interval_mean(df, 5, 3, 0.75)
  
@@ -417,7 +417,7 @@ visualize_parameters = function(df){
     theme_bw()
   
   #riskGroupTransferProp
-  max<-0.1
+  max<-0.5
   min <- 0.01
   unit <- (max-min)/n
   j<-ggplot(df) + 
@@ -433,7 +433,7 @@ visualize_parameters = function(df){
   
   #riskGroupTransmissionRatio
   max<-0.5
-  min <- 0.05
+  min <- 0.01
   unit <- (max-min)/n
   k<-ggplot(df) + 
     geom_histogram(aes(x = activityGroupTransmissionRatio), color = "black", fill = "darkgrey", binwidth = unit/2, boundary = min) +
@@ -472,7 +472,7 @@ visualize_parameters = function(df){
     theme_bw()
   
   
-    return(multiplot(b,c,d,e,f,f2,g,h,i, j, k,l,m, cols = 3))
+    return(multiplot(a,b,c,d,e,f,f2,g,h,i, j, k,l,m, cols = 5))
 }
 
 
@@ -487,14 +487,14 @@ visualize_parameters = function(df){
 
 #load the sweep data, and give each run a unique identifier
 #sweepdir <- "/Users/me597/Documents/MSMoutput/output_APRIL_7_2026_debug_2_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
-sweepdir <- "/usr/local/MSMoutput/output_APRIL_7_2026_overnight_sweep_none_0.0_0.0/"
+sweepdir <- "/usr/local/MSMoutput/output_APRIL_17_2026_overnight_sweep_none_0.0_0.0/"
 
 dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
 dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 
 #calculate weights based on the 3 calibration targets, and resample w replacement
 df_ends <- calc_weights(dfsweep)
-df_best_ends <- resample(df_ends, 3000)
+df_best_ends <- resample(df_ends, 5000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
 #parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/

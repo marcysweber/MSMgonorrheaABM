@@ -43,8 +43,8 @@ public class CustomParameterSweep {
 	}
 	
 	public List<Double> getPropHighActivityValues(int samples){
-		double min = 0.05;
-		double max = 0.35;
+		double min = 0.01;
+		double max = 0.5;
 		int seed = (int) System.currentTimeMillis() + 25;
 		return getUniformSweepValues(seed, samples, min, max);
 	}
@@ -53,7 +53,7 @@ public class CustomParameterSweep {
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
 		double annualContactsMin = 3.5;
-		double annualContactsMax = 20;
+		double annualContactsMax = 60;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
@@ -71,8 +71,8 @@ public class CustomParameterSweep {
 	
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.25;
+		double probSymptomaticMin = 0.01;
+		double probSymptomaticMax = 0.5;
 		int seed = (int) System.currentTimeMillis() + 6;
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
@@ -126,7 +126,7 @@ public class CustomParameterSweep {
 	
 	public List<Double> getActivityGroupTransferPropValues(int samples){
 		double RiskGroupTransferPropMin = 0.01;
-		double RiskGroupTransferPropMax = 0.1;
+		double RiskGroupTransferPropMax = 0.5;
 		int seed = (int) System.currentTimeMillis() + 30;
 		return getUniformSweepValues(seed, samples, RiskGroupTransferPropMin, RiskGroupTransferPropMax);
 	}
@@ -134,8 +134,8 @@ public class CustomParameterSweep {
 
 	
 	public List<Double> getActivityGroupTransmissionRatioValues(int samples){
-		double RiskGroupTransmissionRatioMin = 0.05;
-		double RiskGroupTransmissionRatioMax = 0.35;
+		double RiskGroupTransmissionRatioMin = 0.01;
+		double RiskGroupTransmissionRatioMax = 0.5;
 		int seed = (int) System.currentTimeMillis() + 31;
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}

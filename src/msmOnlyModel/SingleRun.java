@@ -10,6 +10,8 @@ import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
 import cern.jet.random.Gamma;
 import cern.jet.random.engine.RandomEngine;
+import org.apache.commons.math3.distribution.GammaDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
 import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.parameter.Parameters;
@@ -225,16 +227,21 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 }
 
 public void makeScreenIntervalDistributions(ThreadSafeRandomHelper randomHelper, RandomEngine eng) {
-	
+
 	double mean = parameters.getDouble("screen_interval_mean_MSM") * 52;
 	double variance = parameters.getDouble("screen_interval_var_MSM") * 52;
-	
+
 	double lambda = 1 / (variance / mean);
 	double alpha = (mean * mean) / variance;
-	
+	double scale = 1.0 / lambda;
+
 	Gamma screenIntervalMSMGamma = new Gamma(alpha, lambda, eng);
 	randomHelper.registerDistribution("screeningIntervalMSMGamma", screenIntervalMSMGamma);
-	
+
+	JDKRandomGenerator rng = new JDKRandomGenerator(parameters.getInteger("seed"));
+	GammaDistribution cmScreenIntervalMSMGamma = new GammaDistribution(rng, alpha, scale);
+	randomHelper.registerDistribution("screeningIntervalMSMGamma", cmScreenIntervalMSMGamma);
+
 }
 
 

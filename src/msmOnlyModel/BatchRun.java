@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +31,8 @@ public class BatchRun {
 	private String resistance;
 	private double fitnessA;
 	private double fitnessB;
+	
+	private AtomicInteger currentRun = new AtomicInteger(0);
 
 	public BatchRun(String counterfactual, String resistance, double fitnessA, double fitnessB) {
 		this.counterfactual = counterfactual;
@@ -57,7 +60,7 @@ public class BatchRun {
 	public void executeSweep(File scenariofile, int reps, String resistance) {
 		
 		String batchDirPath = makeBatchDir();
-
+		currentRun.set(0);
 
 		CustomParameterSweep sweeper = new CustomParameterSweep();
 		List<Double> seedValuesList = sweeper.getSeedValues(reps);
@@ -145,7 +148,7 @@ public class BatchRun {
 		
 		final Stream<ParamConfig> parallelizableComboStream = comboStream;
 
-		ForkJoinPool customThreadPool = new ForkJoinPool(7);
+		ForkJoinPool customThreadPool = new ForkJoinPool(12);
 		try {
 			customThreadPool.submit(
 			() -> 
@@ -526,7 +529,7 @@ public class BatchRun {
 //			e.printStackTrace();
 //		}
 
-		System.out.println("starting run " + paramConfig.batchNumber() + " of " + reps + "...");
+		//System.out.println("starting run " + paramConfig.batchNumber() + " of " + reps + "...");
 
 		
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
@@ -553,6 +556,12 @@ public class BatchRun {
 		
 		thisRun.end();
 		
+		int completed = currentRun.incrementAndGet();
+		
+		if (completed == 1 || completed % 1000 == 0 || completed == reps) {
+			printProgress(completed, reps);
+		}
+		
 		// Hint to the Garbage Collector that it might want to collect the garbs
 		System.gc();
 		//setUpOne(runner, paramConfig, endTime);
@@ -560,6 +569,26 @@ public class BatchRun {
 		//runner.cleanUpRun();
 		//runner.cleanUpBatch();
 
+	}
+	
+	public void printProgress(int completed, int total) {
+		int barWidth = 40;
+	      double pct = (double) completed / total;
+	      int filled = (int) (pct * barWidth);
+
+	      StringBuilder bar = new StringBuilder("[");
+	      for (int i = 0; i < barWidth; i++) {
+	          if (i < filled) bar.append("||");
+	          else bar.append(" ");
+	      }
+	      bar.append("] ");
+	      bar.append(completed).append("/").append(total);
+	      bar.append(String.format(" (%.0f%%)", pct * 100));
+	      bar.append(" in Batch ");
+	      bar.append(this.batchNumber);
+	      
+	      System.out.println(bar.toString());
+		
 	}
 	
 	public Parameters setParameters(int runNumber, int endTime, int seed, 
@@ -690,9 +719,9 @@ public class BatchRun {
 
 		//String dirname = root + "output_" + fullDate +"_debug_6_";
 		
-		String dirname = root + "output_" + fullDate +"_overnight_";
+		//String dirname = root + "output_" + fullDate +"_overnight_";
 		
-		//String dirname = "/usr/local/MSMoutput/FEBRUARY_19_2026_overnight_";
+		String dirname = root + "output_" + "APRIL_17_2026_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 

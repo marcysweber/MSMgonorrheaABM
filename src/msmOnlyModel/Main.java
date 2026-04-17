@@ -49,7 +49,7 @@ public class Main {
 		
 		if (sweeping) {
 			BatchRun batchRunner = new BatchRun("sweep", resistance);
-			int batches = 20;
+			int batches = 30;
 			
 			for (int i = 0; i < batches; i++) {
 				batchRunner.executeSweep(scenariofile, reps, resistance);

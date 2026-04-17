@@ -1,5 +1,9 @@
 package msmOnlyModel;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.math3.distribution.GammaDistribution;
+
 /*CopyrightHere*/
 
 import cern.jet.random.*;
@@ -39,6 +43,7 @@ public class ThreadSafeRandomHelper {
 	private  final MessageCenter LOG = MessageCenter.getMessageCenter(ThreadSafeRandomHelper.class);
 
 	private DefaultRandomRegistry defaultRegistry;
+	private Map<String, GammaDistribution> cmGammaDistributions = new HashMap<>();
 
 	/**
 	 * Initializes the random helper. This will invalidate
@@ -627,6 +632,15 @@ public class ThreadSafeRandomHelper {
 	 */
 	public  AbstractDistribution getDistribution(String name) {
 		return defaultRegistry.getDistribution(name);
+	}
+
+
+	public void registerDistribution(String name, GammaDistribution dist) {
+		cmGammaDistributions.put(name, dist);
+	}
+
+	public GammaDistribution getCMGammaDistribution(String name) {
+		return cmGammaDistributions.get(name);
 	}
 }
 

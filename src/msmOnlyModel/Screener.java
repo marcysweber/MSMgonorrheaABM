@@ -6,10 +6,7 @@ package msmOnlyModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import cern.jet.random.Normal;
-import cern.jet.random.Uniform;
-import cern.jet.random.Gamma;
-import repast.simphony.parameter.Parameters;
+import org.apache.commons.math3.distribution.GammaDistribution;
 
 /**
  * @author me597
@@ -38,35 +35,19 @@ public class Screener {
 	}
 	
 	public List<Integer> makeScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
-		Gamma screenIntervalDist = null;
-		
-		if (subPop.equals("msm")) {
-			screenIntervalDist = (Gamma) randomHelper.getDistribution("screeningIntervalMSMGamma");
-		} else if (subPop.equals("msw")) {
-			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalMSWGamma");
-		} else if (subPop.equals("w")) {
-			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalWGamma");
-		} else {
-			screenIntervalDist = (Gamma) randomHelper.getDistribution("screenIntervalWGamma");
+		GammaDistribution screenIntervalDist = randomHelper.getCMGammaDistribution("screeningIntervalMSMGamma");
+
+		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
+
+		List<Integer> screenings = new ArrayList<Integer>();
+		screenings.add((int) screenIntervalDist.sample());
+
+		while (screenings.get(screenings.size()-1) < endTime) {
+			int newInterval = (int) screenIntervalDist.sample();
+			int newValue = newInterval + screenings.get(screenings.size()-1);
+			screenings.add(newValue);
 		}
 
-		//Parameters params = RunEnvironment.getInstance().getParameters();
-		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
-		
-		List screenings = new ArrayList<Integer>();
-		screenings.add(screenIntervalDist.nextInt());
-		
-		//while the last value is still less than 1300
-		while ((int) screenings.get(screenings.size()-1) < endTime) {
-			//draw a new interval value from distribution
-			int newInterval = screenIntervalDist.nextInt();
-			//add that interval to the last value
-			int newValue = newInterval + (int) screenings.get(screenings.size()-1);
-			//add this new value to the list
-			screenings.add(newValue);
-			
-		}
-		
 		return screenings;
 	}
 }
