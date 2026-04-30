@@ -45,7 +45,8 @@ public class InsertResistanceTest {
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
-				2, //screenInterval
+				2, //screenIntervalmean
+				2, //screenIntervalVar
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity

@@ -261,7 +261,7 @@ write_calibrated = function(df, path){
 ```
 
 
-```{r calibrationFigureSetup, echo = FALSE}
+```{r priorsFigureSetup, echo = FALSE}
 
 viz_initial_infected = function(df, n, max, min){
   unit <- (max-min)/n
@@ -375,7 +375,7 @@ visualize_parameters = function(df){
   #propHighRisk
   b <- viz_prop_high_risk(df, 4, 0.5, 0.01)
   
-  c <- viz_transmission(df, 4, 60, 3.5)
+  c <- viz_transmission(df, 4, 30, 1)
 
  d <- viz_recovery_time(df, 4, 20, 2.5)
     
@@ -487,14 +487,32 @@ visualize_parameters = function(df){
 
 #load the sweep data, and give each run a unique identifier
 #sweepdir <- "/Users/me597/Documents/MSMoutput/output_APRIL_7_2026_debug_2_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
-sweepdir <- "/usr/local/MSMoutput/output_APRIL_17_2026_overnight_sweep_none_0.0_0.0/"
+sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_2_sweep_none_0.0_0.0/"
+#sweepdir2 <- "/usr/local/MSMoutput/output_APRIL_15_2026_overnight_sweep_none_0.0_0.0/"
+#sweepdir3 <- "/usr/local/MSMoutput/output_APRIL_17_2026_overnight_sweep_none_0.0_0.0/"
+
+
 
 dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
-dfsweep$uniqueID <- as.integer(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+dfsweep$uniqueID <- as.numeric(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+
+#dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0supercombined.csv", sep=''))
+#dfsweep2$uniqueID <- as.integer(paste(as.character(dfsweep2$RunNumber), as.character(dfsweep2$seed), sep=''))
+
+#dfsweep3 <- read.csv(paste(sweepdir3, "sweepnone0.00.0supercombined.csv", sep=''))
+#dfsweep3$uniqueID <- as.integer(paste(as.character(dfsweep3$RunNumber), as.character(dfsweep3$seed), sep=''))
+
+#dfsweep<- rbind(dfsweep1, dfsweep2, dfsweep3)
+
+
 
 #calculate weights based on the 3 calibration targets, and resample w replacement
 df_ends <- calc_weights(dfsweep)
-df_best_ends <- resample(df_ends, 5000)
+df_ends_sorted<-df_ends[order(-df_ends$weight), ]
+
+df_best_ends <- df_ends_sorted[1:20,]
+
+#df_best_ends <- resample(df_ends, 10000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
 #parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
@@ -516,12 +534,25 @@ best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
 df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for the resampled trajs
 df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
 
-
+df_best_traj <- best_traj(dfsweep, df_best_ends)
+df_best_traj$resampled <- 1
 
 #write parcalibrated parameter sets to file
 write_calibrated(df_best_ends_unique, parcaldir)
 ```
 
+```{r examiningPriorsAndPosteriors}
+
+#visualize_parameters(dfsweep[dfsweep$tick ==0, ])
+visualize_parameters(df_ends) 
+visualize_parameters(df_best_ends)
+
+#dfsweep$resampled <- 1
+#visualize_calibration_MSM(dfsweep)
+visualize_calibration_MSM(df_best_traj)
+
+
+```
 
 
 ```{r loadParCalibration, include=FALSE}
@@ -678,6 +709,7 @@ viz_sympt_MSM_cal = function(df, title){
 ```
 
 ```{r figure2, echo = FALSE, fig.width=8, fig.height=2.7}
+visualize_calibration_MSM(df_best_traj)
 visualize_calibration_MSM(dfcalibrated)
 ```
 

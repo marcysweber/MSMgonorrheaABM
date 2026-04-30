@@ -28,7 +28,7 @@ public class CustomParameterSweep {
 
 	public List<Double> getSeedValues(int samples){
 		double seedMin = 0;
-		double seedMax = 100000;
+		double seedMax = Integer.MAX_VALUE;
 		int seed = (int) System.currentTimeMillis();
 		return getUniformSweepValues(seed, samples, seedMin, seedMax);
 	}
@@ -52,8 +52,8 @@ public class CustomParameterSweep {
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
-		double annualContactsMin = 3.5;
-		double annualContactsMax = 60;
+		double annualContactsMin = 1.0;
+		double annualContactsMax = 30.0;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
