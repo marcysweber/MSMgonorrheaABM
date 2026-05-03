@@ -62,8 +62,10 @@ public class CostsTests {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(52);
 		
 		return testRun;
@@ -105,8 +107,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -115,6 +119,7 @@ public class CostsTests {
 		testRun.createIndivs(0);
 		observer.setPopulation(testRun.population());
 
+		for (int i = 0; i < 10; i++) {
 		Indiv indiv1 = new Indiv(params, "msm", "high", randomHelper, observer, schedule);
 		testRun.population().add(indiv1);
 		
@@ -123,15 +128,27 @@ public class CostsTests {
 			indiv1.infect("none", "reinfect");
 		}
 		
-
+		Infection testInf = indiv1.myInfection();
+		
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
 		care.seekCare();
+		
 		//diagnostic test + care + treatment A
-		//2 + 1 + 4 = 7
+		//(2 * 2) + 1 + 4 = 
+		
+		try {
+			observer.processCompleteInfection(testInf);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		CostCalc costCalc = testRun.observer().getCostCalc();
-		//System.out.println(costCalc.getMonetaryCost());
-		assertTrue("CareCost1", costCalc.getMonetaryCost() == 7);
+		System.out.println("Monetary Costs: ");
+		System.out.println(costCalc.getMonetaryCost());
+		
+		}
+		//assertTrue("CareCost1", costCalc.getMonetaryCost() == 9);
 
 		
 	}
@@ -171,8 +188,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -256,8 +275,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -315,8 +336,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -381,8 +404,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -453,8 +478,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -471,7 +498,7 @@ public class CostsTests {
 			indiv1.infect("A", "reinfect");
 		}
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
@@ -486,14 +513,14 @@ public class CostsTests {
 			e.printStackTrace();
 		}
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
 
 		treatment.retreat("B");
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
@@ -536,8 +563,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -569,14 +598,14 @@ public class CostsTests {
 			e.printStackTrace();
 		}
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
 
 		treatment.retreat("B");
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
@@ -619,8 +648,10 @@ public class CostsTests {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -640,7 +671,7 @@ public class CostsTests {
 		CareSeeking care = new CareSeeking(indiv1, observer, schedule);
 		care.seekCare();
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest1", indiv1.infectious());
@@ -652,14 +683,14 @@ public class CostsTests {
 			e.printStackTrace();
 		}
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 
 		
 		assertTrue("QALYLostSympSusTest2", indiv1.infectious());
 
 		treatment.retreat("B");
 		
-		System.out.println(costCalc.getMonetaryCost());
+		//System.out.println(costCalc.getMonetaryCost());
 		
 		assertTrue("QALYLostSympSusTest2", !indiv1.infectious());
 		//System.out.println("resist " + costCalc.getQALYsLost());

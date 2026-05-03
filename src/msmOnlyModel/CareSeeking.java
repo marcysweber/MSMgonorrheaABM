@@ -50,11 +50,13 @@ public class CareSeeking {
 	}
 	
 	public void seekCare() {
+		//System.out.println("Seeking care.");
 		indiv.clearSeekCareScheduled();
 		
 		if (indiv.infectious() && indiv.symptoms()) {
-			
-			indiv.myInfection().detect();
+			Infection infection = indiv.myInfection();
+			infection.recordDiagnosticTest();
+			infection.detect();
 			indiv.myInfection().seekCare();
 
 

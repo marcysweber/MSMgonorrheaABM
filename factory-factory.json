@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "setup": "[ -f gradle/wrapper/gradle-wrapper.jar ] || curl -sL -o gradle/wrapper/gradle-wrapper.jar 'https://raw.githubusercontent.com/gradle/gradle/v7.6.4/gradle/wrapper/gradle-wrapper.jar' && ./setup-libs.sh && ./gradlew build -x test",
+    "run": "./gradlew run"
+  }
+}

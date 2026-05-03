@@ -9,6 +9,17 @@ library(egg)
 library(epiR)
 library(patchwork)
 
+save(dfsweep, 
+     df_best_ends, 
+     df_best_ends_unique, 
+     df_best_traj,
+     dfcalibrated, 
+     dfGISP25,
+     dfrandom25,
+     dfTOC25,
+     dfreal25,
+     file = "allFigureData.RData")
+
 #copied from cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
@@ -697,6 +708,20 @@ cumulative_E = function(df){
   
 }
 
+cumulative_mutated = function(df){
+  cumulative <- c()
+  runs <- unique(df$uniqueID)
+  
+  for (i in runs){
+    thisRunData <- df %>% filter(uniqueID==i)
+    thisRunCumulative <- sum(thisRunData$DevelopedResistance)
+    cumulative <- c(cumulative, thisRunCumulative)
+  }
+  
+  return(cumulative)
+}
+  
+  
 discountedInc = function(df){
   discountedValues <- c()
   i <- df$tick/52
@@ -840,6 +865,7 @@ cumulative_everything = function(df){
   dfends$cumulativeResist <- cumulative_resist(df)
   dfends$cumulativeFailure <- cumulative_failure(df)
   dfends$cumulativeE <- cumulative_E(df)
+  dfends$cumulativeMutated <- cumulative_mutated(df)
 
   #weight with resampled
   newdf <- dfends
@@ -5898,7 +5924,7 @@ write_calibrated = function(df, path){
   
   resampleSeed <- df$seed
   resampleInitialInfected <- df$InitialInfected
-  resamplePropHighActivity <- df$propHighRisk
+  resamplePropHighActivity <- df$propHighActivity
   resampleTransmissionMSM <- df$TransmissionMSM
  
   resampleRecoveryLambda <- df$NaturalRecoveryTime
@@ -5911,12 +5937,15 @@ write_calibrated = function(df, path){
   resampleDelayToSeekCareMSM <- df$DelayToSeekCareMSM
  
   resampleDelayToRetreatmentMSM <- df$DelayToRetreatmentMSM
-  resampleActivityGroupTransferProp <- df$riskGroupTransferProp
-  resampleActivityGroupTransmissionRatio <- df$riskGroupTransmissionRatio
+  resampleActivityGroupTransferProp <- df$activityGroupTransferProp
+  resampleActivityGroupTransmissionRatio <- df$activityGroupTransmissionRatio
    
   resamplePercentResistantA <- df$PercentResistantA
   resampleBeginImportingB <- df$BeginImportingB
   resampleImportingBInterval <- df$ImportingBInterval
+  resampleProbDevelopResistanceAExponent <- df$ProbDevelopResistanceAExponent
+  resampleProbDevelopResistanceBExponent <- df$ProbDevelopResistanceBExponent
+  
   resampleDSTsensitivity <- df$DSTsensitivity
   resampleDSTspecifictiy <- df$DSTspecificity
   
@@ -5944,6 +5973,10 @@ write_calibrated = function(df, path){
   fwrite(list(resamplePercentResistantA), file = paste(path, "percent_resistant_A_resample.txt", sep=""))
   fwrite(list(resampleBeginImportingB), file = paste(path, "begin_importing_B_resample.txt", sep=""))
   fwrite(list(resampleImportingBInterval), file = paste(path, "importing_B_interval_resample.txt", sep=""))
+  fwrite(list(resampleProbDevelopResistanceAExponent), file = paste(path, "prob_develop_resistance_A_exponent_resample.txt", sep=""))
+  fwrite(list(resampleProbDevelopResistanceBExponent), file = paste(path, "prob_develop_resistance_B_exponent_resample.txt", sep=""))
+  
+  
   fwrite(list(resampleDSTsensitivity), file = paste(path, "DSTsensitivity_resample.txt", sep=""))
   fwrite(list(resampleDSTspecifictiy), file = paste(path, "DSTspecificity_resample.txt", sep=""))
   
@@ -14246,9 +14279,19 @@ mean(summary_real$AttemptTreatmentsX)
 quantile(summary_real$AttemptTreatmentsX, probs = c(0.025, 0.975))
 
 
-#table 1 row 2- AMR incidence
 
+# for reviewer: mutants
+mean(summary_GISP$cumulativeMutated)
+quantile(summary_GISP$cumulativeMutated, probs = c(0.025, 0.975))
 
+mean(summary_random$cumulativeMutated)
+quantile(summary_random$cumulativeMutated, probs = c(0.025, 0.975))
+
+mean(summary_TOC$cumulativeMutated)
+quantile(summary_TOC$cumulativeMutated, probs = c(0.025, 0.975))
+
+mean(summary_real$cumulativeMutated)
+quantile(summary_real$cumulativeMutated, probs = c(0.025, 0.975))
 
 
 
@@ -14916,7 +14959,10 @@ multiplot(
   cols = 2
 )
 
+weeklyProb = function(transmission){
+  return(1 - exp(-transmission * 1/52))
+}
 
-
+weeklyProb(300) 
 
 #############

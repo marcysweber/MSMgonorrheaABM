@@ -60,8 +60,10 @@ public class InfectionTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(52);
 		
 		return testRun;

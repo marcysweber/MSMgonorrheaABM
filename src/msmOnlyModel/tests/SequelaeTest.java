@@ -69,8 +69,10 @@ public class SequelaeTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(52);
 		
 		return testRun;
@@ -113,8 +115,10 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -181,8 +185,10 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -201,8 +207,8 @@ public class SequelaeTest {
 			
 		for (Indiv indiv : testRun.population().allInfectious().collect(Collectors.toList())) {
 			Treatment treatment = new Treatment(indiv.myInfection(), observer);
-			treatment.tryDrugA();
-			treatment.tryDrugB();
+			treatment.prescribeDrugA();
+			treatment.prescribeDrugB();
 			indiv.recoverNaturally();
 		}
 //		System.out.println(observer.getChecksForSequelae());
@@ -252,8 +258,10 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -337,8 +345,10 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();

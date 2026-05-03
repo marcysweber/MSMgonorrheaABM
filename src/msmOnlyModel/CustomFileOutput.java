@@ -3,6 +3,7 @@
  */
 package msmOnlyModel;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class CustomFileOutput {
 
 	//use this init for tests
 	public CustomFileOutput(boolean test) {
-		this.outputDir = "/Users/me597/Documents/output/";
+		this.outputDir = "output/tests/";
 		this.outputFileName = generateFileName();
 		this.isTest = test;
 	}
@@ -100,12 +101,10 @@ public class CustomFileOutput {
 		//should create a new csv with the specified filename
 
 		File file = new File(outputDir + outputFileName);
-		FileWriter outputfile;
 		try {
-			outputfile = new FileWriter(file, true);
-			CSVWriter writer = new CSVWriter(outputfile); 
+			CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
-			String[] header = { 
+			String[] header = {
 					"RunNumber", 
 					"seed",
 					"counterfactual",
@@ -133,8 +132,8 @@ public class CustomFileOutput {
 					"ProbSymptomaticMSM",
 
 
-					"ScreenIntervalMSM",
-
+					"ScreenIntervalMeanMSM",
+					"ScreenIntervalVarMSM",
 
 
 					"DelayToSeekCareMSM",
@@ -148,6 +147,9 @@ public class CustomFileOutput {
 					"PercentResistantA",
 					"BeginImportingB",
 					"ImportingBInterval",
+					"ProbDevelopResistanceAExponent",
+					"ProbDevelopResistanceBExponent",
+					
 					"DSTsensitivity", 
 					"DSTspecificity",
 					"CareCost",
@@ -226,24 +228,24 @@ public class CustomFileOutput {
 			e.printStackTrace();
 		} 
 		
-		File file2 = new File(outputDir + outputTransmissionFileName);
-		FileWriter outputfile2;
-		
-		try {
-			outputfile2 = new FileWriter(file2, true);
-			CSVWriter writer2 = new CSVWriter(outputfile2); 
-			
-			String[] header2 = { 
-					"CountTransmissions", 
-					"InfectionDuration",
-					"RiskGroup"};
-			writer2.writeNext(header2);
-			writer2.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		File file2 = new File(outputDir + outputTransmissionFileName);
+//		FileWriter outputfile2;
+//		
+//		try {
+//			outputfile2 = new FileWriter(file2, true);
+//			CSVWriter writer2 = new CSVWriter(outputfile2); 
+//			
+//			String[] header2 = { 
+//					"CountTransmissions", 
+//					"InfectionDuration",
+//					"RiskGroup"};
+//			writer2.writeNext(header2);
+//			writer2.close();
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		
 		
 	}
@@ -276,7 +278,8 @@ public class CustomFileOutput {
 
 			double ProbSymptomaticMSM,
 
-			double ScreenIntervalMSM,
+			double ScreenIntervalMeanMSM,
+			double ScreenIntervalVarMSM,
 
 
 			double delayToSeekCareMSM,
@@ -292,6 +295,9 @@ public class CustomFileOutput {
 			double percentResistantA,
 			int beginImportingB,
 			double importingBInterval,
+			double probDevelopResistanceAExponent,
+			double probDevelopResistanceBExponent,
+			
 			double DSTsensitivity,
 			double DSTspecificity,
 
@@ -369,12 +375,10 @@ public class CustomFileOutput {
 		if (isTest == false) {
 
 			File file = new File(outputDir + outputFileName);
-			FileWriter outputfile;
 			try {
-				outputfile = new FileWriter(file, true);
-				CSVWriter writer = new CSVWriter(outputfile); 
+				CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
-				String[] newRow = { 
+				String[] newRow = {
 						String.valueOf(runNumber), 
 						String.valueOf(seed),
 						String.valueOf(counterfactual),
@@ -398,7 +402,9 @@ public class CustomFileOutput {
 
 						String.valueOf(ProbSymptomaticMSM),
 
-						String.valueOf(ScreenIntervalMSM),
+						String.valueOf(ScreenIntervalMeanMSM),
+						String.valueOf(ScreenIntervalVarMSM),
+
 
 						String.valueOf(delayToSeekCareMSM),
 
@@ -412,6 +418,9 @@ public class CustomFileOutput {
 						String.valueOf(percentResistantA),
 						String.valueOf(beginImportingB),
 						String.valueOf(importingBInterval),
+						String.valueOf(probDevelopResistanceAExponent),
+						String.valueOf(probDevelopResistanceBExponent),
+						
 						String.valueOf(DSTsensitivity),
 						String.valueOf(DSTspecificity),
 
@@ -499,11 +508,9 @@ public class CustomFileOutput {
 
 	public void transmissionRateOutput(List<Infection> infectionList) {
 		File file = new File(outputDir + outputTransmissionFileName);
-		FileWriter outputfile;
-		
+
 		try {
-			outputfile = new FileWriter(file, true);
-			CSVWriter writer = new CSVWriter(outputfile); 
+			CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
 
 			for (Infection inf : infectionList) {

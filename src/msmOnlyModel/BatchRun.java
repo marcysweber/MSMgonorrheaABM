@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
@@ -28,13 +29,28 @@ public class BatchRun {
 	
 	private String counterfactual;
 	private String resistance;
-	private int yearX;
+	private double fitnessA;
+	private double fitnessB;
+	
+	private AtomicInteger currentRun = new AtomicInteger(0);
+
+	public BatchRun(String counterfactual, String resistance, double fitnessA, double fitnessB) {
+		this.counterfactual = counterfactual;
+		this.resistance = resistance;
+		this.fitnessA = fitnessA;
+		this.fitnessB = fitnessB;
+
+		batchNumber = 1;
+		expdir = makeExperimentDir();
+		
+	}
 	
 	public BatchRun(String counterfactual, String resistance) {
 		this.counterfactual = counterfactual;
 		this.resistance = resistance;
-		this.yearX = yearX;
-		
+		this.fitnessA = 0;
+		this.fitnessB = 0;
+
 		batchNumber = 1;
 		expdir = makeExperimentDir();
 		
@@ -44,7 +60,7 @@ public class BatchRun {
 	public void executeSweep(File scenariofile, int reps, String resistance) {
 		
 		String batchDirPath = makeBatchDir();
-
+		currentRun.set(0);
 
 		CustomParameterSweep sweeper = new CustomParameterSweep();
 		List<Double> seedValuesList = sweeper.getSeedValues(reps);
@@ -59,7 +75,8 @@ public class BatchRun {
 		
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
-		List<Double> screenIntervalMSMValuesList = sweeper.getScreenIntervalMSMValues(reps);
+		List<Double> screenIntervalMeanMSMValuesList = sweeper.getScreenIntervalMeanMSMValues(reps);
+		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(reps);
 		
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
@@ -74,6 +91,9 @@ public class BatchRun {
 		List<Double> percentResistantAValuesList = sweeper.getPercentResistantA(reps);
 		List<Integer> beginImportingBValuesList = sweeper.getBeginImportingB(reps);
 		List<Double> importingBIntervalValuesList = sweeper.getImportingBInterval(reps);
+		List<Double> probDevelopResistanceAExponentValuesList = sweeper.getProbDevelopResistanceAExponent(reps);
+		List<Double> probDevelopResistanceBExponentValuesList = sweeper.getProbDevelopResistanceBExponent(reps);
+
 		List<Double> DSTsensitivityValuesList = sweeper.getDSTsensitivity(reps);
 		List<Double> DSTspecificityValuesList = sweeper.getDSTspecificity(reps);
 
@@ -89,58 +109,52 @@ public class BatchRun {
 
 		// puts together sets of parameters
 		List<ParamConfig> lst = new ArrayList<ParamConfig>();
-		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
-			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, 
-							seedValuesList.get(i), 
-							resistance, 
-							counterfactual, 
-							31,
-							initialInfectedValuesList.get(i), 
-							propHighActivityValuesList.get(i),
-							transmissionMSMValuesList.get(i),
-							recoveryTimeValuesList.get(i), 
-							probSymptomaticMSMValuesList.get(i),
-							screenIntervalMSMValuesList.get(i), 
-							delayToSeekCareMSMValuesList.get(i),
-							delayToRetreatmentMSMValuesList.get(i), 
-							assortativityValuesList.get(i),
-							activityGroupTransferPropValuesList.get(i),
-							activityGroupTransmissionRatioValuesList.get(i),
-							percentResistantAValuesList.get(i),
-							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
-							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
-							careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
-							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
-							treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i))));
+			lst.add(new ParamConfig(i + 1,
+					seedValuesList.get(i),
+					resistance,
+					counterfactual,
+					31,
+					initialInfectedValuesList.get(i),
+					propHighActivityValuesList.get(i),
+					transmissionMSMValuesList.get(i),
+					recoveryTimeValuesList.get(i),
+					probSymptomaticMSMValuesList.get(i),
+					screenIntervalMeanMSMValuesList.get(i),
+					screenIntervalVarMSMValuesList.get(i),
+					delayToSeekCareMSMValuesList.get(i),
+					delayToRetreatmentMSMValuesList.get(i),
+					assortativityValuesList.get(i),
+					activityGroupTransferPropValuesList.get(i),
+					activityGroupTransmissionRatioValuesList.get(i),
+					percentResistantAValuesList.get(i),
+					beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+					probDevelopResistanceAExponentValuesList.get(i),
+					probDevelopResistanceBExponentValuesList.get(i),
+					DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
+					careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
+					treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
+					treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
-		
-//		comboStream.
-//		parallel().
-//		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520));
-//		System.out.println("completed " + reps + " runs!");
-		
-		
-		
-		final Stream<ParamConfig> parallelizableComboStream = comboStream;
 
-		ForkJoinPool customThreadPool = new ForkJoinPool(7);
+		int numThreads = Runtime.getRuntime().availableProcessors();
+		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
 		try {
 			customThreadPool.submit(
-			() -> 
-			parallelizableComboStream.
+			() ->
+			lst.stream().
 			parallel().
 			forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520))).get();
 		} catch (InterruptedException | ExecutionException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} finally {
+			customThreadPool.shutdown();
 		}
 
 		
 		System.out.println("completed " + reps + " runs! ");
 
-		System.out.println("completed sweep!");
+		System.out.println("completed batch " + batchNumber + "!");
 		
 		try {
 			combineCSVs(batchDirPath);
@@ -158,11 +172,11 @@ public class BatchRun {
 	
 	public void executeCalibratedBatch(File scenariofile, String counterfactual) {
 		//contains constants for default runs
-		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.5, 0.5, 0.0);
+		executeCalibratedBatch(scenariofile, counterfactual, "combo", 25, 5, 80, 80, 50, 0.5, 0.5, 0.0, 0.0, 0.0);
 	}
 		
 		
-	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST) {
+	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST, double fitnessCostA, double fitnessCostB) {
 		
 
 		
@@ -170,7 +184,8 @@ public class BatchRun {
 		
 		this.counterfactual=counterfactual;
 		this.resistance=resistance;
-		this.yearX=yearX;
+		this.fitnessA = fitnessCostA;
+		this.fitnessB = fitnessCostB;
 
 		String batchDirPath = makeBatchDir();
 		
@@ -186,7 +201,8 @@ public class BatchRun {
 		
 		List<Double> probSymptomaticMSMValuesList = new ArrayList<Double>();
 		
-		List<Double> screenIntervalMSMValuesList = new ArrayList<Double>();
+		List<Double> screenIntervalMeanMSMValuesList = new ArrayList<Double>();
+		List<Double> screenIntervalVarMSMValuesList = new ArrayList<Double>();
 
 		List<Double> delayToSeekCareMSMValuesList = new ArrayList<Double>();
 
@@ -201,6 +217,9 @@ public class BatchRun {
 		List<Double> percentResistantAValuesList = new ArrayList<Double>();
 		List<Integer> beginImportingBValuesList = new ArrayList<Integer>();
 		List<Double> importingBIntervalValuesList = new ArrayList<Double>();
+		List<Double> probDevelopResistanceAExponentValuesList = new ArrayList<Double>();
+		List<Double> probDevelopResistanceBExponentValuesList = new ArrayList<Double>();
+		
 		List<Double> DSTsensitivityValuesList = new ArrayList<Double>();
 		List<Double> DSTspecificityValuesList = new ArrayList<Double>();
 
@@ -212,7 +231,7 @@ public class BatchRun {
 		List<Double> treatmentBCostValuesList = new ArrayList<Double>();
 		List<Double> treatmentXCostValuesList = new ArrayList<Double>();
 		List<Double> treatmentECostValuesList = new ArrayList<Double>();
-		CalibratedParameters calibrated = new CalibratedParameters();
+		CalibratedParameters calibrated = new CalibratedParameters(expdir);
 
 		try {
 			initialInfectedValuesList = calibrated.getInitialInfectedValues();
@@ -262,7 +281,16 @@ public class BatchRun {
 		
 		///screen interval parameters
 		try {
-			screenIntervalMSMValuesList = calibrated.getScreenIntervalMSMValues();
+			screenIntervalMeanMSMValuesList = calibrated.getScreenIntervalMeanMSMValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		///screen interval parameters
+		try {
+			screenIntervalVarMSMValuesList = calibrated.getScreenIntervalVarMSMValues();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -334,6 +362,22 @@ public class BatchRun {
 			e.printStackTrace();
 		}
 
+		try {
+			probDevelopResistanceAExponentValuesList = calibrated.getProbDevelopResistanceAExponentValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			probDevelopResistanceBExponentValuesList = calibrated.getProbDevelopResistanceBExponentValues();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 
 		try {
 			DSTsensitivityValuesList = calibrated.getDSTsensitivityValues();
@@ -405,34 +449,45 @@ public class BatchRun {
 
 		// puts together sets of parameters
 		List<ParamConfig> lst = new ArrayList<ParamConfig>();
-		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
-			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
-							initialInfectedValuesList.get(i), 
-							propHighActivityValuesList.get(i),
-							transmissionMSMValuesList.get(i),
-							recoveryTimeValuesList.get(i), 
-							probSymptomaticMSMValuesList.get(i),
-							screenIntervalMSMValuesList.get(i), 
-							delayToSeekCareMSMValuesList.get(i),
-							delayToRetreatmentMSMValuesList.get(i), 
-							assortativityValuesList.get(i),
-							activityGroupTransferPropValuesList.get(i),
-							activityGroupTransmissionRatioValuesList.get(i),
-							percentResistantAValuesList.get(i),
-							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
-							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
-							careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
-							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
-							treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i))));
+		    lst.add(new ParamConfig(i + 1, seedValuesList.get(i), resistance, counterfactual, yearX,
+		            initialInfectedValuesList.get(i),
+		            propHighActivityValuesList.get(i),
+		            transmissionMSMValuesList.get(i),
+		            recoveryTimeValuesList.get(i),
+		            probSymptomaticMSMValuesList.get(i),
+		            screenIntervalMeanMSMValuesList.get(i),
+		            screenIntervalVarMSMValuesList.get(i),
+		            delayToSeekCareMSMValuesList.get(i),
+		            delayToRetreatmentMSMValuesList.get(i),
+		            assortativityValuesList.get(i),
+		            activityGroupTransferPropValuesList.get(i),
+		            activityGroupTransmissionRatioValuesList.get(i),
+		            percentResistantAValuesList.get(i),
+		            beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+		            probDevelopResistanceAExponentValuesList.get(i),
+					probDevelopResistanceBExponentValuesList.get(i),
+		            DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
+		            careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
+		            treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
+		            treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
 
-		comboStream.
-		parallel().
-		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, realisticDST));
+		int numThreads = Runtime.getRuntime().availableProcessors();
+		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
+		try {
+		    customThreadPool.submit(() ->
+		        lst.stream().parallel().forEach(parameterConfiguration -> 
+		            eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 1560, switchThreshold, 
+		                    availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom, realisticTOC, 
+		                    realisticDST, fitnessCostA, fitnessCostB))
+		    ).get();
+		} catch (InterruptedException | ExecutionException e) {
+		    e.printStackTrace();
+		} finally {
+		    customThreadPool.shutdown();
+		}
 		System.out.println("completed " + reps + " runs!");
-		
 		
 		try {
 			combineCSVs(batchDirPath);
@@ -445,7 +500,7 @@ public class BatchRun {
 	}
 	
 	public void eachRun(String batchDirPath, int reps, ParamConfig paramConfig, int endTime) {
-		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.5, 0.5, 0.0);
+		eachRun(batchDirPath, reps, paramConfig, endTime, 5.0, 80, 80, 50, 0.5, 0.5, 0.0, 0.0, 0.0);
 	}
 
 	public void eachRun(String batchDirPath, 
@@ -458,14 +513,14 @@ public class BatchRun {
 			int adhereTOCasympt, 
 			double realisticRandom,
 			double realisticTOC,
-			double realisticDST) {
+			double realisticDST, double fitnessCostA, double fitnessCostB) {
 //		try {
 //			runner.load(scenariofile); // load the repast scenario
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
 
-		System.out.println("starting run " + paramConfig.batchNumber() + " of " + reps + "...");
+		//System.out.println("starting run " + paramConfig.batchNumber() + " of " + reps + "...");
 
 		
 		SingleRun thisRun = new SingleRun(batchDirPath, setParameters(paramConfig.batchNumber(), endTime, paramConfig.getSeed(), paramConfig.getResistance(),
@@ -473,14 +528,17 @@ public class BatchRun {
 				paramConfig.getTransmissionMSM(),
 				paramConfig.getRecoveryTime(), 
 				paramConfig.getProbSymptomaticMSM(), 
-				paramConfig.getScreenIntervalMSM(),
+				paramConfig.getScreenIntervalMeanMSM(),
+				paramConfig.getScreenIntervalVarMSM(),
 				paramConfig.getDelayToSeekCareMSM(), 
 				paramConfig.getDelayToRetreatmentMSM(),
 				paramConfig.getAssortativity(), paramConfig.getActivityGroupTransferProp(), paramConfig.getActivityGroupTransmissionRatio(),
 				paramConfig.getPercentResistantA(), paramConfig.getBeginImportingB(),
-				paramConfig.getImportingBInterval(), paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
+				paramConfig.getImportingBInterval(), paramConfig.getProbDevelopResistanceA(), paramConfig.getProbDevelopResistanceB(),
+				paramConfig.getDSTsensitivity(), paramConfig.getDSTspecificity(),
 				paramConfig.getcareCost(), paramConfig.getTestCost(),
-				paramConfig.getstrainTestCost(), paramConfig.getTreatmentACost(), paramConfig.getTreatmentBCost(), paramConfig.getTreatmentXCost(), paramConfig.getTreatmentECost()));
+				paramConfig.getstrainTestCost(), paramConfig.getTreatmentACost(), paramConfig.getTreatmentBCost(), paramConfig.getTreatmentXCost(), paramConfig.getTreatmentECost(),
+				fitnessCostA, fitnessCostB));
 		
 		thisRun.setUp(endTime);
 		
@@ -489,13 +547,37 @@ public class BatchRun {
 		
 		thisRun.end();
 		
-		// Hint to the Garbage Collector that it might want to collect the garbs
-		System.gc();
+		int completed = currentRun.incrementAndGet();
+		
+		if (completed == 1 || completed % 1000 == 0 || completed == reps) {
+			printProgress(completed, reps);
+		}
+		
 		//setUpOne(runner, paramConfig, endTime);
 		//runOne(runner);
 		//runner.cleanUpRun();
 		//runner.cleanUpBatch();
 
+	}
+	
+	public void printProgress(int completed, int total) {
+		int barWidth = 40;
+	      double pct = (double) completed / total;
+	      int filled = (int) (pct * barWidth);
+
+	      StringBuilder bar = new StringBuilder("[");
+	      for (int i = 0; i < barWidth; i++) {
+	          if (i < filled) bar.append("||");
+	          else bar.append(" ");
+	      }
+	      bar.append("] ");
+	      bar.append(completed).append("/").append(total);
+	      bar.append(String.format(" (%.0f%%)", pct * 100));
+	      bar.append(" in Batch ");
+	      bar.append(this.batchNumber);
+	      
+	      System.out.println(bar.toString());
+		
 	}
 	
 	public Parameters setParameters(int runNumber, int endTime, int seed, 
@@ -505,18 +587,23 @@ public class BatchRun {
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
-			double screenIntervalMSM,  
+			double screenIntervalMeanMSM,  
+			double screenIntervalVarMSM,  
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
 			double activityGrouptransferProp,
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
-			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
-			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
+			int beginImportingB, double importingBInterval, 
+			double probDevelopResistanceAExponent, double probDevelopResistanceBExponent,
+			double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
+			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
+			double fitnessCostA, double fitnessCostB) {
 		return setParameters(runNumber, endTime, seed, resistance, counterfactual, yearX, 5.0, 80, 80, 80, 0.5, 0.5, 0.0,
-				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
-				percentResistantA, beginImportingB, importingBInterval, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost);
+				initialInfected, propHighActivity, transmissionMSM, recoveryTime, probSymptomaticMSM, screenIntervalMeanMSM, screenIntervalVarMSM, delayToSeekCareMSM, delayToRetreatmentMSM, assortativity, activityGrouptransferProp, activityGroupTransmissionRatio,
+				percentResistantA, beginImportingB, importingBInterval, probDevelopResistanceAExponent, probDevelopResistanceBExponent, DSTsensitivity, DSTspecificity, careCost, testCost, strainTestCost, treatmentACost, treatmentBCost, treatmentXCost, treatmentECost,
+				fitnessCostA, fitnessCostB);
 	}
 	
 
@@ -528,15 +615,20 @@ public class BatchRun {
 			double transmissionMSM,  
 			double recoveryTime, 
 			double probSymptomaticMSM, 
-			double screenIntervalMSM,  
+			double screenIntervalMeanMSM,
+			double screenIntervalVarMSM,
 			double delayToSeekCareMSM, 
 			double delayToRetreatmentMSM, 
 			double assortativity,
 			double activityGroupTransferProp,
 			double activityGroupTransmissionRatio,
 			double percentResistantA,
-			int beginImportingB, double importingBInterval, double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
-			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost) {
+			int beginImportingB, double importingBInterval, 
+			double probDevelopResistanceAExponent,
+			double probDevelopResistanceBExponent,
+			double DSTsensitivity, double DSTspecificity, double careCost, double testCost, double strainTestCost,
+			double treatmentACost, double treatmentBCost, double treatmentXCost, double treatmentECost,
+			double fitnessCostA, double fitnessCostB) {
 		DefaultParameters params = new DefaultParameters();
 		params.addParameter("runNumber", "runNumber", int.class, runNumber, false);
 		params.addParameter("randomSeed", "random seed", int.class, 1, false);
@@ -558,7 +650,9 @@ public class BatchRun {
 		params.addParameter("transmissionMSM", "TransmissionMSM", double.class, transmissionMSM, false);
 		params.addParameter("recovery_time", "RecoveryTime", double.class, recoveryTime, false);
 		params.addParameter("prob_symptomatic_msm", "ProbSymptomaticMSM", double.class, probSymptomaticMSM, false);
-		params.addParameter("screen_interval_MSM", "ScreenIntervalMSM", double.class, screenIntervalMSM, false);
+		params.addParameter("screen_interval_mean_MSM", "ScreenIntervalMeanMSM", double.class, screenIntervalMeanMSM, false);
+		params.addParameter("screen_interval_var_MSM", "ScreenIntervalVarMSM", double.class, screenIntervalVarMSM, false);
+
 		params.addParameter("delay_to_seek_care_msm", "DelayToSeekCareMSM", double.class, delayToSeekCareMSM, false);
 		params.addParameter("delay_to_retreatment_msm", "DelayToRetreatmentMSM", double.class, delayToRetreatmentMSM, false);
 		params.addParameter("assortativity", "assortativity", double.class, assortativity, false);
@@ -569,6 +663,9 @@ public class BatchRun {
 		params.addParameter("percent_resistant_A", "percent_resistant_A", double.class, percentResistantA, false);
 		params.addParameter("begin_importing_B", "begin_importing_B", int.class, beginImportingB, false);
 		params.addParameter("importing_B_interval", "importing_B_interval", double.class, importingBInterval, false);
+		params.addParameter("prob_develop_resistance_A_exponent", "prob_develop_resistance_A_exponent", double.class, probDevelopResistanceAExponent, false);
+		params.addParameter("prob_develop_resistance_B_exponent", "prob_develop_resistance_B_exponent", double.class, probDevelopResistanceBExponent, false);
+
 		params.addParameter("DSTsensitivity", "DSTsensitivity,", double.class, DSTsensitivity, false);
 		params.addParameter("DSTspecificity", "DSTspecificity,", double.class, DSTspecificity, false);
 		
@@ -588,6 +685,9 @@ public class BatchRun {
 		params.addParameter("treatment_X_cost", "treatment_X_cost", double.class, treatmentXCost, false);
 		params.addParameter("treatment_E_cost", "treatment_E_cost", double.class, treatmentECost, false);
 
+		params.addParameter("fitnessCostA", "fitnessCostA", double.class, fitnessCostA, false);
+		params.addParameter("fitnessCostB", "fitnessCostB", double.class, fitnessCostB, false);
+
 		// System.out.println(params.getSchema().parameterNames());
 
 		return (Parameters) params;
@@ -602,11 +702,7 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
-		
-		String dirname = "/Users/me597/Documents/MSMoutput/AUG_23_2025_overnight_extraB";
-	
-		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
+		String dirname = "output/" + fullDate;
 
 		
 		dirname += counterfactual;
@@ -615,15 +711,19 @@ public class BatchRun {
 		
 		dirname += resistance;
 		
-		//dirname += "_";
+		dirname += "_";
 		
-		//dirname += String.valueOf(yearX);
+		dirname += String.valueOf(fitnessA);
 		
-		new File(dirname).mkdir();
+		dirname += "_";
 		
+		dirname += String.valueOf(fitnessB);
+		
+		new File(dirname).mkdirs();
+
 		return dirname + "/";
 	}
-	
+
 	public String makeBatchDir() {
 
 
@@ -639,19 +739,23 @@ public class BatchRun {
 	
 		dirname += "_";
 		
-		dirname += yearX;
+		dirname += String.valueOf(fitnessA);
+		
+		dirname += "_";
+		
+		dirname += String.valueOf(fitnessB);
 
 		
 		//for debugging large number of files: 
 		//dirname = "/Users/me597/Documents/output/output_MAY_15_2024_6_sweep_none_0";
 
 		
-		new File(dirname).mkdir();
-		
+		new File(dirname).mkdirs();
+
 		return dirname + "/";
-		
+
 	}
-	
+
 	public void combineCSVs(String dirpath) throws IOException {
         // Directory containing CSV files
         File directory = new File(dirpath);
@@ -661,7 +765,7 @@ public class BatchRun {
         }
 
         // Combined CSV file
-        String combinedFile = (expdir + counterfactual + resistance + yearX + batchNumber + "combined.csv");
+        String combinedFile = (expdir + counterfactual + resistance + fitnessA + "_" + fitnessB + "_" + batchNumber + "combined.csv");
        
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
         	boolean headerWritten = false;
@@ -686,7 +790,7 @@ public class BatchRun {
         						writer.write(line);
         						writer.newLine();
         						headerWritten = true;
-        						System.out.println("Header written from" + csvFile);
+        						//System.out.println("Header written from" + csvFile);
         					}
         				} else {
         					writer.write(line);
@@ -726,7 +830,7 @@ public class BatchRun {
 	        }
 	        
 	        
-	     String combinedFile = (expdir + counterfactual + resistance + yearX + batchNumber + "combinedTPW.csv");
+	     String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + batchNumber + "combinedTPW.csv");
 	     
 	     try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
 
@@ -829,7 +933,7 @@ public class BatchRun {
 	        }
 
 	        // Combined CSV file
-	        String combinedFile = (expdir + counterfactual + resistance + yearX + "supercombined.csv");
+	        String combinedFile = (expdir + counterfactual + resistance + fitnessA + fitnessB + "supercombined.csv");
 	       
 	        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(combinedFile))){
 	        	boolean headerWritten = false;

@@ -11,50 +11,55 @@ import repast.simphony.random.RandomHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author me597
- * 
- *this should be a class to run 
- *a parameter sweep - i.e., a 
+ *
+ *this should be a class to run
+ *a parameter sweep - i.e., a
  *set of simulation runs where the parameter
  *values are drawn from a distribution
  *
  */
 public class CustomParameterSweep {
-	
-	public CustomParameterSweep() {}
+
+	private final AtomicInteger seedCounter;
+
+	public CustomParameterSweep() {
+		this.seedCounter = new AtomicInteger((int) System.currentTimeMillis());
+	}
 	
 
 	public List<Double> getSeedValues(int samples){
 		double seedMin = 0;
-		double seedMax = 100000;
-		int seed = (int) System.currentTimeMillis();
+		double seedMax = Integer.MAX_VALUE;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, seedMin, seedMax);
 	}
 	
 	public List<Integer> getInitialInfectedValues(int samples){
 		int infectedMin = 4000;
 		int infectedMax = 5500;
-		int seed = (int) System.currentTimeMillis() + 1;
-		
+		int seed = seedCounter.getAndIncrement();
+
 		return getUniformIntSweepValues(seed, samples, infectedMin, infectedMax);
 		
 	}
 	
 	public List<Double> getPropHighActivityValues(int samples){
-		double min = 0.05;
-		double max = 0.35;
-		int seed = (int) System.currentTimeMillis() + 25;
+		double min = 0.01;
+		double max = 0.5;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, min, max);
 	}
 		
 	
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
-		double annualContactsMin = 3.5;
-		double annualContactsMax = 20;
-		int seed = (int) System.currentTimeMillis() + 2;
+		double annualContactsMin = 1.0;
+		double annualContactsMax = 30.0;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
 	
@@ -64,27 +69,36 @@ public class CustomParameterSweep {
 		//these values are in YEARS; based on Barbee et al. 2021 and 2022
 		double recoveryTimeMin = 0.05769231;
 		double recoveryTimeMax = 0.38461538;
-		int seed = (int) System.currentTimeMillis() + 5;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, recoveryTimeMin, recoveryTimeMax);
 	}
 	
 	
 	//probSymptomatic parameters
 	public List<Double> getProbSymptomaticMSMValues(int samples){
-		double probSymptomaticMin = 0.1;
-		double probSymptomaticMax = 0.25;
-		int seed = (int) System.currentTimeMillis() + 6;
+		double probSymptomaticMin = 0.01;
+		double probSymptomaticMax = 0.5;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, probSymptomaticMin, probSymptomaticMax);
 	}
 		
 	
 	//screen interval parameters
-	public List<Double> getScreenIntervalMSMValues(int samples){
+	public List<Double> getScreenIntervalMeanMSMValues(int samples){
 		double screenIntervalMin = 0.75;
 		double screenIntervalMax = 3.0;
-		int seed = (int) System.currentTimeMillis() + 9;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
+	
+	public List<Double> getScreenIntervalVarMSMValues(int samples){
+		double screenIntervalMin = 0.75;
+		double screenIntervalMax = 3.0;
+		int seed = seedCounter.getAndIncrement();
+		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+	}
+	
+	
 	
 	
 	// delay to seek care parameters
@@ -92,7 +106,7 @@ public class CustomParameterSweep {
 		//these values are in YEARS
 		double delayToSeekCareMin = 2.0/365.0;
 		double delayToSeekCareMax = 1.2/52.0;
-		int seed = (int) System.currentTimeMillis() + 12;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, delayToSeekCareMin, delayToSeekCareMax);
 	}
 	
@@ -102,7 +116,7 @@ public class CustomParameterSweep {
 		//these values are in YEARS
 		double delayToRetreatmentMin = 2.0/365.0;
 		double delayToRetreatmentMax = 1.2/52.0;
-		int seed = (int) System.currentTimeMillis() + 15;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, delayToRetreatmentMin, delayToRetreatmentMax);
 	}
 	
@@ -110,24 +124,24 @@ public class CustomParameterSweep {
 	public List<Double> getAssortativityValues(int samples){
 		double min = 0.5;
 		double max = 1.0;
-		int seed = (int) System.currentTimeMillis() + 35;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, min, max);
 	}
 	
 	
 	public List<Double> getActivityGroupTransferPropValues(int samples){
 		double RiskGroupTransferPropMin = 0.01;
-		double RiskGroupTransferPropMax = 0.1;
-		int seed = (int) System.currentTimeMillis() + 30;
+		double RiskGroupTransferPropMax = 0.5;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, RiskGroupTransferPropMin, RiskGroupTransferPropMax);
 	}
 	
 
 	
 	public List<Double> getActivityGroupTransmissionRatioValues(int samples){
-		double RiskGroupTransmissionRatioMin = 0.05;
-		double RiskGroupTransmissionRatioMax = 0.35;
-		int seed = (int) System.currentTimeMillis() + 31;
+		double RiskGroupTransmissionRatioMin = 0.01;
+		double RiskGroupTransmissionRatioMax = 0.5;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, RiskGroupTransmissionRatioMin, RiskGroupTransmissionRatioMax);
 	}
 	
@@ -136,7 +150,7 @@ public class CustomParameterSweep {
 	public List<Double> getPercentResistantA(int samples){
 		double min = 0.001;
 		double max = 0.05;
-		int seed = (int) System.currentTimeMillis() + 18;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, min, max);
 	}
 	
@@ -144,7 +158,7 @@ public class CustomParameterSweep {
 		//between year 15 and year 20
 		double min = 15.0 * 52.0;
 		double max = 20.0 * 52.0;
-		int seed = (int) System.currentTimeMillis() + 19;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformIntSweepValues(seed, samples, min, max);
 	}
 	
@@ -152,9 +166,25 @@ public class CustomParameterSweep {
 		//expected value of exponential in years
 		double min = 4.0 / 52.0;
 		double max = 2.0 * 52.0;
-		int seed = (int) System.currentTimeMillis() + 20;
+		int seed = seedCounter.getAndIncrement();
 		return getUniformSweepValues(seed, samples, min, max);
 	}
+	
+	public List<Double> getProbDevelopResistanceAExponent(int samples){
+		double min = -6;
+		double max = -3;
+		int seed = seedCounter.getAndIncrement();
+		return getUniformSweepValues(seed, samples, min, max);
+	}
+	
+	public List<Double> getProbDevelopResistanceBExponent(int samples){
+		double min = -6;
+		double max = -3;
+		int seed = seedCounter.getAndIncrement();
+		return getUniformSweepValues(seed, samples, min, max);
+	}
+	
+	
 	
 	
 	//sensitivity and specificity parameters
@@ -162,7 +192,7 @@ public class CustomParameterSweep {
 		//expected value of exponential in years
 		double mean = 0.95;
 		double sd = 0.01;
-		int seed = (int) System.currentTimeMillis() + 21;
+		int seed = seedCounter.getAndIncrement();
 		return getBetaSweepValues(seed, samples, mean, sd);
 	}
 
@@ -170,7 +200,7 @@ public class CustomParameterSweep {
 		//expected value of exponential in years
 		double mean = 0.97;
 		double sd = 0.005;
-		int seed = (int) System.currentTimeMillis() + 22;
+		int seed = seedCounter.getAndIncrement();
 		return getBetaSweepValues(seed, samples, mean, sd);
 	}
 	
@@ -183,7 +213,7 @@ public class CustomParameterSweep {
 		//short clinic visit + treatment of urethritis
 		double careCostMean = 41+92;
 		double careCostSD = ((61 - 21) + (136 - 48))/ 4;
-		int seed = (int) System.currentTimeMillis() + 23;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, careCostMean, careCostSD);
 
 	}
@@ -192,7 +222,7 @@ public class CustomParameterSweep {
 		//cost of diagnosis
 		double testCostMean = 68;
 		double testCostSD = (100 - 35) / 4;
-		int seed = (int) System.currentTimeMillis() + 24;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, testCostMean, testCostSD);
 
 	}
@@ -201,7 +231,7 @@ public class CustomParameterSweep {
 		//cost of drug susceptibility testing
 		double strainTestMean = 150;
 		double strainTestSD = (200-100) / 4;
-		int seed = (int) System.currentTimeMillis() + 25;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, strainTestMean, strainTestSD);
 
 	}
@@ -210,7 +240,7 @@ public class CustomParameterSweep {
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
 		double FLcostSD = 12 / 4;
-		int seed = (int) System.currentTimeMillis() + 26;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
 	}
@@ -218,7 +248,7 @@ public class CustomParameterSweep {
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
 		double FLcostSD = 12 / 4;
-		int seed = (int) System.currentTimeMillis() + 27;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
 	}
@@ -227,7 +257,7 @@ public class CustomParameterSweep {
 		//cost of treatments with drug A or B (ceftriaxone)
 		double FLcostMean = 24;
 		double FLcostSD = 12 / 4;
-		int seed = (int) System.currentTimeMillis() + 28;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, FLcostMean, FLcostSD);
 
 	}
@@ -236,7 +266,7 @@ public class CustomParameterSweep {
 		//cost of treatment with drug M (ertapenem)
 		double SLCostMean = 537;
 		double SLCostSD = (782 - 291) / 4;
-		int seed = (int) System.currentTimeMillis() + 29;
+		int seed = seedCounter.getAndIncrement();
 		return getGammaSweepValues(seed, samples, SLCostMean, SLCostSD);
 
 	}
