@@ -28,8 +28,9 @@ public class ParamConfig {
 	private double ProbSymptomaticMSM;
 
 	
-	private double ScreenIntervalMSM;
-	
+	private double ScreenIntervalMeanMSM;
+	private double ScreenIntervalVarMSM;
+
 	
 	private double delayToSeekCareMSM;
 	
@@ -44,6 +45,9 @@ public class ParamConfig {
 	private double percentResistantA;
 	private int beginImportingB;
 	private double importingBInterval;
+	private double probDevelopResistanceA;
+	private double probDevelopResistanceB;
+	
 	private double DSTsensitivity;
 	private double DSTspecificity;
 	
@@ -69,8 +73,9 @@ public class ParamConfig {
 			double RecoveryLambda, 
 			double ProbSymptomaticMSM, 
 
-			double ScreenIntervalMSM,
-		
+			double ScreenIntervalMeanMSM,
+			double ScreenIntervalVarMSM,
+
 			double delayToSeekCareMSM,
 
 			double delayToRetreatmentMSM,
@@ -82,6 +87,9 @@ public class ParamConfig {
 			double amountResistantA,
 			int beginImportingB,
 			double importingBInterval,
+			double probDevelopResistanceA,
+			double probDevelopResistanceB,
+			
 			double DSTsensitivity,
 			double DSTspecificity,
 			double careCost,
@@ -105,7 +113,9 @@ public class ParamConfig {
 		this.RecoveryLambda = RecoveryLambda;
 		this.ProbSymptomaticMSM = ProbSymptomaticMSM;
 	
-		this.ScreenIntervalMSM = ScreenIntervalMSM;
+		this.ScreenIntervalMeanMSM = ScreenIntervalMeanMSM;
+		this.ScreenIntervalVarMSM = ScreenIntervalVarMSM;
+
 		
 		this.delayToSeekCareMSM = delayToSeekCareMSM;
 		
@@ -119,6 +129,10 @@ public class ParamConfig {
 		this.percentResistantA = amountResistantA;
 		this.beginImportingB = beginImportingB;
 		this.importingBInterval = importingBInterval;
+		this.probDevelopResistanceA = probDevelopResistanceA;
+		this.probDevelopResistanceB = probDevelopResistanceB;
+		
+		
 		this.DSTsensitivity = DSTsensitivity;
 		this.DSTspecificity = DSTspecificity;
 		this.careCost = careCost;
@@ -176,8 +190,13 @@ public class ParamConfig {
 	}
 	
 	
-	public double getScreenIntervalMSM() {
-		return this.ScreenIntervalMSM;
+	public double getScreenIntervalMeanMSM() {
+		return this.ScreenIntervalMeanMSM;
+	}
+	
+
+	public double getScreenIntervalVarMSM() {
+		return this.ScreenIntervalVarMSM;
 	}
 	
 	public double getDelayToSeekCareMSM() {
@@ -212,6 +231,15 @@ public class ParamConfig {
 	public double getImportingBInterval() {
 		return this.importingBInterval;
 	}
+	
+	public double getProbDevelopResistanceA() {
+		return this.probDevelopResistanceA;
+	}
+	
+	public double getProbDevelopResistanceB() {
+		return this.probDevelopResistanceB;
+	}
+	
 	
 	public double getDSTsensitivity() {
 		return this.DSTsensitivity;

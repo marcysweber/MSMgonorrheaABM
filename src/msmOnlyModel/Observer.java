@@ -258,8 +258,9 @@ public class Observer {
 				this.parameters.getDouble("prob_symptomatic_msm"), 
 		
 						
-				this.parameters.getDouble("screen_interval_MSM"),
-				
+				this.parameters.getDouble("screen_interval_mean_MSM"),
+				this.parameters.getDouble("screen_interval_var_MSM"),
+
 
 				this.parameters.getDouble("delay_to_seek_care_msm"), 
 			
@@ -274,6 +275,9 @@ public class Observer {
 				this.parameters.getDouble("percent_resistant_A"),
 				this.parameters.getInteger("begin_importing_B"), 
 				this.parameters.getDouble("importing_B_interval"),
+				this.parameters.getDouble("prob_develop_resistance_A_exponent"),
+				this.parameters.getDouble("prob_develop_resistance_B_exponent"),
+				
 				this.parameters.getDouble("DSTsensitivity"),
 				this.parameters.getDouble("DSTspecificity"),
 				
@@ -410,7 +414,7 @@ public class Observer {
 	}
 	
 	public void processCompleteInfection(Infection infection) throws Exception {
-		//System.out.println("processing");
+		//System.out.println("processing complete infection");
 		
 		newCases++;
 		newCasesList.add(infection);
@@ -457,6 +461,8 @@ public class Observer {
 			}};
 			
 			int outcomes = finalOutcomes.values().stream().map(a -> a ? 1 : 0).reduce(0, (a,b) -> a+b);
+			
+			//System.out.println(outcomes);
 			
 			if (outcomes != 1) {
 				if (outcomes == 0 && !infection.failedTreatment()) {
@@ -610,14 +616,13 @@ public class Observer {
 		
 		//Stream<Object> indivs = .getObjectsAsStream(Indiv.class); //grabs all objects of class Indiv
 
-		List<Object> infected = population.allIndivs()
+		long countInfected = population.allIndivs()
 				.filter(indiv -> ((Indiv) indiv).getState()==1)
-				.collect(Collectors.toList());
+				.count();
 		
 		//System.out.println("Infected:");
 		//System.out.println(infected.size());
 		
-		int countInfected = infected.size();
 		
 		double newPrev = (countInfected / popSize) * 100.0;
 		
@@ -783,13 +788,14 @@ public class Observer {
 	
 	
 	public double calcSymptomProportion() {
-		double prop = 0;
-		
-		Stream<Indiv> infectious = population.allIndivs().filter(inf -> ((Indiv) inf).infectious()); //grabs all objects of class Indiv
-		Stream<Indiv> withSymptoms = population.allIndivs().filter(inf -> ((Indiv) inf).infectious()).filter(infection -> ((Indiv) infection).symptoms());
-
-		prop = (double) withSymptoms.count() / (double) infectious.count();
-		return prop;
+		 long[] counts = {0, 0}; // [0] = infectious, [1] = symptomatic
+	      population.allIndivs()
+	          .filter(indiv -> indiv.infectious())
+	          .forEach(indiv -> {
+	              counts[0]++;
+	              if (indiv.symptoms()) counts[1]++;
+	          });
+	      return counts[0] == 0 ? 0.0 : (double) counts[1] / counts[0];
 	}
 	
 	public int ongoingTreatments() {
@@ -812,31 +818,35 @@ public class Observer {
 //				.filter(indiv -> ((Indiv) indiv).getState()==1)
 //				.count();
 		double prev = calcPrev();
-		double lowRiskPrev = calcLowRiskPrev();
-		double highRiskPrev = calcHighRiskPrev();
 		
 		if (counterfactual.equals("sweep")){ //strict constraints for sweeps
 			if (prev > 10.0 || prev < 0.05) {
-				System.out.print("I should stop now!!! Overall prev was too extreme.");
+				//System.out.print("I should stop now!!! Overall prev was too extreme.");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			
-			} else if (lowRiskPrev > 4.0) {
-				System.out.print("I should stop now!!! Low risk prev was too high.");
-				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-				schedule.setFinishing(true);
-			} else if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
-				System.out.print("I should stop now!!! High Risk prev was too extreme.");
-				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-				schedule.setFinishing(true);
-			}
+			} else {
+				double lowRiskPrev = calcLowRiskPrev();
 				
-				
+				if (lowRiskPrev > 4.0) {
+					//System.out.print("I should stop now!!! Low risk prev was too high.");
+					//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+					schedule.setFinishing(true);
+				} else {
+					double highRiskPrev = calcHighRiskPrev();
+
+					if (highRiskPrev < 5.0 || highRiskPrev > 25.0) {
+				//System.out.print("I should stop now!!! High Risk prev was too extreme.");
+				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+						schedule.setFinishing(true);
+					}
+				}
+			}	
 				
 				
 		} else if (prev > 99.0) {		//if it's not a sweep, only exclude most extreme trajectories.
 
-				System.out.print("I should stop now!!! ");
+				//System.out.print("I should stop now!!! ");
 				//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 				schedule.setFinishing(true);
 			}
@@ -950,4 +960,13 @@ public int getCasesEpi() {
 public int getCasesBothSequelae() {
 	return casesBothSequelae;
 }
+
+public int getCasesRecoveredNaturally() {
+	return this.recoveredNaturally;
+}
+
+public int getReinfectedCount() {
+	return this.reInfected;
+}
+
 }

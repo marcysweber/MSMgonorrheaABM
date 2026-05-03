@@ -69,7 +69,9 @@ public class SequelaeTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(52);
 		
@@ -113,7 +115,9 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -181,7 +185,9 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -201,8 +207,8 @@ public class SequelaeTest {
 			
 		for (Indiv indiv : testRun.population().allInfectious().collect(Collectors.toList())) {
 			Treatment treatment = new Treatment(indiv.myInfection(), observer);
-			treatment.tryDrugA();
-			treatment.tryDrugB();
+			treatment.prescribeDrugA();
+			treatment.prescribeDrugB();
 			indiv.recoverNaturally();
 		}
 //		System.out.println(observer.getChecksForSequelae());
@@ -252,7 +258,9 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -337,7 +345,9 @@ public class SequelaeTest {
 				4, //treatment A cost
 				5, //treatment B cost
 				6, //treatment X cost
-				7); //treatment E cost
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);

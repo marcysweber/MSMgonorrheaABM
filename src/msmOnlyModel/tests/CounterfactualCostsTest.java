@@ -81,7 +81,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -127,7 +129,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -174,7 +178,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -221,7 +227,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -268,7 +276,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -316,7 +326,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
@@ -359,7 +371,9 @@ public class CounterfactualCostsTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);
 		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
