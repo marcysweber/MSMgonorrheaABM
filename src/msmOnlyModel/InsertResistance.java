@@ -26,6 +26,8 @@ public class InsertResistance {
 	private int countAnnualResistA;
 	private int countAnnualResistB;
 	private boolean chanceToDevelopResistance;
+	private double probDevelopResistanceAExponent;
+	private double probDevelopResistanceBExponent;
 	Uniform developResistanceUniform;
 
 	private double percentResistantACombo;
@@ -45,7 +47,11 @@ public class InsertResistance {
 			this.percentResistantACombo = params.getDouble("percent_resistant_A");
 			this.beginImportingBCombo = params.getInteger("begin_importing_B");
 			this.importingBIntervalCombo = params.getDouble("importing_B_interval") / 5;
+			this.probDevelopResistanceAExponent = params.getDouble("prob_develop_resistance_A_exponent");
+			this.probDevelopResistanceBExponent = params.getDouble("prob_develop_resistance_B_exponent");
+			
 			this.chanceToDevelopResistance = true;
+			
 			developResistanceUniform = (Uniform) randomHelper.getDistribution("developResistanceUniform");
 
 			this.importingBSchedule = makeImportingBSchedule(importingBIntervalCombo);
@@ -183,31 +189,46 @@ public class InsertResistance {
 	}
 	
 	public void checkForDevelopResistance(Indiv indiv, String treatment) {
-		double randomValue = developResistanceUniform.nextDouble();
 		
-		double chanceDevelopResistance = 0.0001;
+		double chanceDevelopResistanceA = Math.pow(10.0, probDevelopResistanceAExponent);
+		double chanceDevelopResistanceB = Math.pow(10.0, probDevelopResistanceBExponent);
 		
-		if (treatment.equals("AandB")) {
-			double randomValueA = randomValue;
-			double randomValueB = developResistanceUniform.nextDouble();
+		//System.out.println("chanceDevelopResistanceA: " + chanceDevelopResistanceA);
+		//System.out.println("chanceDevelopResistanceB: " + chanceDevelopResistanceB);
 
-			if (randomValueA <= chanceDevelopResistance && randomValueB <= chanceDevelopResistance) {
-				indiv.infect("Both", "resist");
-			} else if (randomValueA <= chanceDevelopResistance) {
-				indiv.infect("A", "resist");
-			} else if (randomValueB <= chanceDevelopResistance) {
-				indiv.infect("B", "resist");
-			} else {
-				indiv.actuallyRecoverwTreatment("AandB");
+		
+		boolean developedResistanceA = false;
+		boolean developedResistanceB = false;
+		
+		if (treatment.contains("A")) {
+			double randomValueA = developResistanceUniform.nextDouble();
+			if (randomValueA <= chanceDevelopResistanceA) {
+				developedResistanceA = true;
 			}
-			
-			
-		} else if (randomValue <= chanceDevelopResistance) {
-			indiv.infect(treatment, "resist");
+		}
+		
+		if (treatment.contains("B")) {
+			double randomValueB = developResistanceUniform.nextDouble();
+			if (randomValueB <= chanceDevelopResistanceB) {
+				developedResistanceB = true;
+			}
+		}
+		
+		if (developedResistanceA && developedResistanceB) {
+			indiv.infect("Both", "resist");
+			indiv.recordEndTreatment();
+		} else if (developedResistanceA && !developedResistanceB) {
+			indiv.infect("A", "resist");
+			indiv.recordEndTreatment();
+		} else if (!developedResistanceA && developedResistanceB) {
+			indiv.infect("B", "resist");
 			indiv.recordEndTreatment();
 		} else {
 			indiv.actuallyRecoverwTreatment(treatment);
 		}
+		
+		
+		
 	}
 	
 	

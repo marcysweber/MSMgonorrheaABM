@@ -1,1 +1,7 @@
 /bin/
+/build/
+/lib/
+/.gradle/
+gradle/wrapper/gradle-wrapper.jar
+/output/
+.Rproj.user

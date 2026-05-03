@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "setup": "./setup-libs.sh && ./gradlew build -x test",
+    "run": "./gradlew run"
+  }
+}

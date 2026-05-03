@@ -63,8 +63,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(52);
 		
 		return testRun;
@@ -141,8 +143,10 @@ public class RiskGroupTest {
 					4, //treatmentAcost
 					5, //treatmentBcost
 					6, //treatmentXcost
-					7);//treatmentEcost);
-			SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+					7,//treatmentEcost);
+					0,
+					0);
+			SingleRun testRun = new SingleRun("output/tests", params);
 
 			testRun.testSetUp(52);
 
@@ -193,8 +197,10 @@ public class RiskGroupTest {
 					4, //treatmentAcost
 					5, //treatmentBcost
 					6, //treatmentXcost
-					7);//treatmentEcost);
-			SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+					7,//treatmentEcost);
+					0,
+					0);
+			SingleRun testRun = new SingleRun("output/tests", params);
 
 			testRun.testSetUp(52);
 
@@ -251,8 +257,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 
 		testRun.testSetUp(52);
 		
@@ -310,8 +318,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 
 		testRun.testSetUp(52);
 		
@@ -372,8 +382,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun = new SingleRun("output/tests", params);
 
 		testRun.testSetUp(52);
 		
@@ -431,8 +443,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun2 = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params2);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun2 = new SingleRun("output/tests", params2);
 
 		testRun2.testSetUp(52);
 		
@@ -491,8 +505,10 @@ public class RiskGroupTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun3 = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params3);
+				7,//treatmentEcost);
+				0,
+				0);
+		SingleRun testRun3 = new SingleRun("output/tests", params3);
 
 		testRun3.testSetUp(52);
 		
