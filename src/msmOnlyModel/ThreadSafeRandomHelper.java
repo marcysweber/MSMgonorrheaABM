@@ -10,7 +10,7 @@ import cern.jet.random.*;
 import cern.jet.random.engine.RandomEngine;
 import repast.simphony.random.DefaultRandomRegistry;
 import repast.simphony.random.RandomRegistry;
-import simphony.util.messages.MessageCenter;
+
 
 /**
  * A helper class for creating random number streams and adding them to a
@@ -40,8 +40,6 @@ import simphony.util.messages.MessageCenter;
  *
  */
 public class ThreadSafeRandomHelper {
-	private  final MessageCenter LOG = MessageCenter.getMessageCenter(ThreadSafeRandomHelper.class);
-
 	private DefaultRandomRegistry defaultRegistry;
 	private Map<String, GammaDistribution> cmGammaDistributions = new HashMap<>();
 

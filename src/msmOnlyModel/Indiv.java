@@ -388,12 +388,15 @@ public class Indiv {
 //	}
 //	
 	public void infect(String strain, String type) {
+		if (infection == null) {
+			return;
+		}
 		if (type.contains("resist")) {
 			infection.developResistance();
 		} else if (type.contains("reinfect")) {
 			infection.reInfect();
 		}
-		
+
 		infect(strain);
 	}
 	
