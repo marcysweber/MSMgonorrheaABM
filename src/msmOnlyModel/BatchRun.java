@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
@@ -109,55 +109,46 @@ public class BatchRun {
 
 		// puts together sets of parameters
 		List<ParamConfig> lst = new ArrayList<ParamConfig>();
-		Stream<ParamConfig> comboStream = lst.stream();
 		for (int i = 0; i < confirmed_reps; i++) {
-			comboStream = Stream.concat(comboStream,
-					Stream.of(new ParamConfig(i + 1, 
-							seedValuesList.get(i), 
-							resistance, 
-							counterfactual, 
-							31,
-							initialInfectedValuesList.get(i), 
-							propHighActivityValuesList.get(i),
-							transmissionMSMValuesList.get(i),
-							recoveryTimeValuesList.get(i), 
-							probSymptomaticMSMValuesList.get(i),
-							screenIntervalMeanMSMValuesList.get(i), 
-							screenIntervalVarMSMValuesList.get(i), 
-							delayToSeekCareMSMValuesList.get(i),
-							delayToRetreatmentMSMValuesList.get(i), 
-							assortativityValuesList.get(i),
-							activityGroupTransferPropValuesList.get(i),
-							activityGroupTransmissionRatioValuesList.get(i),
-							percentResistantAValuesList.get(i),
-							beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
-							probDevelopResistanceAExponentValuesList.get(i),
-							probDevelopResistanceBExponentValuesList.get(i),
-							DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
-							careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
-							treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
-							treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i))));
+			lst.add(new ParamConfig(i + 1,
+					seedValuesList.get(i),
+					resistance,
+					counterfactual,
+					31,
+					initialInfectedValuesList.get(i),
+					propHighActivityValuesList.get(i),
+					transmissionMSMValuesList.get(i),
+					recoveryTimeValuesList.get(i),
+					probSymptomaticMSMValuesList.get(i),
+					screenIntervalMeanMSMValuesList.get(i),
+					screenIntervalVarMSMValuesList.get(i),
+					delayToSeekCareMSMValuesList.get(i),
+					delayToRetreatmentMSMValuesList.get(i),
+					assortativityValuesList.get(i),
+					activityGroupTransferPropValuesList.get(i),
+					activityGroupTransmissionRatioValuesList.get(i),
+					percentResistantAValuesList.get(i),
+					beginImportingBValuesList.get(i), importingBIntervalValuesList.get(i),
+					probDevelopResistanceAExponentValuesList.get(i),
+					probDevelopResistanceBExponentValuesList.get(i),
+					DSTsensitivityValuesList.get(i), DSTspecificityValuesList.get(i),
+					careCostValuesList.get(i), testCostValuesList.get(i), strainTestCostValuesList.get(i),
+					treatmentACostValuesList.get(i), treatmentBCostValuesList.get(i),
+					treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
-		
-//		comboStream.
-//		parallel().
-//		forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520));
-//		System.out.println("completed " + reps + " runs!");
-		
-		
-		
-		final Stream<ParamConfig> parallelizableComboStream = comboStream;
 
-		ForkJoinPool customThreadPool = new ForkJoinPool(12);
+		int numThreads = Runtime.getRuntime().availableProcessors();
+		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
 		try {
 			customThreadPool.submit(
-			() -> 
-			parallelizableComboStream.
+			() ->
+			lst.stream().
 			parallel().
 			forEach(parameterConfiguration -> eachRun(batchDirPath, confirmed_reps, parameterConfiguration, 520))).get();
 		} catch (InterruptedException | ExecutionException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} finally {
+			customThreadPool.shutdown();
 		}
 
 		
@@ -482,7 +473,7 @@ public class BatchRun {
 		            treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
 
-		int numThreads = 20; // Set to desired number of threads
+		int numThreads = Runtime.getRuntime().availableProcessors();
 		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
 		try {
 		    customThreadPool.submit(() ->
@@ -562,8 +553,6 @@ public class BatchRun {
 			printProgress(completed, reps);
 		}
 		
-		// Hint to the Garbage Collector that it might want to collect the garbs
-		System.gc();
 		//setUpOne(runner, paramConfig, endTime);
 		//runOne(runner);
 		//runner.cleanUpRun();

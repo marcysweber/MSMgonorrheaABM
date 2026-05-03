@@ -3,6 +3,7 @@
  */
 package msmOnlyModel;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -100,12 +101,10 @@ public class CustomFileOutput {
 		//should create a new csv with the specified filename
 
 		File file = new File(outputDir + outputFileName);
-		FileWriter outputfile;
 		try {
-			outputfile = new FileWriter(file, true);
-			CSVWriter writer = new CSVWriter(outputfile); 
+			CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
-			String[] header = { 
+			String[] header = {
 					"RunNumber", 
 					"seed",
 					"counterfactual",
@@ -376,12 +375,10 @@ public class CustomFileOutput {
 		if (isTest == false) {
 
 			File file = new File(outputDir + outputFileName);
-			FileWriter outputfile;
 			try {
-				outputfile = new FileWriter(file, true);
-				CSVWriter writer = new CSVWriter(outputfile); 
+				CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
-				String[] newRow = { 
+				String[] newRow = {
 						String.valueOf(runNumber), 
 						String.valueOf(seed),
 						String.valueOf(counterfactual),
@@ -511,11 +508,9 @@ public class CustomFileOutput {
 
 	public void transmissionRateOutput(List<Infection> infectionList) {
 		File file = new File(outputDir + outputTransmissionFileName);
-		FileWriter outputfile;
-		
+
 		try {
-			outputfile = new FileWriter(file, true);
-			CSVWriter writer = new CSVWriter(outputfile); 
+			CSVWriter writer = new CSVWriter(new BufferedWriter(new FileWriter(file, true)));
 
 
 			for (Infection inf : infectionList) {
