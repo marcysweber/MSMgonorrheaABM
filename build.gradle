@@ -44,5 +44,6 @@ application {
 
 run {
     standardInput = System.in
-    jvmArgs = ['-Xmx32g']
+    jvmArgs = ['-Xms16g', '-Xmx32g', '-XX:+UseParallelGC',
+               '-XX:ParallelGCThreads=14', '-XX:+AlwaysPreTouch']
 }
