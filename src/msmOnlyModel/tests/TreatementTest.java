@@ -67,7 +67,7 @@ public class TreatementTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		testRun.setUp(1000);
 		
 		return testRun;

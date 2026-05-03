@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'msmOnlyModel'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Repast Simphony and its bundled deps (not on Maven Central — loaded from lib/)
+    implementation fileTree(dir: 'lib', include: ['*.jar'])
+
+    // JUnit 4
+    testImplementation 'junit:junit:4.13.2'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            exclude 'msmOnlyModel/tests/**'
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src']
+            include 'msmOnlyModel/tests/**'
+        }
+    }
+}
+
+application {
+    mainClass = 'msmOnlyModel.Main'
+}
+
+run {
+    standardInput = System.in
+}

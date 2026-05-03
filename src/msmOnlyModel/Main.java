@@ -38,9 +38,7 @@ public class Main {
 		
 		scanner.close();
 
-		File scenariofile = new File("/Users/me597/Documents/GitHub/gonorrheaABM/SimpleSIRgit/SimpleSIR.rs"); // the
-																												// scenario
-																												// dir
+		File scenariofile = new File("MSMgonorrhea.rs"); // the scenario dir
 
 		RandomHelper.setSeed(1);
 		
