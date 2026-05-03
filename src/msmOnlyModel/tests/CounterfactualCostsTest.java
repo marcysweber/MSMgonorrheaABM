@@ -82,7 +82,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -128,7 +128,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -175,7 +175,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -222,7 +222,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -269,7 +269,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -317,7 +317,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();
@@ -360,7 +360,7 @@ public class CounterfactualCostsTest {
 				5, //treatmentBcost
 				6, //treatmentXcost
 				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		SingleRun testRun = new SingleRun("output/tests", params);
 		ThreadSafeSchedule schedule = new ThreadSafeSchedule();
 		testRun.assignSchedule(schedule);
 		ThreadSafeRandomHelper randomHelper = testRun.registerDistributions();

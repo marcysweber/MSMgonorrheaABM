@@ -602,11 +602,7 @@ public class BatchRun {
 		
 		String fullDate = month +"_"+ day +"_"+ year;
 
-		//String dirname = "/Users/me597/Documents/MSMoutput/output_" + fullDate +"_debug_2_";
-		
-		String dirname = "/Users/me597/Documents/MSMoutput/AUG_23_2025_overnight_extraB";
-	
-		//String dirname = "/Users/me597/Documents/MSMoutput/MARCH_3_2025_debug1_";
+		String dirname = "output/" + fullDate;
 
 		
 		dirname += counterfactual;
@@ -619,11 +615,11 @@ public class BatchRun {
 		
 		//dirname += String.valueOf(yearX);
 		
-		new File(dirname).mkdir();
-		
+		new File(dirname).mkdirs();
+
 		return dirname + "/";
 	}
-	
+
 	public String makeBatchDir() {
 
 
@@ -646,12 +642,12 @@ public class BatchRun {
 		//dirname = "/Users/me597/Documents/output/output_MAY_15_2024_6_sweep_none_0";
 
 		
-		new File(dirname).mkdir();
-		
+		new File(dirname).mkdirs();
+
 		return dirname + "/";
-		
+
 	}
-	
+
 	public void combineCSVs(String dirpath) throws IOException {
         // Directory containing CSV files
         File directory = new File(dirpath);

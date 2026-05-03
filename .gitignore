@@ -3,3 +3,4 @@
 /lib/
 /.gradle/
 gradle/wrapper/gradle-wrapper.jar
+/output/

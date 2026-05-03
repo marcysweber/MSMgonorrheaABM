@@ -51,7 +51,7 @@ public class CustomFileOutput {
 
 	//use this init for tests
 	public CustomFileOutput(boolean test) {
-		this.outputDir = "/Users/me597/Documents/output/";
+		this.outputDir = "output/tests/";
 		this.outputFileName = generateFileName();
 		this.isTest = test;
 	}

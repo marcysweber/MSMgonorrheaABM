@@ -21,7 +21,7 @@ public class CalibratedParameters {
 	
 	
 	CalibratedParameters(){
-		path = "/Users/me597/Documents/MSM_calibrated_params/";
+		path = "data/calibrated_params/";
 	}
 	
 	public List<Integer> getInitialInfectedValues() throws IOException {
