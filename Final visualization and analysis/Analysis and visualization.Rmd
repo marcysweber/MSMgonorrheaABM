@@ -124,7 +124,7 @@ prev_binom_likelihood = function(x){
 }
 
 inc_norm_likelihood = function(x){
-  return(dnorm(6508, x, x/5, log=TRUE)) # values from 2018 CDC report
+  return(dnorm(6508, x, x/20, log=TRUE)) # values from 2018 CDC report
 }
 
 sympt_binom_likelihood = function(x){
@@ -196,8 +196,8 @@ write_calibrated = function(df, path){
   resampleRecoveryLambda <- df$NaturalRecoveryTime
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
  
-  resampleScreenIntervalMeanMSM <- df$ScreenIntervalMeanMSM
-    resampleScreenIntervalVarMSM <- df$ScreenIntervalVarMSM
+  resampleScreenIntervalMeanMSM <- df$ScreenIntervalMeanMSM * 1.20
+    resampleScreenIntervalVarMSM <- rep(0.5, length(df$ScreenIntervalVarMSM))
 
   resampleAssortativity <- df$Assortativity
   
@@ -486,8 +486,8 @@ visualize_parameters = function(df){
 ```{r calibrationProcedureStep1, include = false}
 
 #load the sweep data, and give each run a unique identifier
-#sweepdir <- "/Users/me597/Documents/MSMoutput/output_APRIL_7_2026_debug_2_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
-sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_2_sweep_none_0.0_0.0/"
+sweepdir <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+#sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_3_sweep_none_0.0_0.0/"
 #sweepdir2 <- "/usr/local/MSMoutput/output_APRIL_15_2026_overnight_sweep_none_0.0_0.0/"
 #sweepdir3 <- "/usr/local/MSMoutput/output_APRIL_17_2026_overnight_sweep_none_0.0_0.0/"
 
@@ -496,27 +496,32 @@ sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_2_sweep_none_0.
 dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
 dfsweep$uniqueID <- as.numeric(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 
-#dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0supercombined.csv", sep=''))
+#dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0_2combined.csv", sep=''))
 #dfsweep2$uniqueID <- as.integer(paste(as.character(dfsweep2$RunNumber), as.character(dfsweep2$seed), sep=''))
 
-#dfsweep3 <- read.csv(paste(sweepdir3, "sweepnone0.00.0supercombined.csv", sep=''))
+#dfsweep3 <- read.csv(paste(sweepdir3, "sweepnone0.00.0_3combined.csv", sep=''))
 #dfsweep3$uniqueID <- as.integer(paste(as.character(dfsweep3$RunNumber), as.character(dfsweep3$seed), sep=''))
+
 
 #dfsweep<- rbind(dfsweep1, dfsweep2, dfsweep3)
 
+# grab and combine multiple csvs before the super combined has been generated
+#files <- list.files(path = sweepdir, pattern = "\\.csv$", full.names = TRUE)
+#dfsweep <- read_csv(files, id = "file_source")
+#dfsweep$uniqueID <- as.numeric(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
 
 
 #calculate weights based on the 3 calibration targets, and resample w replacement
 df_ends <- calc_weights(dfsweep)
 df_ends_sorted<-df_ends[order(-df_ends$weight), ]
 
-df_best_ends <- df_ends_sorted[1:20,]
+df_best_ends <- df_ends_sorted[1:150,]
 
 #df_best_ends <- resample(df_ends, 10000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
-#parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
-parcaldir <- "/usr/local/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
+parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
+#parcaldir <- "/usr/local/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
 write.csv(df_best_ends, file = paste(parcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
 
 #get the unique trajectories, so that duplicates do not need to be re-run
@@ -535,10 +540,10 @@ df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for 
 df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
 
 df_best_traj <- best_traj(dfsweep, df_best_ends)
-df_best_traj$resampled <- 1
+df_best_traj$resampled <- 100
 
 #write parcalibrated parameter sets to file
-write_calibrated(df_best_ends_unique, parcaldir)
+write_calibrated(df_best_ends, parcaldir)
 ```
 
 ```{r examiningPriorsAndPosteriors}
@@ -551,6 +556,51 @@ visualize_parameters(df_best_ends)
 #visualize_calibration_MSM(dfsweep)
 visualize_calibration_MSM(df_best_traj)
 
+
+```
+
+```{r activityGroupsCal}
+viz_prev_lowrisk = function(df, title){
+  df <- df %>% filter(tick >= 260)
+  prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
+    geom_line(aes(y = LowRiskPrev, alpha = resampled),linewidth = 0.05, color = "black") +
+   
+    labs(title = title,
+         x = "Year",
+         y = "Prevalence (%) in low-activity MSM") +
+    theme(plot.title = element_text(size=8)) +
+    geom_hline(aes(yintercept=4.0), linetype="dashed", color="red")+
+    geom_hline(aes(yintercept=0), linetype="dashed", color="red")+
+    #geom_vline(xintercept=yearX, linetype="dashed")+
+    coord_cartesian(ylim=c(0,25), xlim=c(0, 5))+
+    my_theme+
+    theme(legend.position = "none") +
+    scale_alpha(range=c(0.25, 1))+
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(prev)
+}
+
+
+viz_prev_highrisk = function(df, title){
+  df <- df %>% filter(tick >= 260)
+  prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
+    geom_line(aes(y = HighRiskPrev, alpha = resampled),linewidth = 0.05, color = "black") +
+    geom_hline(aes(yintercept=25.0), linetype="dashed", color="red")+
+    geom_hline(aes(yintercept=5.0), linetype="dashed", color="red")+
+    labs(title = title,
+         x = "Year",
+         y = "Prevalence (%) in high-activity MSM") +
+    theme(plot.title = element_text(size=8)) +
+    #geom_vline(xintercept=yearX, linetype="dashed")+
+    coord_cartesian(ylim=c(0,25), xlim=c(0, 5))+
+    my_theme+
+    theme(legend.position = "none") +
+    scale_alpha(range=c(0.25, 1))+
+    annotate("rect", xmin = 0, xmax=5, ymin=-Inf, ymax=Inf, alpha = 0.25)
+  return(prev)
+}
+
+multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(df_best_traj, "B. High Activity"), cols=2)
 
 ```
 
@@ -568,10 +618,14 @@ visualize_calibration_MSM(df_best_traj)
 ```{r calibrationProcedureStep2, include=FALSE}
 
 #load resistance cal data
-#dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
-dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_10_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_03_2026_overnight_3_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+#dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_10_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 
 dfGISPparcal <- identify(dfGISPparcal, df_best_ends)
+
+visualize_parameters(dfGISPparcal)
+visualize_calibration_MSM(dfGISPparcal)
+
 
 #exclude trajectories where no switch for Drug A happened and resistance is 0 at t=25years
 endOfSimGISP <- dfGISPparcal[dfGISPparcal$tick==1560,] #last time step
@@ -592,11 +646,15 @@ dfFinalCalEnds <- dfFinalCal[dfFinalCal$tick==1560,] #grab just the last time st
 
 
 #write final calibrated parameter sets
-#finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/
-finalcaldir <- "/usr/local/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/"
+finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/
+#finalcaldir <- "/usr/local/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/"
 
 write_calibrated(dfFinalCalEnds, finalcaldir)
 write.csv(dfFinalCalEnds, file = paste(finalcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
+
+df_best_traj <- best_traj(dfGISPparcal, dfFinalCalEnds)
+df_best_traj$resampled <- 100
+visualize_calibration_MSM(df_best_traj)
 
 ```
 
@@ -629,7 +687,7 @@ visualize_calibration_MSM = function(dfcalibrated){
 viz_prev_MSM_cal = function(df, title){
   df <- df %>% filter(tick >= 260)
   prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
-    geom_line(aes(y = Prevalence, alpha = resampled),linewidth = 0.05, color = "black") +
+    geom_line(aes(y = Prevalence),linewidth = 0.05, color = "black") +
     geom_point(aes(y=4.5, x = 1), color="red", size = 1) +
     geom_errorbar(aes(ymin = 3.6, ymax = 5.4, x = 1), color = "red", size=0.25)+
     geom_point(aes(y=4.5, x = 2), color="red", size = 1) +
@@ -656,17 +714,17 @@ viz_prev_MSM_cal = function(df, title){
 viz_incMSM_cal = function(df, title){
   df <- df %>% filter(tick >= 260)
   inc <- ggplot(data = df, aes(x = (tick / 52)-5, y = 100000 * (Detected / 100000), group = uniqueID)) + 
-    geom_line( aes(y = 100000 * (Detected / 100000), alpha=resampled),size = 0.05, color="black") +
+    geom_line( aes(y = 100000 * (Detected / 100000)),size = 0.05, color="black") +
     geom_point(aes(y=6508, x = 1), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 1), color = "red", size=0.25)+
+    geom_errorbar(aes(ymin = 6182.6, ymax = 6833.4, x = 1), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 2), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x =2), color = "red", size=0.25)+
+    geom_errorbar(aes(ymin = 6182.6, ymax = 6833.4, x =2), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 3), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809,x = 3), color = "red", size=0.25)+
+    geom_errorbar(aes(ymin = 6182.6, ymax = 6833.4,x = 3), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 4), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 4), color = "red", size=0.25)+
+    geom_errorbar(aes(ymin = 6182.6, ymax = 6833.4, x = 4), color = "red", size=0.25)+
     geom_point(aes(y=6508, x = 5), color="red", size = 1) +
-    geom_errorbar(aes(ymin = 5206, ymax = 7809, x = 5), color = "red", size=0.25)+
+    geom_errorbar(aes(ymin = 6182.6, ymax = 6833.4, x = 5), color = "red", size=0.25)+
     labs(title = title,
          x = "Year",
          y = "Cases Detected per 100,000 MSM")+
@@ -682,7 +740,7 @@ viz_incMSM_cal = function(df, title){
 viz_sympt_MSM_cal = function(df, title){
   df <- df %>% filter(tick >= 260)
   symptomatic <- ggplot(data = df, aes(x = (tick / 52)-5, y = DetectedAndSymptoms / Detected, group = uniqueID)) + 
-    geom_line( aes(y = DetectedAndSymptoms / Detected, alpha=resampled),size = 0.05, color="black") +
+    geom_line( aes(y = DetectedAndSymptoms / Detected),size = 0.05, color="black") +
     geom_point(aes(y=0.679, x = 1), color="red", size = 1) +
     geom_errorbar(aes(ymin = 0.628, ymax = 0.7265, x = 1), color = "red", size=0.25)+
     geom_point(aes(y=0.679, x = 2), color="red", size = 1) +
@@ -696,7 +754,7 @@ viz_sympt_MSM_cal = function(df, title){
     labs(x = "Year",
          y = "Prop. Detected Cases w Symptoms", 
          title = title) +
-    coord_cartesian(ylim= c(0.5, 1.0),xlim=c(0,25))+
+    coord_cartesian(ylim= c(0.0, 1.0),xlim=c(0,25))+
    # scale_y_continuous(limits = c(0.0, 1.0), labels = c(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)) + #ylim(0.4, 0.9) +
     my_theme +
     theme(legend.position = "none")+
@@ -814,7 +872,8 @@ kable(calibration_fit_df, digits = 2)
 
 
 ```{r loadExperimentData, echo=FALSE}
-directory <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_all_all_0.0_0.0/"
+#directory <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_all_all_0.0_0.0/"
+directory <- "/Users/me597/Documents/MSMoutput/output_MAY_03_2026_overnight_5_all_all_0.0_0.0/"
 
 dfGISP25 <-   read.csv(paste(directory,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP25 <- identify(dfGISP25, df_best_ends)
@@ -858,7 +917,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 1500))
+    coord_cartesian(xlim=c(0, 3000))
   
   failure <- ggplot(data = allends, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -869,7 +928,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels) +
-    coord_cartesian(xlim=c(0, 50))
+    coord_cartesian(xlim=c(0, 100))
   
   x <- ggplot(data = allends, aes(x=cumulativeE/1000, y = factor(counterfactual, levels = counter_levels))) +
     stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
@@ -880,7 +939,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 50))
+    coord_cartesian(xlim=c(0, 100))
   
   
   ggarrange(inc +

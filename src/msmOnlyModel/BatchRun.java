@@ -76,7 +76,7 @@ public class BatchRun {
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
 		List<Double> screenIntervalMeanMSMValuesList = sweeper.getScreenIntervalMeanMSMValues(reps);
-		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(reps);
+		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(screenIntervalMeanMSMValuesList);
 		
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
@@ -187,7 +187,7 @@ public class BatchRun {
 		
 	public void executeCalibratedBatch(File scenariofile, String counterfactual, String resistance, int yearX, double switchThreshold, int availrDST, int adhereTOCsympt, int adhereTOCasympt, double realisticRandom, double realisticTOC, double realisticDST, double fitnessCostA, double fitnessCostB) {
 		
-
+		currentRun.set(0);
 		
 		int reps = 0;
 		
@@ -482,6 +482,8 @@ public class BatchRun {
 		            treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
 
+		System.out.println("Starting batch " + counterfactual);
+		
 		int numThreads = 20; // Set to desired number of threads
 		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
 		try {
@@ -558,9 +560,13 @@ public class BatchRun {
 		
 		int completed = currentRun.incrementAndGet();
 		
-		if (completed == 1 || completed % 1000 == 0 || completed == reps) {
-			printProgress(completed, reps);
-		}
+		if (paramConfig.getCounterfactual().contains("sweep")) {
+			if (completed == 1 || completed % 1000 == 0 || completed == reps) {
+				printProgress(completed, reps);
+		}} else {
+			if (completed == 1 || completed % 10 == 0 || completed == reps) {
+				printProgress(completed, reps);
+		}}
 		
 		// Hint to the Garbage Collector that it might want to collect the garbs
 		System.gc();
@@ -579,7 +585,7 @@ public class BatchRun {
 	      StringBuilder bar = new StringBuilder("[");
 	      for (int i = 0; i < barWidth; i++) {
 	          if (i < filled) bar.append("||");
-	          else bar.append(" ");
+	          else bar.append("  ");
 	      }
 	      bar.append("] ");
 	      bar.append(completed).append("/").append(total);
@@ -714,14 +720,14 @@ public class BatchRun {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		// path root depends on machine. these are for my desktop and laptop respectively.
-		String root = "/usr/local/MSMoutput/";
-		//String root = "/Users/me597/Documents/MSMoutput/";
+		//String root = "/usr/local/MSMoutput/";
+		String root = "/Users/me597/Documents/MSMoutput/";
 
 		//String dirname = root + "output_" + fullDate +"_debug_6_";
 		
 		//String dirname = root + "output_" + fullDate +"_overnight_";
 		
-		String dirname = root + "output_" + "APRIL_30_2026_overnight_2_";
+		String dirname = root + "output_" + "MAY_04_2026_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 

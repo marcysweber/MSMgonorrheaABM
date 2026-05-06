@@ -49,7 +49,7 @@ public class Main {
 		
 		if (sweeping) {
 			BatchRun batchRunner = new BatchRun("sweep", resistance);
-			int batches = 4;
+			int batches = 30;
 			
 			for (int i = 0; i < batches; i++) {
 				batchRunner.executeSweep(scenariofile, reps, resistance);
@@ -70,18 +70,18 @@ public class Main {
 				
 			} else {
 				// to run everything:
-				executeCalibratedNoResistanceBatch(scenariofile);
+				//executeCalibratedNoResistanceBatch(scenariofile);
 				
 				executeCounterfactualScenarios(scenariofile);
 
-				//executeSensitivityAnalysisBatch(scenariofile);			
+				executeSensitivityAnalysisBatch(scenariofile);			
 				
-				//executeSensitivityAnalysisBatchnoDST(scenariofile);			
+				executeSensitivityAnalysisBatchnoDST(scenariofile);			
 
 				
 				//executeCompareResistanceInserters(scenariofile);
 //				
-				//executeFitnessCostSA(scenariofile);
+				executeFitnessCostSA(scenariofile);
 			}
 			
 			
@@ -95,15 +95,11 @@ public class Main {
 		BatchRun batchRunner = new BatchRun("all", "all");
 		//batchRunner.executeCalibratedBatch(scenariofile, "GISPemp_05");
 		batchRunner.executeCalibratedBatch(scenariofile, "GISPrand_05");
-
 		batchRunner.executeCalibratedBatch(scenariofile, "random");
-//
 		batchRunner.executeCalibratedBatch(scenariofile, "test-of-cure_80");
-		
-		
-		//batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
-		
 		batchRunner.executeCalibratedBatch(scenariofile, "realistic_combo_50_50_00");
+		
+		batchRunner.executeCalibratedBatch(scenariofile, "drug_sus_testing_80");
 
 		System.out.println("completed all counterfactual scenarios!");
 
@@ -166,17 +162,17 @@ public class Main {
 
 		
 		  
-		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_05", "combo", 15,
-		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		  realisticTOC, realisticDST, 0.0, 0.0); 
-		  
-		  batchRunner.executeCalibratedBatch(scenario,
-		  "GISPemp_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
-		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 0.0, 0.0);
-		 
-		  batchRunner.executeCalibratedBatch(scenario, "GISPemp_05", "combo", 31,
-		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
-		  realisticTOC, realisticDST, 0.0, 0.0);
+//		  batchRunner.executeCalibratedBatch(scenario, "GISPrand_05", "combo", 15,
+//		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+//		  realisticTOC, realisticDST, 0.0, 0.0); 
+//		  
+//		  batchRunner.executeCalibratedBatch(scenario,
+//		  "GISPrand_05", "combo", 20, switchThres, availrDST, adhereTOCsympt,
+//		  adhereTOCasympt, realisticRandom, realisticTOC, realisticDST, 0.0, 0.0);
+//		 
+//		  batchRunner.executeCalibratedBatch(scenario, "GISPrand_05", "combo", 31,
+//		  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
+//		  realisticTOC, realisticDST, 0.0, 0.0);
 		  
 		  batchRunner.executeCalibratedBatch(scenario, "GISPrand_05", "combo", 15,
 				  switchThres, availrDST, adhereTOCsympt, adhereTOCasympt, realisticRandom,
@@ -467,7 +463,7 @@ public static void executeFitnessCostSA(File scenariofile) {
 //	fitnessCostCounterfactuals(scenariofile, 0.25, 0.25);
 //	
 //	//
-//	fitnessCostCounterfactuals(scenariofile, 0.10, 0.10);
+	fitnessCostCounterfactuals(scenariofile, 0.10, 0.10);
 //
 //
 //	//fitness costs of A are higher
@@ -476,8 +472,8 @@ public static void executeFitnessCostSA(File scenariofile) {
 //	//
 //	fitnessCostCounterfactuals(scenariofile, 0.25, 0.1);
 //	
-//	//
-//	fitnessCostCounterfactuals(scenariofile, 0.10, 0.0);
+//	
+	fitnessCostCounterfactuals(scenariofile, 0.10, 0.0);
 //	
 //	
 //	//fitness costs of B are higher
@@ -487,13 +483,13 @@ public static void executeFitnessCostSA(File scenariofile) {
 //	fitnessCostCounterfactuals(scenariofile, 0.1, 0.25);
 //	
 //	//
-//	fitnessCostCounterfactuals(scenariofile, 0.0, 0.10);
+	fitnessCostCounterfactuals(scenariofile, 0.0, 0.10);
 //	
 	
 	//varying between 0 and 10%
 	
-	//fitnessCostCounterfactuals(scenariofile, 0.05, 0.05);
-	//fitnessCostCounterfactuals(scenariofile, 0.025, 0.025);
+	fitnessCostCounterfactuals(scenariofile, 0.05, 0.05);
+	fitnessCostCounterfactuals(scenariofile, 0.025, 0.025);
 	
 	fitnessCostCounterfactuals(scenariofile, 0.01, 0.01);
 

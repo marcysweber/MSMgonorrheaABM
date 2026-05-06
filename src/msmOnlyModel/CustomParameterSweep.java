@@ -11,6 +11,7 @@ import repast.simphony.random.RandomHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author me597
@@ -53,7 +54,7 @@ public class CustomParameterSweep {
 	//transmission parameters
 	public List<Double> getTransmissionMSMValues(int samples){
 		double annualContactsMin = 1.0;
-		double annualContactsMax = 30.0;
+		double annualContactsMax = 50.0;
 		int seed = (int) System.currentTimeMillis() + 2;
 		return getUniformSweepValues(seed, samples, annualContactsMin, annualContactsMax);
 	}
@@ -86,11 +87,17 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
 	
-	public List<Double> getScreenIntervalVarMSMValues(int samples){
-		double screenIntervalMin = 0.75;
-		double screenIntervalMax = 3.0;
-		int seed = (int) System.currentTimeMillis() + 39;
-		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+	public List<Double> getScreenIntervalVarMSMValues(List<Double> screenIntervalMean){
+		//double screenIntervalMin = 0.75;
+		//double screenIntervalMax = 3.0;
+		//int seed = (int) System.currentTimeMillis() + 39;
+		//return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+		
+		double constant = 0.1;
+		List <Double> screenIntervalVarValues = screenIntervalMean.stream().map(n -> n * constant).collect(Collectors.toList());
+		
+		return screenIntervalVarValues;
+		
 	}
 	
 	
