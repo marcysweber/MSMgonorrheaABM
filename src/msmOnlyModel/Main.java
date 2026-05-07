@@ -70,18 +70,18 @@ public class Main {
 				
 			} else {
 				// to run everything:
-				//executeCalibratedNoResistanceBatch(scenariofile);
+				executeCalibratedNoResistanceBatch(scenariofile);
 				
-				executeCounterfactualScenarios(scenariofile);
+				//executeCounterfactualScenarios(scenariofile);
 
-				executeSensitivityAnalysisBatch(scenariofile);			
+				//executeSensitivityAnalysisBatch(scenariofile);			
 				
-				executeSensitivityAnalysisBatchnoDST(scenariofile);			
+				//executeSensitivityAnalysisBatchnoDST(scenariofile);			
 
 				
 				//executeCompareResistanceInserters(scenariofile);
 //				
-				executeFitnessCostSA(scenariofile);
+				//executeFitnessCostSA(scenariofile);
 			}
 			
 			

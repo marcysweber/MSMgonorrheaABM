@@ -727,7 +727,7 @@ public class BatchRun {
 		
 		//String dirname = root + "output_" + fullDate +"_overnight_";
 		
-		String dirname = root + "output_" + "MAY_04_2026_overnight_";
+		String dirname = root + "output_" + "MAY_06_2026_overnight_2_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 

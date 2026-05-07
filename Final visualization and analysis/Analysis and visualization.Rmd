@@ -486,24 +486,27 @@ visualize_parameters = function(df){
 ```{r calibrationProcedureStep1, include = false}
 
 #load the sweep data, and give each run a unique identifier
-sweepdir <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir1 <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir2 <- "/Users/me597/Documents/MSMoutput/output_MAY_04_2026_overnight_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+
+
 #sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_3_sweep_none_0.0_0.0/"
 #sweepdir2 <- "/usr/local/MSMoutput/output_APRIL_15_2026_overnight_sweep_none_0.0_0.0/"
 #sweepdir3 <- "/usr/local/MSMoutput/output_APRIL_17_2026_overnight_sweep_none_0.0_0.0/"
 
 
 
-dfsweep <- read.csv(paste(sweepdir, "sweepnone0.00.0supercombined.csv", sep=''))
-dfsweep$uniqueID <- as.numeric(paste(as.character(dfsweep$RunNumber), as.character(dfsweep$seed), sep=''))
+dfsweep1 <- read.csv(paste(sweepdir1, "sweepnone0.00.0supercombined.csv", sep=''))
+dfsweep1$uniqueID <- as.numeric(paste(as.character(dfsweep1$RunNumber), as.character(dfsweep1$seed), sep=''))
 
-#dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0_2combined.csv", sep=''))
-#dfsweep2$uniqueID <- as.integer(paste(as.character(dfsweep2$RunNumber), as.character(dfsweep2$seed), sep=''))
+dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0supercombined.csv", sep=''))
+dfsweep2$uniqueID <- as.numeric(paste(as.character(dfsweep2$RunNumber), as.character(dfsweep2$seed), sep=''))
 
 #dfsweep3 <- read.csv(paste(sweepdir3, "sweepnone0.00.0_3combined.csv", sep=''))
 #dfsweep3$uniqueID <- as.integer(paste(as.character(dfsweep3$RunNumber), as.character(dfsweep3$seed), sep=''))
 
 
-#dfsweep<- rbind(dfsweep1, dfsweep2, dfsweep3)
+dfsweep<- rbind(dfsweep1, dfsweep2)
 
 # grab and combine multiple csvs before the super combined has been generated
 #files <- list.files(path = sweepdir, pattern = "\\.csv$", full.names = TRUE)
@@ -515,7 +518,7 @@ dfsweep$uniqueID <- as.numeric(paste(as.character(dfsweep$RunNumber), as.charact
 df_ends <- calc_weights(dfsweep)
 df_ends_sorted<-df_ends[order(-df_ends$weight), ]
 
-df_best_ends <- df_ends_sorted[1:150,]
+df_best_ends <- df_ends_sorted[1:300,]
 
 #df_best_ends <- resample(df_ends, 10000)
 
@@ -618,7 +621,7 @@ multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(d
 ```{r calibrationProcedureStep2, include=FALSE}
 
 #load resistance cal data
-dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_03_2026_overnight_3_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 #dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_10_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 
 dfGISPparcal <- identify(dfGISPparcal, df_best_ends)
@@ -661,13 +664,15 @@ visualize_calibration_MSM(df_best_traj)
 ```{r loadFinalCalibration}
 #MAKE SURE THE PATHS ARE ALIGNED AND ACCURATE
 #read old final calibration runs
-#dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
-#dfcalibrated <- identify(dfcalibrated, df_best_ends)
+dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_none_none_0.0_0.0/nonenone0.0_0.0_1combined.csv")
+dfcalibrated <- identify(dfcalibrated, df_best_ends)
 
-df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates7mar25.csv")
+#df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
 visualize_parameters(df_best_ends)
 
-df_parcal <- read.csv("/usr/local/MSM_parcalibrated_params/resample_w_replicates_2026-04-08.csv") #/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates7mar25.csv")
+#df_parcal <- read.csv("/usr/local/MSM_parcalibrated_params/resample_w_replicates_2026-04-08.csv")
+df_parcal <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
 visualize_parameters(df_parcal)
 
 
@@ -873,7 +878,7 @@ kable(calibration_fit_df, digits = 2)
 
 ```{r loadExperimentData, echo=FALSE}
 #directory <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_all_all_0.0_0.0/"
-directory <- "/Users/me597/Documents/MSMoutput/output_MAY_03_2026_overnight_5_all_all_0.0_0.0/"
+directory <- "/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_all_all_0.0_0.0/"
 
 dfGISP25 <-   read.csv(paste(directory,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP25 <- identify(dfGISP25, df_best_ends)
@@ -939,7 +944,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 100))
+    coord_cartesian(xlim=c(0, 125))
   
   
   ggarrange(inc +
