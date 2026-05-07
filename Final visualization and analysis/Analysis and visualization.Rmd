@@ -1555,6 +1555,8 @@ incMean <- c(
   mean(summary_TOC$cumulativeInc),
   mean(summary_real$cumulativeInc))
 
+incMean <- round(incMean, 2)
+
 #table 1 row 2 - gonorrhea incidence quantiles
 incQuantiles <- c(
   quantileRow(summary_GISP$cumulativeInc),
@@ -1568,6 +1570,8 @@ resistMean <- c(
   mean(summary_random$cumulativeResist),
   mean(summary_TOC$cumulativeResist),
   mean(summary_real$cumulativeResist))
+
+resistMean <- round(resistMean, 2)
 
 #table 1 row 4 - AMR incidence quantiles
 resistQuantiles <- c(
@@ -1584,6 +1588,8 @@ failureMean <- c(
   mean(summary_TOC$cumulativeFailure*100),
   mean(summary_real$cumulativeFailure*100))
 
+failureMean <- round(failureMean, 2)
+
 #table 1 row 6 - failure quantiles
 failureQuantiles <- c(
   quantileRow(summary_GISP$cumulativeFailure *100),
@@ -1598,6 +1604,8 @@ eMean <- c(
   mean(summary_random$cumulativeE),
   mean(summary_TOC$cumulativeE),
   mean(summary_real$cumulativeE))
+
+eMean <- round(eMean, 2)
 
 #table 1 row 8 - ertapenem quantiles
 eQuantiles <- c(
@@ -1621,38 +1629,103 @@ rownames(table1df) <- c("Incidence Mean", "Incidence Quantiles", "
 kable(table1df)
 ```
 
+```{r propLowestCostMainText, echo=FALSE}
+
+ceadf <- cea_real_weighted_noDST(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25)
+
+sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts)
+
+sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts) / 134
+
+sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs)
+
+sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs) / 134
+
+sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+```
+
+```{r whenWasTOCtheCheapest, echo=FALSE}
+
+sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & 
+      ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & 
+      ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+```
+
+```{r whenWasCombotheCheapest, echo=FALSE}
+sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+
+```
+
 ```{r table2, echo = FALSE}
 summary_GISP <- cumulative_everything(dfGISP25)
 summary_random <-cumulative_everything(dfrandom25)
 summary_TOC <-cumulative_everything(dfTOC25)
 summary_real <-cumulative_everything(dfreal25)
 
+quantileRow = function(dataCol){
+    return(paste(as.character(round(quantile(dataCol, probs = c(0.025, 0.975)),2)), collapse = ", "))
+}
+
 #table 2 col 1
-mean(summary_GISP$cumulativeCosts) / 1000000
-quantile(summary_GISP$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+GISPcostmean <- mean(summary_GISP$cumulativeCosts) / 1000000
+GISPcostQuant <- quantileRow(summary_GISP$cumulativeCosts/ 1000000)
 
-mean(summary_random$cumulativeCosts) / 1000000
-quantile(summary_random$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+randomcostmean <- mean(summary_random$cumulativeCosts) / 1000000
+randomcostQuant <- quantileRow(summary_random$cumulativeCosts/ 1000000)
 
-mean(summary_TOC$cumulativeCosts)/ 1000000
-quantile(summary_TOC$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+TOCcostMean <- mean(summary_TOC$cumulativeCosts)/ 1000000
+TOCcostQuant <- quantileRow(summary_TOC$cumulativeCosts/ 1000000)
 
-mean(summary_real$cumulativeCosts)/ 1000000
-quantile(summary_real$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+realcostmean<- mean(summary_real$cumulativeCosts)/ 1000000
+realcostQuant <- quantileRow(summary_real$cumulativeCosts/ 1000000)
 
 #table 2 col 2
-mean(summary_GISP$attempt)
-quantile(summary_GISP$cumulativeQALYs, probs = c(0.025, 0.975))
+GISPQALYmean <- mean(summary_GISP$cumulativeQALYs)
+GISPQALYquant <- quantileRow(summary_GISP$cumulativeQALYs)
 
-mean(summary_random$cumulativeQALYs)
-quantile(summary_random$cumulativeQALYs, probs = c(0.025, 0.975))
+randomQALYmean <- mean(summary_random$cumulativeQALYs)
+randomQALYquant <- quantileRow(summary_random$cumulativeQALYs)
 
-mean(summary_TOC$cumulativeQALYs)
-quantile(summary_TOC$cumulativeQALYs, probs = c(0.025, 0.975))
+TOCQALYmean <- mean(summary_TOC$cumulativeQALYs)
+TOCQALYquant <- quantileRow(summary_TOC$cumulativeQALYs)
 
-mean(summary_real$cumulativeQALYs)
-quantile(summary_real$cumulativeQALYs, probs = c(0.025, 0.975))
+realQALYmean <- mean(summary_real$cumulativeQALYs)
+realQALYquant <- quantileRow(summary_real$cumulativeQALYs)
 
+costmean <- c(GISPcostmean, randomcostmean, TOCcostMean, realcostmean)
+costmean <- round(costmean, 2)
+costQuant <- c(GISPcostQuant, randomcostQuant, TOCcostQuant, realcostQuant)
+
+QALYmean <- c(GISPQALYmean, randomQALYmean, TOCQALYmean, realQALYmean)
+QALYmean <- round(QALYmean, 2)
+QALYquant <- c(GISPQALYquant, randomQALYquant, TOCQALYquant, realQALYquant)
+
+table2df <- rbind(costmean, costQuant, QALYmean, QALYquant)
+
+colnames(table2df) <- c("GISP", "Randomized Treatment (RT)", "Test of Cure (TOC)", "Combo")
+  
+rownames(table2df) <- c("Cost Mean", "Cost Quantiles", "QALY Mean", "QALY Quantiles")
+
+kable(table2df)
+```
 
 ```
 
