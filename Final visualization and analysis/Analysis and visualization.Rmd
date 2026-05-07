@@ -611,7 +611,7 @@ multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(d
 ```{r loadParCalibration, include=FALSE}
 
 #read old parcalibration runs
-#df_best_ends <- read.csv("/Users/me597/Documents/MSM_calibrated_params/resample_w_replicates7mar25.csv")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resample_w_replicates_2026-05-06.csv")
 #visualize_parameters(df_best_ends)
 #dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
 #dfcalibrated <- identify(dfcalibrated, df_best_ends)
@@ -670,6 +670,7 @@ dfcalibrated <- identify(dfcalibrated, df_best_ends)
 #df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #")
 df_best_ends <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
 visualize_parameters(df_best_ends)
+df_best_traj <- best_traj(dfsweep, df_best_ends)
 
 #df_parcal <- read.csv("/usr/local/MSM_parcalibrated_params/resample_w_replicates_2026-04-08.csv")
 df_parcal <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
