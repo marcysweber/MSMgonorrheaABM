@@ -518,35 +518,35 @@ dfsweep<- rbind(dfsweep1, dfsweep2)
 df_ends <- calc_weights(dfsweep)
 df_ends_sorted<-df_ends[order(-df_ends$weight), ]
 
-df_best_ends <- df_ends_sorted[1:300,]
+df_best_ends_parcal <- df_ends_sorted[1:300,]
 
 #df_best_ends <- resample(df_ends, 10000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
 parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
 #parcaldir <- "/usr/local/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
-write.csv(df_best_ends, file = paste(parcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
+write.csv(df_best_ends_parcal, file = paste(parcaldir, "top_300_", today(), ".csv", sep=''))
 
 #get the unique trajectories, so that duplicates do not need to be re-run
-df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0)) #empty DF with all needed cols
-colnames(df_best_ends_unique) <- colnames(df_best_ends) #copy over the col names
-unique_resamples <- unique(df_best_ends$uniqueID) #get the vector of just uniqueIDs without duplicates
+df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends_parcal[1,]), nrow = 0)) #empty DF with all needed cols
+colnames(df_best_ends_unique) <- colnames(df_best_ends_parcal) #copy over the col names
+unique_resamples <- unique(df_best_ends_parcal$uniqueID) #get the vector of just uniqueIDs without duplicates
 
 #populate the dataframe based on the uniqueID from the resamples
 for (unique_ID in unique_resamples){ #use the unduplicated IDs to populate the new DF
-  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  newrow <- first(df_best_ends_parcal[df_best_ends_parcal$uniqueID == unique_ID,])
   df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
 }
-best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+best_ends_unique <- identify(df_best_ends_unique, df_best_ends_parcal)
 
-df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for the resampled trajs
-df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
+#df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for the resampled trajs
+#df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
 
-df_best_traj <- best_traj(dfsweep, df_best_ends)
-df_best_traj$resampled <- 100
+df_best_traj_parcal <- best_traj(dfsweep, df_best_ends_parcal)
+df_best_traj_parcal$resampled <- 100
 
 #write parcalibrated parameter sets to file
-write_calibrated(df_best_ends, parcaldir)
+write_calibrated(df_best_ends_parcal, parcaldir)
 ```
 
 ```{r examiningPriorsAndPosteriors}
@@ -611,7 +611,7 @@ multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(d
 ```{r loadParCalibration, include=FALSE}
 
 #read old parcalibration runs
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resample_w_replicates_2026-05-06.csv")
+df_best_ends_parcal <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/top_300_2026-05-07.csv")
 #visualize_parameters(df_best_ends)
 #dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
 #dfcalibrated <- identify(dfcalibrated, df_best_ends)
@@ -674,6 +674,8 @@ df_best_traj <- best_traj(dfsweep, df_best_ends)
 
 #df_parcal <- read.csv("/usr/local/MSM_parcalibrated_params/resample_w_replicates_2026-04-08.csv")
 df_parcal <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
+df_parcal_traj <- best_traj(dfsweep, df_parcal)
+
 visualize_parameters(df_parcal)
 
 
@@ -773,6 +775,7 @@ viz_sympt_MSM_cal = function(df, title){
 ```
 
 ```{r figure2, echo = FALSE, fig.width=8, fig.height=2.7}
+visualize_calibration_MSM(df_best_traj_parcal)
 visualize_calibration_MSM(df_best_traj)
 visualize_calibration_MSM(dfcalibrated)
 ```
