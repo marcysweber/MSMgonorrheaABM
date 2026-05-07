@@ -483,7 +483,7 @@ visualize_parameters = function(df){
 ![**Figure 1.** ](Figure 1.jpg)
 
 # Figure 2
-```{r calibrationProcedureStep1, include = false}
+```{r calibrationProcedureStep1, include = FALSE, eval = FALSE}
 
 #load the sweep data, and give each run a unique identifier
 sweepdir1 <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
@@ -549,7 +549,7 @@ df_best_traj_parcal$resampled <- 100
 write_calibrated(df_best_ends_parcal, parcaldir)
 ```
 
-```{r examiningPriorsAndPosteriors}
+```{r examiningPriorsAndPosteriors, include = FALSE, eval = FALSE}
 
 #visualize_parameters(dfsweep[dfsweep$tick ==0, ])
 visualize_parameters(df_ends) 
@@ -562,7 +562,7 @@ visualize_calibration_MSM(df_best_traj)
 
 ```
 
-```{r activityGroupsCal}
+```{r activityGroupsCal, include = FALSE, eval = FALSE}
 viz_prev_lowrisk = function(df, title){
   df <- df %>% filter(tick >= 260)
   prev <- ggplot(data = df, aes(x = (tick / 52)-5, group = uniqueID)) + 
@@ -608,7 +608,7 @@ multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(d
 ```
 
 
-```{r loadParCalibration, include=FALSE}
+```{r loadParCalibration, include=FALSE, eval = FALSE}
 
 #read old parcalibration runs
 df_best_ends_parcal <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/top_300_2026-05-07.csv")
@@ -618,7 +618,7 @@ df_best_ends_parcal <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params
 ```
 
 
-```{r calibrationProcedureStep2, include=FALSE}
+```{r calibrationProcedureStep2, include=FALSE, eval = FALSE}
 
 #load resistance cal data
 dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
@@ -661,7 +661,7 @@ visualize_calibration_MSM(df_best_traj)
 
 ```
 
-```{r loadFinalCalibration}
+```{r loadFinalCalibration, include = FALSE, eval = FALSE}
 #MAKE SURE THE PATHS ARE ALIGNED AND ACCURATE
 #read old final calibration runs
 dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_none_none_0.0_0.0/nonenone0.0_0.0_1combined.csv")
@@ -856,7 +856,7 @@ calculate_calibration_fit <- function(posterior_samples,
 
 
 calibration_fit_df <- rbind(calculate_calibration_fit(df$Prevalence, 4.5, 3.6, 5.0),
-      calculate_calibration_fit(df$Detected, 6508, 5206, 7809),
+      calculate_calibration_fit(df$Detected, 6508, 6182.6, 6833.4),
       calculate_calibration_fit(df$DetectedAndSymptoms/df$Detected, 0.679, 0.628, 0.7265)
 )
 
@@ -880,7 +880,7 @@ kable(calibration_fit_df, digits = 2)
 ```
 
 
-```{r loadExperimentData, echo=FALSE}
+```{r loadExperimentData, echo=FALSE, eval = FALSE}
 #directory <- "/usr/local/MSMoutput/output_APRIL_7_2026_debug_6_all_all_0.0_0.0/"
 directory <- "/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_all_all_0.0_0.0/"
 
@@ -1558,6 +1558,8 @@ incMean <- c(
   mean(summary_TOC$cumulativeInc),
   mean(summary_real$cumulativeInc))
 
+incMean <- round(incMean, 2)
+
 #table 1 row 2 - gonorrhea incidence quantiles
 incQuantiles <- c(
   quantileRow(summary_GISP$cumulativeInc),
@@ -1571,6 +1573,8 @@ resistMean <- c(
   mean(summary_random$cumulativeResist),
   mean(summary_TOC$cumulativeResist),
   mean(summary_real$cumulativeResist))
+
+resistMean <- round(resistMean, 2)
 
 #table 1 row 4 - AMR incidence quantiles
 resistQuantiles <- c(
@@ -1587,6 +1591,8 @@ failureMean <- c(
   mean(summary_TOC$cumulativeFailure*100),
   mean(summary_real$cumulativeFailure*100))
 
+failureMean <- round(failureMean, 2)
+
 #table 1 row 6 - failure quantiles
 failureQuantiles <- c(
   quantileRow(summary_GISP$cumulativeFailure *100),
@@ -1601,6 +1607,8 @@ eMean <- c(
   mean(summary_random$cumulativeE),
   mean(summary_TOC$cumulativeE),
   mean(summary_real$cumulativeE))
+
+eMean <- round(eMean, 2)
 
 #table 1 row 8 - ertapenem quantiles
 eQuantiles <- c(
@@ -1624,38 +1632,103 @@ rownames(table1df) <- c("Incidence Mean", "Incidence Quantiles", "
 kable(table1df)
 ```
 
+```{r propLowestCostMainText, echo=FALSE}
+
+ceadf <- cea_real_weighted_noDST(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25)
+
+sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts)
+
+sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts) / 134
+
+sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs)
+
+sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs) / 134
+
+sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+```
+
+```{r whenWasTOCtheCheapest, echo=FALSE}
+
+sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & 
+      ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & 
+      ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+```
+
+```{r whenWasCombotheCheapest, echo=FALSE}
+sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts)
+
+sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+
+sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
+
+sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+
+```
+
 ```{r table2, echo = FALSE}
 summary_GISP <- cumulative_everything(dfGISP25)
 summary_random <-cumulative_everything(dfrandom25)
 summary_TOC <-cumulative_everything(dfTOC25)
 summary_real <-cumulative_everything(dfreal25)
 
+quantileRow = function(dataCol){
+    return(paste(as.character(round(quantile(dataCol, probs = c(0.025, 0.975)),2)), collapse = ", "))
+}
+
 #table 2 col 1
-mean(summary_GISP$cumulativeCosts) / 1000000
-quantile(summary_GISP$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+GISPcostmean <- mean(summary_GISP$cumulativeCosts) / 1000000
+GISPcostQuant <- quantileRow(summary_GISP$cumulativeCosts/ 1000000)
 
-mean(summary_random$cumulativeCosts) / 1000000
-quantile(summary_random$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+randomcostmean <- mean(summary_random$cumulativeCosts) / 1000000
+randomcostQuant <- quantileRow(summary_random$cumulativeCosts/ 1000000)
 
-mean(summary_TOC$cumulativeCosts)/ 1000000
-quantile(summary_TOC$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+TOCcostMean <- mean(summary_TOC$cumulativeCosts)/ 1000000
+TOCcostQuant <- quantileRow(summary_TOC$cumulativeCosts/ 1000000)
 
-mean(summary_real$cumulativeCosts)/ 1000000
-quantile(summary_real$cumulativeCosts/ 1000000, probs = c(0.025, 0.975))
+realcostmean<- mean(summary_real$cumulativeCosts)/ 1000000
+realcostQuant <- quantileRow(summary_real$cumulativeCosts/ 1000000)
 
 #table 2 col 2
-mean(summary_GISP$attempt)
-quantile(summary_GISP$cumulativeQALYs, probs = c(0.025, 0.975))
+GISPQALYmean <- mean(summary_GISP$cumulativeQALYs)
+GISPQALYquant <- quantileRow(summary_GISP$cumulativeQALYs)
 
-mean(summary_random$cumulativeQALYs)
-quantile(summary_random$cumulativeQALYs, probs = c(0.025, 0.975))
+randomQALYmean <- mean(summary_random$cumulativeQALYs)
+randomQALYquant <- quantileRow(summary_random$cumulativeQALYs)
 
-mean(summary_TOC$cumulativeQALYs)
-quantile(summary_TOC$cumulativeQALYs, probs = c(0.025, 0.975))
+TOCQALYmean <- mean(summary_TOC$cumulativeQALYs)
+TOCQALYquant <- quantileRow(summary_TOC$cumulativeQALYs)
 
-mean(summary_real$cumulativeQALYs)
-quantile(summary_real$cumulativeQALYs, probs = c(0.025, 0.975))
+realQALYmean <- mean(summary_real$cumulativeQALYs)
+realQALYquant <- quantileRow(summary_real$cumulativeQALYs)
 
+costmean <- c(GISPcostmean, randomcostmean, TOCcostMean, realcostmean)
+costmean <- round(costmean, 2)
+costQuant <- c(GISPcostQuant, randomcostQuant, TOCcostQuant, realcostQuant)
+
+QALYmean <- c(GISPQALYmean, randomQALYmean, TOCQALYmean, realQALYmean)
+QALYmean <- round(QALYmean, 2)
+QALYquant <- c(GISPQALYquant, randomQALYquant, TOCQALYquant, realQALYquant)
+
+table2df <- rbind(costmean, costQuant, QALYmean, QALYquant)
+
+colnames(table2df) <- c("GISP", "Randomized Treatment (RT)", "Test of Cure (TOC)", "Combo")
+  
+rownames(table2df) <- c("Cost Mean", "Cost Quantiles", "QALY Mean", "QALY Quantiles")
+
+kable(table2df)
+```
 
 ```
 
@@ -1731,7 +1804,7 @@ kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "QALYs PRCC")
 
 ```
 
-```{r fitnessloading, echo=FALSE}
+```{r fitnessloading, echo=FALSE, eval = FALSE}
 
 fitnesspath <- "/usr/local/MSMoutput/"
 
@@ -1920,7 +1993,7 @@ nmb_noDST = function(cea_df, title){
 ```
 
 
-```{r fitnessCostSA, echo = FALSE, warnings=FALSE, message=FALSE}
+```{r fitnessCostSA, echo = FALSE, warnings=FALSE, message=FALSE, eval = FALSE}
 
 # 
 # summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
@@ -2013,7 +2086,7 @@ nmb_noDST = function(cea_df, title){
 
 ```
 
-```{r fitnessCostsSummary0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary0, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
 
@@ -2023,7 +2096,7 @@ Figure. Summary plot when fitness costs were 0%. Identical to figure 3 in main t
 
 
 
-```{r fitnessCostsSummary1, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary1, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)
 
@@ -2033,7 +2106,7 @@ Figure. Summary plot when fitness costs were 1% for both strain resistant to dru
 
 
 
-```{r fitnessCostsSummary2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary2.5, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)
 
@@ -2042,14 +2115,14 @@ summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, d
 Figure. Summary plot when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-```{r fitnessCostsSummary10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary10, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
 ```
 
 Figure. Summary plot when fitness costs were 10% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-```{r fitnessCostsFigureFour0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour0, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0, dfrealfitnessCost0.0_0.0, 25)
 
 
@@ -2060,7 +2133,7 @@ Figure. Trends in incidence and resistance when fitness costs were 0%. Identical
 
 
 
-```{r fitnessCostsFigureFour1, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour1, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01, dfrealfitnessCost0.01_0.01, 25)
 
@@ -2072,7 +2145,7 @@ Figure. Trends in incidence and resistance when fitness costs were 1%for both st
 
 
 
-```{r fitnessCostsFigureFour2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour2.5, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025, dfrealfitnessCost0.025_0.025, 25)
 
@@ -2083,7 +2156,7 @@ Figure. Trends in incidence and resistance when fitness costs were 2.5% for both
 
 
 
-```{r fitnessCostsFigureFour10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour10, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
 
@@ -2094,7 +2167,7 @@ Figure. Trends in incidence and resistance when fitness costs were 10% for both 
 
 
 
-```{r fitnessCostsCEA, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsCEA, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
   visualize_cea_weighted_real_noDST("A. Fitness costs 0%", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
@@ -2119,7 +2192,7 @@ multiplot(
 Figure. Cost-effectiveness analysis for different levels of fitness costs for resistant strains. A and B, 0% (same as main text results). C and D, 1%. E and F, 2.5%. G and H, 10%. As resistance becomes more costly for the bacteria, and therefore resistant strains are less prevalent, the counterfactuals converge in both costs and QALYs. GISP and randomized treatment are similar in terms of cost when there is little to no resistance in the population. Given that available evidence indicates that *N gonorhoeae* has very low fitness costs, and/or might quickly evolve compensatory mechanisms to overcome fitness costs, we maintain our conclusion that GISP is preferable over alternatives.
 
 
-```{r resistanceNotEmerging}
+```{r resistanceNotEmerging, include = FALSE, eval = FALSE}
 endOfSimGISP <- dfGISP25[dfGISP25$tick==1560,]
 noResistanceDF <- endOfSimGISP[endOfSimGISP$ResistAIncidence == 0,]
 runNumberNoResist <- noResistanceDF$RunNumber
