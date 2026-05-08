@@ -196,8 +196,8 @@ write_calibrated = function(df, path){
   resampleRecoveryLambda <- df$NaturalRecoveryTime
   resampleProbSymptomaticMSM <- df$ProbSymptomaticMSM
  
-  resampleScreenIntervalMeanMSM <- df$ScreenIntervalMeanMSM * 1.20
-    resampleScreenIntervalVarMSM <- rep(0.5, length(df$ScreenIntervalVarMSM))
+  resampleScreenIntervalMeanMSM <- df$ScreenIntervalMeanMSM
+    resampleScreenIntervalVarMSM <- df$ScreenIntervalVarMSM
 
   resampleAssortativity <- df$Assortativity
   
@@ -486,8 +486,8 @@ visualize_parameters = function(df){
 ```{r calibrationProcedureStep1, include = FALSE, eval = FALSE}
 
 #load the sweep data, and give each run a unique identifier
-sweepdir1 <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
-sweepdir2 <- "/Users/me597/Documents/MSMoutput/output_MAY_04_2026_overnight_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir1 <- "/usr/local/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir2 <- "/usr/local/output_MAY_04_2026_overnight_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
 
 
 #sweepdir <- "/usr/local/MSMoutput/output_APRIL_30_2026_overnight_3_sweep_none_0.0_0.0/"
@@ -523,27 +523,27 @@ df_best_ends <- df_ends_sorted[1:300,]
 #df_best_ends <- resample(df_ends, 10000)
 
 #save the resample so it can be re-accessed (includes duplicate entries)
-parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
-#parcaldir <- "/usr/local/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
-write.csv(df_best_ends, file = paste(parcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
+#parcaldir <- "/Users/me597/Documents/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
+parcaldir <- "/usr/local/MSM_parcalibrated_params/" #/Users/me597/Documents/MSM_parcalibrated_params/
+write.csv(df_best_ends, file = paste(parcaldir, "top_300_", today(), ".csv", sep=''))
 
 #get the unique trajectories, so that duplicates do not need to be re-run
-df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0)) #empty DF with all needed cols
-colnames(df_best_ends_unique) <- colnames(df_best_ends) #copy over the col names
-unique_resamples <- unique(df_best_ends$uniqueID) #get the vector of just uniqueIDs without duplicates
+#df_best_ends_unique <- data.frame(matrix(ncol=length(df_best_ends[1,]), nrow = 0)) #empty DF with all needed cols
+#colnames(df_best_ends_unique) <- colnames(df_best_ends) #copy over the col names
+#unique_resamples <- unique(df_best_ends$uniqueID) #get the vector of just uniqueIDs without duplicates
 
 #populate the dataframe based on the uniqueID from the resamples
-for (unique_ID in unique_resamples){ #use the unduplicated IDs to populate the new DF
-  newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
-  df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
-}
-best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
+#for (unique_ID in unique_resamples){ #use the unduplicated IDs to populate the new DF
+  #newrow <- first(df_best_ends[df_best_ends$uniqueID == unique_ID,])
+  #df_best_ends_unique <- rbind(df_best_ends_unique, newrow)
+#}
+#best_ends_unique <- identify(df_best_ends_unique, df_best_ends)
 
-df_best_traj <- best_traj(dfsweep,df_best_ends_unique) #grabs all timesteps for the resampled trajs
-df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
+#df_best_traj <- best_traj(dfsweep,df_best_ends) #grabs all timesteps for the resampled trajs
+#df_best_traj <- identify(df_best_traj, df_best_ends) #removes duplicates and adds a col for times resampled
 
 df_best_traj <- best_traj(dfsweep, df_best_ends)
-df_best_traj$resampled <- 100
+#df_best_traj$resampled <- 100
 
 #write parcalibrated parameter sets to file
 write_calibrated(df_best_ends, parcaldir)
@@ -611,7 +611,7 @@ multiplot(viz_prev_lowrisk(df_best_traj, "a. Low Activity"), viz_prev_highrisk(d
 ```{r loadParCalibration, include=FALSE, eval = FALSE}
 
 #read old parcalibration runs
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resample_w_replicates_2026-05-06.csv")
+#df_best_ends <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resample_w_replicates_2026-05-06.csv")
 #visualize_parameters(df_best_ends)
 #dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/MARCH_9_2025_overnight_none_none/nonenone251combined.csv")
 #dfcalibrated <- identify(dfcalibrated, df_best_ends)
@@ -621,10 +621,10 @@ df_best_ends <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resamp
 ```{r calibrationProcedureStep2, include=FALSE, eval = FALSE}
 
 #load resistance cal data
-dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_MAY_08_2026_overnight_4_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 #dfGISPparcal <- read.csv("/usr/local/MSMoutput/output_APRIL_10_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
 
-dfGISPparcal <- identify(dfGISPparcal, df_best_ends)
+dfGISPparcal$uniqueID <- as.numeric(paste(as.character(dfGISPparcal$RunNumber), as.character(dfGISPparcal$seed), sep=''))
 
 visualize_parameters(dfGISPparcal)
 visualize_calibration_MSM(dfGISPparcal)
@@ -649,14 +649,14 @@ dfFinalCalEnds <- dfFinalCal[dfFinalCal$tick==1560,] #grab just the last time st
 
 
 #write final calibrated parameter sets
-finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/
-#finalcaldir <- "/usr/local/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/"
+#finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/
+finalcaldir <- "/usr/local/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/"
 
 write_calibrated(dfFinalCalEnds, finalcaldir)
 write.csv(dfFinalCalEnds, file = paste(finalcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
 
 df_best_traj <- best_traj(dfGISPparcal, dfFinalCalEnds)
-df_best_traj$resampled <- 100
+#df_best_traj$resampled <- 100
 visualize_calibration_MSM(df_best_traj)
 
 ```
@@ -664,9 +664,8 @@ visualize_calibration_MSM(df_best_traj)
 ```{r loadFinalCalibration, include = FALSE, eval = FALSE}
 #MAKE SURE THE PATHS ARE ALIGNED AND ACCURATE
 #read old final calibration runs
-dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_none_none_0.0_0.0/nonenone0.0_0.0_1combined.csv")
-dfcalibrated <- identify(dfcalibrated, df_best_ends)
-
+dfcalibrated  <-  read.csv("/usr/local/MSMoutput/output_MAY_08_2026_overnight_5_none_none_0.0_0.0/nonenone0.0_0.0_1combined.csv")
+dfcalibrated$uniqueID <- as.numeric(paste(as.character(dfcalibrated$RunNumber), as.character(dfcalibrated$seed), sep=''))
 #df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #")
 df_best_ends <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
 visualize_parameters(df_best_ends)
@@ -774,6 +773,7 @@ viz_sympt_MSM_cal = function(df, title){
 
 ```{r figure2, echo = FALSE, fig.width=8, fig.height=2.7}
 visualize_calibration_MSM(df_best_traj)
+visualize_calibration_MSM(dfGISPparcal)
 visualize_calibration_MSM(dfcalibrated)
 ```
 

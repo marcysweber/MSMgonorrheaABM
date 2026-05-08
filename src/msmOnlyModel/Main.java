@@ -16,18 +16,20 @@ public class Main {
 
 	public static void main(String[] args) {
 		int reps = 0;
-		boolean parcalibrated = true;
+		boolean sweeping = false;
+		boolean parcalibrated = false;
 
 		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("If sweeping, enter true. For parcalibrated or calibrated, enter false.");
+		System.out.println("If sweeping, enter 1. For parcalibrated, enter 2. For final calibrated, enter 3.");
 
 		// the following booleans control what type of runs these will be:
-		boolean sweeping = scanner.nextBoolean();
+		int mode = scanner.nextInt();
 		scanner.nextLine();
 		boolean with_calibrated;
 		String resistance;
-		if (sweeping) { // sweeping overrides other scenario settings
+		if (mode == 1) { // sweeping overrides other scenario settings
+			sweeping = true;
 			with_calibrated = false;
 			resistance = "none";
 			System.out.println("How big should the sweep be?");
@@ -35,8 +37,16 @@ public class Main {
 		} else {
 			with_calibrated = true;
 			resistance = "combo";
-			System.out.println("For parcalibrated, enter true. For final calibrated, enter false.");
-			parcalibrated = scanner.nextBoolean();
+
+			if (mode == 2) {
+				parcalibrated = true;
+			} else
+			{
+				parcalibrated = false;
+			}
+			
+			//System.out.println("For parcalibrated, enter true. For final calibrated, enter false.");
+			
 		}
 		
 		scanner.close();
@@ -70,18 +80,18 @@ public class Main {
 				
 			} else {
 				// to run everything:
-				executeCalibratedNoResistanceBatch(scenariofile);
+				//executeCalibratedNoResistanceBatch(scenariofile);
 				
-				//executeCounterfactualScenarios(scenariofile);
+				executeCounterfactualScenarios(scenariofile);
 
-				//executeSensitivityAnalysisBatch(scenariofile);			
+				executeSensitivityAnalysisBatch(scenariofile);			
 				
-				//executeSensitivityAnalysisBatchnoDST(scenariofile);			
+				executeSensitivityAnalysisBatchnoDST(scenariofile);			
 
 				
-				//executeCompareResistanceInserters(scenariofile);
+				executeCompareResistanceInserters(scenariofile);
 //				
-				//executeFitnessCostSA(scenariofile);
+				executeFitnessCostSA(scenariofile);
 			}
 			
 			

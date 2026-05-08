@@ -5,6 +5,7 @@ package msmOnlyModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import cern.jet.random.Uniform;
 
 import org.apache.commons.math3.distribution.GammaDistribution;
 
@@ -36,11 +37,12 @@ public class Screener {
 	
 	public List<Integer> makeScreenSchedule(ThreadSafeRandomHelper randomHelper, String subPop) {
 		GammaDistribution screenIntervalDist = randomHelper.getCMGammaDistribution("screeningIntervalMSMGamma");
-
+		Uniform screenIntervalFirstValue = (Uniform) randomHelper.getDistribution("screeningIntervalUniform");
+		
 		double endTime = 1560; //need to set to max, or else slight var between sweep and cal
 
 		List<Integer> screenings = new ArrayList<Integer>();
-		screenings.add((int) screenIntervalDist.sample());
+		screenings.add(screenIntervalFirstValue.nextInt());
 
 		while (screenings.get(screenings.size()-1) < endTime) {
 			int newInterval = (int) screenIntervalDist.sample();
