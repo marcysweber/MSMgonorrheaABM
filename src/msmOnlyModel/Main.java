@@ -81,7 +81,7 @@ public class Main {
 				
 				//executeCompareResistanceInserters(scenariofile);
 //				
-				//executeFitnessCostSA(scenariofile);
+				executeFitnessCostSA(scenariofile);
 			}
 			
 			

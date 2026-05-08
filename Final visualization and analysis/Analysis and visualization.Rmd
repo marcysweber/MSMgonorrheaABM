@@ -72,8 +72,13 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r setup2, include = FALSE}
 #This chunk has the basic analysis functions needed
 
+uniqueID = function(df){
+  df$uniqueID <- as.numeric(paste(as.character(df$RunNumber), as.character(df$seed), sep=''))
+  return(df)
+}
+
 identify = function(df, resampledf){
-  df$uniqueID <- paste(as.character(df$yearX), as.character(df$RunNumber), as.character(df$seed), sep='')
+  df$uniqueID <- paste(as.character(df$RunNumber), as.character(df$seed), sep='')
   
   
   
@@ -497,10 +502,10 @@ sweepdir2 <- "/Users/me597/Documents/MSMoutput/output_MAY_04_2026_overnight_swee
 
 
 dfsweep1 <- read.csv(paste(sweepdir1, "sweepnone0.00.0supercombined.csv", sep=''))
-dfsweep1$uniqueID <- as.numeric(paste(as.character(dfsweep1$RunNumber), as.character(dfsweep1$seed), sep=''))
+dfsweep1 <- uniqueID(dfsweep1)
 
 dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0supercombined.csv", sep=''))
-dfsweep2$uniqueID <- as.numeric(paste(as.character(dfsweep2$RunNumber), as.character(dfsweep2$seed), sep=''))
+dfsweep2 <- uniqueID(dfsweep2)
 
 #dfsweep3 <- read.csv(paste(sweepdir3, "sweepnone0.00.0_3combined.csv", sep=''))
 #dfsweep3$uniqueID <- as.integer(paste(as.character(dfsweep3$RunNumber), as.character(dfsweep3$seed), sep=''))
@@ -653,7 +658,7 @@ finalcaldir <- "/Users/me597/Documents/MSM_final_calibrated_params/" #/Users/me5
 #finalcaldir <- "/usr/local/MSM_final_calibrated_params/" #/Users/me597/Documents/MSM_final_calibrated_params/"
 
 write_calibrated(dfFinalCalEnds, finalcaldir)
-write.csv(dfFinalCalEnds, file = paste(finalcaldir, "resample_w_replicates_", today(), ".csv", sep=''))
+write.csv(dfFinalCalEnds, file = paste(finalcaldir, "final_cal_ends_", today(), ".csv", sep=''))
 
 df_best_traj <- best_traj(dfGISPparcal, dfFinalCalEnds)
 df_best_traj$resampled <- 100
@@ -661,22 +666,44 @@ visualize_calibration_MSM(df_best_traj)
 
 ```
 
-```{r loadFinalCalibration, include = FALSE, eval = FALSE}
+```{r loadFinalCalibration, include = FALSE}
 #MAKE SURE THE PATHS ARE ALIGNED AND ACCURATE
+
+sweepdir1 <- "/Users/me597/Documents/MSMoutput/output_MAY_01_2026_overnight_3_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+sweepdir2 <- "/Users/me597/Documents/MSMoutput/output_MAY_04_2026_overnight_sweep_none_0.0_0.0/" # e.g. "/Users/me597/Documents/MSMoutput/output_MARCH_31_2026_debug_1_sweep_none_0.0_0.0/"
+
+dfsweep1 <- read.csv(paste(sweepdir1, "sweepnone0.00.0supercombined.csv", sep=''))
+dfsweep1 <- uniqueID(dfsweep1)
+
+dfsweep2 <- read.csv(paste(sweepdir2, "sweepnone0.00.0supercombined.csv", sep=''))
+dfsweep2 <- uniqueID(dfsweep2)
+
+dfsweep<- rbind(dfsweep1, dfsweep2)
+
 #read old final calibration runs
 dfcalibrated  <-  read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_2_none_none_0.0_0.0/nonenone0.0_0.0_1combined.csv")
-dfcalibrated <- identify(dfcalibrated, df_best_ends)
+  dfcalibrated$uniqueID <- paste(as.character(dfcalibrated$RunNumber), as.character(dfcalibrated$seed), sep='')
 
-#df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #")
-df_best_ends <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
-visualize_parameters(df_best_ends)
-df_best_traj <- best_traj(dfsweep, df_best_ends)
+dfcalibrated <- uniqueID(dfcalibrated)
+
+
 
 #df_parcal <- read.csv("/usr/local/MSM_parcalibrated_params/resample_w_replicates_2026-04-08.csv")
-df_parcal <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/resample_w_replicates_2026-05-06.csv")
+df_parcal <- read.csv("/Users/me597/Documents/MSM_parcalibrated_params/resample_w_replicates_2026-05-06.csv")
+df_parcal <- uniqueID(df_parcal)
 df_parcal_traj <- best_traj(dfsweep, df_parcal)
 
 visualize_parameters(df_parcal)
+
+
+dfGISPparcal <- read.csv("/Users/me597/Documents/MSMoutput/output_MAY_06_2026_overnight_GISPparcal_combo_0.0_0.0/GISPrand_05combo0.0_0.0_1combined.csv")
+dfGISPparcal <- uniqueID(dfGISPparcal)
+
+#df_best_ends <- read.csv("/usr/local/MSM_final_calibrated_params/resample_w_replicates_2026-04-10.csv") #")
+df_best_ends <- read.csv("/Users/me597/Documents/MSM_final_calibrated_params/final_cal_ends_2026-05-07.csv")
+visualize_parameters(df_best_ends)
+df_best_ends <- uniqueID(df_best_ends)
+df_best_traj <- best_traj(dfGISPparcal, df_best_ends)
 
 
 
@@ -775,7 +802,7 @@ viz_sympt_MSM_cal = function(df, title){
 ```
 
 ```{r figure2, echo = FALSE, fig.width=8, fig.height=2.7}
-visualize_calibration_MSM(df_best_traj_parcal)
+visualize_calibration_MSM(df_parcal_traj)
 visualize_calibration_MSM(df_best_traj)
 visualize_calibration_MSM(dfcalibrated)
 ```
@@ -913,7 +940,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
                    )
   
   
-  counter_levels <- c("realistic_combo_50_50_00", "test-of-cure_80", "random", "GISP")
+  counter_levels <- c("realistic_combo_50_50_00", "test-of-cure_80", "random", "GISPrand_05")
   counter_labels <- c("Combo", "TOC", "RT", "GISP")
   
   inc <- ggplot(data = allends, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
@@ -948,7 +975,7 @@ summary_plot_noDST = function(df1, df2, df3, df4){
     )+
     my_theme +
     scale_y_discrete(labels=counter_labels)+
-    coord_cartesian(xlim=c(0, 125))
+    coord_cartesian(xlim=c(0, 150))
   
   
   ggarrange(inc +
@@ -1730,7 +1757,7 @@ rownames(table2df) <- c("Cost Mean", "Cost Quantiles", "QALY Mean", "QALY Quanti
 kable(table2df)
 ```
 
-```
+
 
 
 
@@ -1804,12 +1831,13 @@ kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "QALYs PRCC")
 
 ```
 
-```{r fitnessloading, echo=FALSE, eval = FALSE}
+```{r fitnessLoading, echo=FALSE}
 
-fitnesspath <- "/usr/local/MSMoutput/"
+fitnesspath <- "/Users/me597/Documents/MSMoutput/"
 
-# Define fitness costs as a simple vector
-fitness_costs <- c("0.0_0.0", "0.0_0.1", "0.1_0.0", "0.1_0.1", "0.1_0.25", "0.5_0.5", "0.5_0.25", "0.25_0.1", "0.25_0.5", "0.25_0.25")  
+
+  # Define fitness costs as a simple vector
+fitness_costs <- c("0.0_0.0", "0.01_0.01", "0.025_0.025", "0.05_0.05", "0.0_0.1", "0.1_0.0", "0.1_0.1")  
 
 strategies <- list(
   "GISP" = "GISPrand_05",
@@ -1818,53 +1846,42 @@ strategies <- list(
   "TOC" = "test-of-cure_80"
 )
 
-# Loop through and create dataframes
+  # Loop through and create dataframes
 for (cost_value in fitness_costs) {
   cost_code <- str_replace_all(cost_value, "_", "")
-  
-  dir_path <- paste0(fitnesspath, "JAN_12_2026_overnight_all_combo_", cost_value, "/")
-  
-  for (strat_name in names(strategies)) {
-    strat_prefix <- strategies[[strat_name]]
-    
-    # Build filename
-    filename <- paste0(strat_prefix, "combo", cost_code, "1combined.csv")
-    filepath <- paste0(dir_path, filename)
-    
-    # Create dataframe name (using cost_value directly)
-    df_name <- paste0("df", strat_name, "fitnessCost", cost_value)
-    
-    # Read and assign to global environment
-    assign(df_name, 
-           identify(read.csv(filepath), df_best_ends),
-           envir = .GlobalEnv)
-  }
-}
 
-  fitness_costs <- c("0.01_0.01", "0.025_0.025")  
-for (cost_value in fitness_costs) {
-  #cost_code <- str_replace_all(cost_value, "_", "")
-  
-  dir_path <- paste0(fitnesspath, "FEBRUARY_19_2026_overnight_all_combo_", cost_value, "/")
-  
+  dir_path <- paste0(fitnesspath, "output_MAY_06_2026_overnight_2_all_combo_", cost_value, "/")
+
   for (strat_name in names(strategies)) {
     strat_prefix <- strategies[[strat_name]]
-    
-    # Build filename
+
     filename <- paste0(strat_prefix, "combo", cost_value, "_1combined.csv")
     filepath <- paste0(dir_path, filename)
-    
-    # Create dataframe name (using cost_value directly)
+
     df_name <- paste0("df", strat_name, "fitnessCost", cost_value)
-    
-    # Read and assign to global environment
-    assign(df_name, 
-           identify(read.csv(filepath), df_best_ends),
-           envir = .GlobalEnv)
+
+    # Read and identify data
+    temp_df <- identify(read.csv(filepath), df_best_ends)
+
+    # Standardize counterfactual values to match plotting function expectations
+    if (strat_name == "real") {
+      temp_df$counterfactual <- "realistic_combo_50_50_00"
+    } else if (strat_name == "GISP") {
+      temp_df$counterfactual <- "GISPrand_05"
+    } else if (strat_name == "random") {
+      temp_df$counterfactual <- "random"
+    } else if (strat_name == "TOC") {
+      temp_df$counterfactual <- "test-of-cure_80"
+    }
+
+    assign(df_name, temp_df, envir = .GlobalEnv)
   }
-  
 }
-  setwd("/Users/me591666/Documents/GitHub/MSMgonorrheaABM/Final visualization and analysis/")
+```
+ 
+  
+```{r settingAndSaving, echo = FALSE, eval = FALSE}
+  #setwd("/Users/me591666/Documents/GitHub/MSMgonorrheaABM/Final visualization and analysis/")
   # save(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0,
   #      dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01,
   #      dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025,
@@ -1884,9 +1901,9 @@ for (cost_value in fitness_costs) {
   #      
   #   file = "fitnessCostData.RData")
   
-load("fitnessCostData.RData")
-  
+  # load("fitnessCostData.RData")
 ```
+
 
 ```{r fitnessfunctions, echo=FALSE}
 
@@ -1960,7 +1977,7 @@ nmb_noDST = function(cea_df, title){
   ggplot(data = cea_df) + 
     # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000), labels = c("0", "50", "100", "150"))+
-    scale_y_continuous(expand = c(0,0), limits = c(-20000000, 10000000), breaks = c(-20000000,-15000000,-10000000, -5000000, 0, 5000000, 10000000), labels = c("-20","-15","-10","-5", "0", "5","10"))+
+    scale_y_continuous(expand = c(0,0), limits = c(-30000000, 30000000), breaks = c(-30000000,-20000000,-10000000, 0, 10000000, 20000000, 30000000), labels = c("-30", "-20","-10", "0", "10", "20", "30"))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
     
     geom_abline(aes(slope = -GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
@@ -1993,7 +2010,7 @@ nmb_noDST = function(cea_df, title){
 ```
 
 
-```{r fitnessCostSA, echo = FALSE, warnings=FALSE, message=FALSE, eval = FALSE}
+```{r fitnessCostSA, echo = FALSE, warnings=FALSE, message=FALSE}
 
 # 
 # summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
@@ -2086,7 +2103,7 @@ nmb_noDST = function(cea_df, title){
 
 ```
 
-```{r fitnessCostsSummary0, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
 
@@ -2096,7 +2113,7 @@ Figure. Summary plot when fitness costs were 0%. Identical to figure 3 in main t
 
 
 
-```{r fitnessCostsSummary1, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary1, echo = FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)
 
@@ -2106,23 +2123,28 @@ Figure. Summary plot when fitness costs were 1% for both strain resistant to dru
 
 
 
-```{r fitnessCostsSummary2.5, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r fitnessCostsSummary2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)
 
 ```
 
 Figure. Summary plot when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B. 
+```{r fitnessCostsSummary5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 
+summary_plot_noDST(dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)
 
-```{r fitnessCostsSummary10, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```
+Figure. Summary plot when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B. 
+
+```{r fitnessCostsSummary10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
 ```
 
 Figure. Summary plot when fitness costs were 10% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-```{r fitnessCostsFigureFour0, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0, dfrealfitnessCost0.0_0.0, 25)
 
 
@@ -2133,7 +2155,7 @@ Figure. Trends in incidence and resistance when fitness costs were 0%. Identical
 
 
 
-```{r fitnessCostsFigureFour1, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour1, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01, dfrealfitnessCost0.01_0.01, 25)
 
@@ -2145,7 +2167,7 @@ Figure. Trends in incidence and resistance when fitness costs were 1%for both st
 
 
 
-```{r fitnessCostsFigureFour2.5, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsFigureFour2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025, dfrealfitnessCost0.025_0.025, 25)
 
@@ -2154,9 +2176,18 @@ new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.0
 Figure. Trends in incidence and resistance when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B.
 
 
+```{r fitnessCostsFigureFour5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+
+new_figure_four_noDST(dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05, dfrealfitnessCost0.05_0.05, 25)
+
+```
+
+Figure. Trends in incidence and resistance when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B.
 
 
-```{r fitnessCostsFigureFour10, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+
+
+```{r fitnessCostsFigureFour10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 
 new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
 
@@ -2167,22 +2198,25 @@ Figure. Trends in incidence and resistance when fitness costs were 10% for both 
 
 
 
-```{r fitnessCostsCEA, echo = FALSE, eval = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
+```{r fitnessCostsCEA, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
-  visualize_cea_weighted_real_noDST("A. Fitness costs 0%", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+  visualize_cea_weighted_real_noDST("A. Fitness costs 0%", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
   
-   visualize_cea_weighted_real_noDST("C. Fitness costs 1%",df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+   visualize_cea_weighted_real_noDST("C. Fitness costs 1%",df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
    
-  visualize_cea_weighted_real_noDST("E. Fitness costs 2.5%", df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
+  visualize_cea_weighted_real_noDST("E. Fitness costs 2.5%", df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),  
   
-  visualize_cea_weighted_real_noDST("G. Fitness costs 10%",df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
+   visualize_cea_weighted_real_noDST("G. Fitness costs 5%", df_best_ends,dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),  
+  
+  visualize_cea_weighted_real_noDST("I. Fitness costs 10%",df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
   
 
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01), "D.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025), "F.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "H.")+ coord_cartesian(ylim = c(-10000000, 10000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01), "D.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025), "F.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05), "H.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
+  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "J.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
  
 
   cols = 2
