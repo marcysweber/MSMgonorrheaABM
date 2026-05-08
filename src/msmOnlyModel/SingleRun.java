@@ -230,6 +230,9 @@ public void makeScreenIntervalDistributions(ThreadSafeRandomHelper randomHelper,
 
 	double mean = parameters.getDouble("screen_interval_mean_MSM") * 52;
 	double variance = parameters.getDouble("screen_interval_var_MSM") * 52;
+	
+	Uniform screenIntervalUniform = new Uniform(0, mean, eng);
+	randomHelper.registerDistribution("screeningIntervalUniform", screenIntervalUniform);
 
 	double lambda = 1 / (variance / mean);
 	double alpha = (mean * mean) / variance;

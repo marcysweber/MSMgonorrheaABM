@@ -22,8 +22,8 @@ public class CalibratedParameters {
 	
 	CalibratedParameters(String expdir){
 		//the root of the path depends on the machine. these are for my laptop and desktop respectively.
-		String root = "/Users/me597/Documents/";
-		//String root = "/usr/local/";
+		//String root = "/Users/me597/Documents/";
+		String root = "/usr/local/";
 		
 		if (expdir.contains("parcal")) {
 			path = root + "MSM_parcalibrated_params/";

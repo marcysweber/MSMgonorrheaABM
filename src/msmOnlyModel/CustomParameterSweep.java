@@ -87,16 +87,16 @@ public class CustomParameterSweep {
 		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 	}
 	
-	public List<Double> getScreenIntervalVarMSMValues(List<Double> screenIntervalMean){
-		//double screenIntervalMin = 0.75;
-		//double screenIntervalMax = 3.0;
-		//int seed = (int) System.currentTimeMillis() + 39;
-		//return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
+	public List<Double> getScreenIntervalVarMSMValues(int samples){
+		double screenIntervalMin = 0.5;
+		double screenIntervalMax = 0.5;
+		int seed = (int) System.currentTimeMillis() + 39;
+		return getUniformSweepValues(seed, samples, screenIntervalMin, screenIntervalMax);
 		
-		double constant = 0.1;
-		List <Double> screenIntervalVarValues = screenIntervalMean.stream().map(n -> n * constant).collect(Collectors.toList());
+		//double constant = 0.1;
+		//List <Double> screenIntervalVarValues = screenIntervalMean.stream().map(n -> n * constant).collect(Collectors.toList());
 		
-		return screenIntervalVarValues;
+		//return screenIntervalVarValues;
 		
 	}
 	

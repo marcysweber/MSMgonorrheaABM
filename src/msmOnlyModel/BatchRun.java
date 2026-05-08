@@ -76,7 +76,7 @@ public class BatchRun {
 		List<Double> probSymptomaticMSMValuesList = sweeper.getProbSymptomaticMSMValues(reps);
 		
 		List<Double> screenIntervalMeanMSMValuesList = sweeper.getScreenIntervalMeanMSMValues(reps);
-		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(screenIntervalMeanMSMValuesList);
+		List<Double> screenIntervalVarMSMValuesList = sweeper.getScreenIntervalVarMSMValues(reps);
 		
 		List<Double> delayToSeekCareMSMValuesList = sweeper.getDelayToSeekCareMSMValues(reps);
 
@@ -482,7 +482,7 @@ public class BatchRun {
 		            treatmentXCostValuesList.get(i), treatmentECostValuesList.get(i)));
 		}
 
-		System.out.println("Starting batch " + counterfactual);
+		System.out.println("Starting batch " + counterfactual + " of length " + reps);
 		
 		int numThreads = 20; // Set to desired number of threads
 		ForkJoinPool customThreadPool = new ForkJoinPool(numThreads);
@@ -720,14 +720,14 @@ public class BatchRun {
 		String fullDate = month +"_"+ day +"_"+ year;
 		
 		// path root depends on machine. these are for my desktop and laptop respectively.
-		//String root = "/usr/local/MSMoutput/";
-		String root = "/Users/me597/Documents/MSMoutput/";
+		String root = "/usr/local/MSMoutput/";
+		//String root = "/Users/me597/Documents/MSMoutput/";
 
-		//String dirname = root + "output_" + fullDate +"_debug_6_";
+		//String dirname = root + "output_" + fullDate +"_debug_7_";
 		
 		//String dirname = root + "output_" + fullDate +"_overnight_";
 		
-		String dirname = root + "output_" + "MAY_06_2026_overnight_2_";
+		String dirname = root + "output_" + "MAY_08_2026_overnight_5_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 
