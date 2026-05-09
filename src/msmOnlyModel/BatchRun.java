@@ -29,14 +29,16 @@ public class BatchRun {
 	
 	private String counterfactual;
 	private String resistance;
+	private int yearX;
 	private double fitnessA;
 	private double fitnessB;
 	
 	private AtomicInteger currentRun = new AtomicInteger(0);
 
-	public BatchRun(String counterfactual, String resistance, double fitnessA, double fitnessB) {
+	public BatchRun(String counterfactual, String resistance, int yearX, double fitnessA, double fitnessB) {
 		this.counterfactual = counterfactual;
 		this.resistance = resistance;
+		this.yearX = yearX;
 		this.fitnessA = fitnessA;
 		this.fitnessB = fitnessB;
 
@@ -48,6 +50,7 @@ public class BatchRun {
 	public BatchRun(String counterfactual, String resistance) {
 		this.counterfactual = counterfactual;
 		this.resistance = resistance;
+		this.yearX = 25;
 		this.fitnessA = 0;
 		this.fitnessB = 0;
 
@@ -717,17 +720,17 @@ public class BatchRun {
 		int day = date.getDayOfMonth();
 		int year = date.getYear();
 		
-		String fullDate = month +"_"+ day +"_"+ year;
+		//String fullDate = month +"_"+ day +"_"+ year;
 		
 		// path root depends on machine. these are for my desktop and laptop respectively.
-		String root = "/usr/local/MSMoutput/";
-		//String root = "/Users/me597/Documents/MSMoutput/";
+		//String root = "/usr/local/MSMoutput/";
+		String root = "/Users/me597/Documents/MSMoutput/";
 
 		//String dirname = root + "output_" + fullDate +"_debug_7_";
 		
 		//String dirname = root + "output_" + fullDate +"_overnight_";
 		
-		String dirname = root + "output_" + "MAY_08_2026_overnight_5_";
+		String dirname = root + "output_" + "MAY_09_2026_overnight_";
 	
 		//String dirname = "/Users/me597/Documents/MSMoutput/FEBRUARY_18_2026_overnight_";
 
@@ -737,6 +740,10 @@ public class BatchRun {
 		dirname += "_";
 		
 		dirname += resistance;
+		
+		dirname += "_";
+		
+		dirname += yearX;
 		
 		dirname += "_";
 		
@@ -764,6 +771,10 @@ public class BatchRun {
 		
 		dirname += counterfactual;
 	
+		dirname += "_";
+		
+		dirname += yearX;
+
 		dirname += "_";
 		
 		dirname += String.valueOf(fitnessA);
