@@ -1,10 +1,10 @@
 ---
 title: "Analysis and visualization"
 output:
-  html_document: default
   word_document: default
+  html_document: default
   pdf_document: default
-date: "2026-01-08"
+date: "2026-05-10"
 ---
 
 This is an R Markdown document for easy access to and recreation of the figures
@@ -12,7 +12,7 @@ for the manuscript "Measuring the health benefits, costs, and cost-effectiveness
 
 
 
-```{r saveDatatoRData, eval = FALSE}
+```{r saveDatatoRData, include = FALSE, eval = FALSE}
 
 setwd("/Users/me597/Documents/GitHub/MSMgonorrheaABM/Final visualization and analysis/")
 
@@ -57,59 +57,67 @@ save(dfcalibrated, file = "figure data/calnoresist.RData")
 
 #MAIN TEXT COUNTERFACTUAL RESULTS
 
-directory <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_all_0.0_0.0/"
+directory <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_2_all_all_25_0.0_0.0/"
 
 dfGISP25 <-   read.csv(paste(directory,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP25 <- uniqueID(dfGISP25)
 dfrandom25 <-  read.csv(paste(directory,"randomcombo0.0_0.0_1combined.csv", sep=""))
 dfrandom25 <- uniqueID(dfrandom25)
-dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
-dfTOC25 <- uniqueID(dfTOC25)
 dfreal25 <- read.csv(paste(directory,"realistic_combo_50_50_00combo0.0_0.0_1combined.csv", sep=""))
 dfreal25<-uniqueID(dfreal25)
+
+directory <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_all_all_25_0.0_0.0/"
+dfTOC25 <-  read.csv(paste(directory,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
+dfTOC25 <- uniqueID(dfTOC25)
 
 save(dfGISP25, dfrandom25, dfTOC25, dfreal25, file = "figure data/mainresults.RData")
 
 
 
 # DRUG X AVAIL
-directoryX <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_combo/"
-directorycombo  <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_combo/"
+directoryX15 <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_combo_15_0.0_0.0/"
+directoryX20 <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_combo_20_0.0_0.0/"
+directoryX31 <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_all_combo_31_0.0_0.0/"
 
 
-dfGISP15 <-   read.csv(paste(directoryX,"GISPrand_05combo151combined.csv", sep=""))
+dfGISP15 <-   read.csv(paste(directoryX15,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP15 <- uniqueID(dfGISP15)
-dfGISP20 <-   read.csv(paste(directoryX,"GISPrand_05combo201combined.csv", sep=""))
+dfGISP20 <-   read.csv(paste(directoryX20,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP20 <- uniqueID(dfGISP20)
 
-dfGISP31 <-  read.csv(paste(directoryX,"GISPrand_05combo311combined.csv", sep=""))
+dfGISP31 <-  read.csv(paste(directoryX31,"GISPrand_05combo0.0_0.0_1combined.csv", sep=""))
 dfGISP31 <- uniqueID(dfGISP31)
 
 
-dfrandom15 <-  read.csv(paste(directoryX,"randomcombo151combined.csv", sep=""))
+dfrandom15 <-  read.csv(paste(directoryX15,"randomcombo0.0_0.0_1combined.csv", sep=""))
 dfrandom15 <- uniqueID(dfrandom15)
-dfrandom20 <-  read.csv(paste(directoryX,"randomcombo201combined.csv", sep=""))
+dfrandom20 <-  read.csv(paste(directoryX20,"randomcombo0.0_0.0_1combined.csv", sep=""))
 dfrandom20 <- uniqueID(dfrandom20)
 
-dfrandom31 <-  read.csv(paste(directoryX,"randomcombo311combined.csv", sep=""))
+dfrandom31 <-  read.csv(paste(directoryX31,"randomcombo0.0_0.0_1combined.csv", sep=""))
 dfrandom31 <- uniqueID(dfrandom31)
 
 
-dfTOC15 <-  read.csv(paste(directoryX,"test-of-cure_80combo151combined.csv", sep=""))
+directoryX15TOC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_all_combo_15_0.0_0.0/"
+directoryX20TOC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_all_combo_20_0.0_0.0/"
+directoryX31TOC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_all_combo_31_0.0_0.0/"
+
+
+dfTOC15 <-  read.csv(paste(directoryX15TOC,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
 dfTOC15 <- uniqueID(dfTOC15)
-dfTOC20 <-  read.csv(paste(directoryX,"test-of-cure_80combo201combined.csv", sep=""))
+dfTOC20 <-  read.csv(paste(directoryX20TOC,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
 dfTOC20 <- uniqueID(dfTOC20)
 
-dfTOC31 <-  read.csv(paste(directoryX,"test-of-cure_80combo311combined.csv", sep=""))
+dfTOC31 <-  read.csv(paste(directoryX31TOC,"test-of-cure_80combo0.0_0.0_1combined.csv", sep=""))
 dfTOC31 <- uniqueID(dfTOC31)
 
 
 
-dfreal15 <-  read.csv(paste(directorycombo,"realistic_combocombo151combined.csv", sep=""))
+dfreal15 <-  read.csv(paste(directoryX15,"realistic_combocombo0.0_0.0_1combined.csv", sep=""))
 dfreal15<-uniqueID(dfreal15)
-dfreal20<-  read.csv(paste(directorycombo,"realistic_combocombo201combined.csv", sep=""))
+dfreal20<-  read.csv(paste(directoryX20,"realistic_combocombo0.0_0.0_1combined.csv", sep=""))
 dfreal20<-uniqueID(dfreal20)
-dfreal31<-  read.csv(paste(directorycombo,"realistic_combocombo311combined.csv", sep=""))
+dfreal31<-  read.csv(paste(directoryX31,"realistic_combocombo0.0_0.0_1combined.csv", sep=""))
 dfreal31<-uniqueID(dfreal31)
 
 save(dfGISP15, dfGISP20, dfGISP25, dfGISP31,
@@ -139,33 +147,33 @@ save (dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7, file = "figure data/gispswitc
      
      
 #adhereTOCsympt
-directoryTOCsympt <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_adhereTOCsympt_combo_0.0_0.0/"
+directoryTOCsympt <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_adhereTOCsympt_combo_25_0.0_0.0/"
 
-dfTOCadsympt20 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_20combo251combined.csv", sep=""))
+dfTOCadsympt20 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_20combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt20 <- uniqueID(dfTOCadsympt20)
 
-dfTOCadsympt30 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_30combo251combined.csv", sep=""))
+dfTOCadsympt30 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_30combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt30 <- uniqueID(dfTOCadsympt30)
 
-dfTOCadsympt40 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_40combo251combined.csv", sep=""))
+dfTOCadsympt40 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_40combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt40 <- uniqueID(dfTOCadsympt40)
 
-dfTOCadsympt50 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_50combo251combined.csv", sep=""))
+dfTOCadsympt50 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_50combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt50 <- uniqueID(dfTOCadsympt50)
 
-dfTOCadsympt60 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_60combo251combined.csv", sep=""))
+dfTOCadsympt60 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_60combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt60 <- uniqueID(dfTOCadsympt60)
 
-dfTOCadsympt70 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_70combo251combined.csv", sep=""))
+dfTOCadsympt70 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_70combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt70 <- uniqueID(dfTOCadsympt70)
 
-dfTOCadsympt80 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_80combo251combined.csv", sep=""))
+dfTOCadsympt80 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_80combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt80 <- uniqueID(dfTOCadsympt80)
 
-dfTOCadsympt90 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_90combo251combined.csv", sep=""))
+dfTOCadsympt90 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_90combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt90 <- uniqueID(dfTOCadsympt90)
 
-dfTOCadsympt100 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_100combo251combined.csv", sep=""))
+dfTOCadsympt100 <-  read.csv(paste(directoryTOCsympt, "test-of-cure_sympt_100combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadsympt100 <- uniqueID(dfTOCadsympt100)
 
 save(dfTOCadsympt20, dfTOCadsympt30, dfTOCadsympt40, dfTOCadsympt50, dfTOCadsympt60, dfTOCadsympt70, dfTOCadsympt80, dfTOCadsympt90, dfTOCadsympt100, file = "figure data/adherencesymptomaticresults.RData")
@@ -174,100 +182,100 @@ save(dfTOCadsympt20, dfTOCadsympt30, dfTOCadsympt40, dfTOCadsympt50, dfTOCadsymp
 
 
 #adhereTOCasympt
-directoryTOCasympt <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_adhereTOCasympt_combo/"
+directoryTOCasympt <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_3_adhereTOCasympt_combo_25_0.0_0.0/"
 
 
-dfTOCadasympt20 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_20combo251combined.csv", sep=""))
+dfTOCadasympt20 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_20combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt20 <- uniqueID(dfTOCadasympt20)
 
-dfTOCadasympt30 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_30combo251combined.csv", sep=""))
+dfTOCadasympt30 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_30combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt30 <- uniqueID(dfTOCadasympt30)
 
-dfTOCadasympt40 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_40combo251combined.csv", sep=""))
+dfTOCadasympt40 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_40combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt40 <- uniqueID(dfTOCadasympt40)
 
-dfTOCadasympt50 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_50combo251combined.csv", sep=""))
+dfTOCadasympt50 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_50combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt50 <- uniqueID(dfTOCadasympt50)
 
-dfTOCadasympt60 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_60combo251combined.csv", sep=""))
+dfTOCadasympt60 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_60combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt60 <- uniqueID(dfTOCadasympt60)
 
-dfTOCadasympt70 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_70combo251combined.csv", sep=""))
+dfTOCadasympt70 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_70combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt70 <- uniqueID(dfTOCadasympt70)
 
-dfTOCadasympt80 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_80combo251combined.csv", sep=""))
+dfTOCadasympt80 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_80combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt80 <- uniqueID(dfTOCadasympt80)
 
-dfTOCadasympt90 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_90combo251combined.csv", sep=""))
+dfTOCadasympt90 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_90combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt90 <- uniqueID(dfTOCadasympt90)
 
-dfTOCadasympt100 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_100combo251combined.csv", sep=""))
+dfTOCadasympt100 <-  read.csv(paste(directoryTOCasympt, "test-of-cure_asympt_100combo0.0_0.0_1combined.csv", sep=""))
 dfTOCadasympt100 <- uniqueID(dfTOCadasympt100)
 
 save(dfTOCadasympt20, dfTOCadasympt30, dfTOCadasympt40, dfTOCadasympt50, dfTOCadasympt60, dfTOCadasympt70, dfTOCadasympt80, dfTOCadasympt90, dfTOCadasympt100, file = "figure data/adherenceasymptomaticresults.RData")
 
 #rDST coverage
 
-directoryDST <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_availrDST_combo/"
-dfDST60 <-  read.csv(paste(directoryDST, "drug_sus_testing_60combo251combined.csv", sep=""))
+directoryDST <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_availrDST_combo_0.0_0.0/"
+dfDST60 <-  read.csv(paste(directoryDST, "drug_sus_testing_60combo0.0_0.0_1combined.csv", sep=""))
 dfDST60 <- uniqueID(dfDST60)
 
-dfDST70 <-  read.csv(paste(directoryDST,"drug_sus_testing_70combo251combined.csv", sep=""))
+dfDST70 <-  read.csv(paste(directoryDST,"drug_sus_testing_70combo0.0_0.0_1combined.csv", sep=""))
 dfDST70 <- uniqueID(dfDST70)
 
-dfDST80 <-  read.csv(paste(directory, "drug_sus_testing_80combo251combined.csv", sep=""))
+dfDST80 <-  read.csv(paste(directory, "drug_sus_testing_80combo0.0_0.0_1combined.csv", sep=""))
 dfDST80 <- uniqueID(dfDST80)
 dfDST25 <- dfDST80
 
-dfDST90 <-  read.csv(paste(directoryDST,"drug_sus_testing_90combo251combined.csv", sep=""))
+dfDST90 <-  read.csv(paste(directoryDST,"drug_sus_testing_90combo0.0_0.0_1combined.csv", sep=""))
 dfDST90 <- uniqueID(dfDST90)
 
-dfDST100 <-  read.csv(paste(directoryDST,"drug_sus_testing_100combo251combined.csv", sep=""))
+dfDST100 <-  read.csv(paste(directoryDST,"drug_sus_testing_100combo0.0_0.0_1combined.csv", sep=""))
 dfDST100 <- uniqueID(dfDST100)
 
 save(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100, dfDST25, file = "figure data/dstdata.RData")
 
 
 #combo (no DST)
-directoryRC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_realistic_combo_combo/"
+directoryRC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_realistic_combo_combo_0.0_0.0/"
 
-dfRC50_50_00 <- read.csv(paste(directoryRC, "realistic_combo_50_50_00combo251combined.csv", sep=""))
+dfRC50_50_00 <- read.csv(paste(directoryRC, "realistic_combo_50_50_00combo0.0_0.0_1combined.csv", sep=""))
 dfRC50_50_00 <- uniqueID(dfRC50_50_00)
 
-dfRC75_25_00 <- read.csv(paste(directoryRC, "realistic_combo_75_25_00combo251combined.csv", sep=""))
+dfRC75_25_00 <- read.csv(paste(directoryRC, "realistic_combo_75_25_00combo0.0_0.0_1combined.csv", sep=""))
 dfRC75_25_00 <- uniqueID(dfRC75_25_00)
 
-dfRC25_75_00 <- read.csv(paste(directoryRC, "realistic_combo_25_75_00combo251combined.csv", sep=""))
+dfRC25_75_00 <- read.csv(paste(directoryRC, "realistic_combo_25_75_00combo0.0_0.0_1combined.csv", sep=""))
 dfRC25_75_00 <- uniqueID(dfRC25_75_00)
 
 #mixed testing (includes rDST)
-directoryRC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_realistic_combo_combo/"
+directoryRC <- "/Users/me597/Documents/MSMoutput/output_MAY_09_2026_overnight_realistic_combo_combo_0.0_0.0/"
 
-dfRC45_45_10<- read.csv(paste(directoryRC, "realistic_combo_45_45_10combo251combined.csv", sep=""))
+dfRC45_45_10<- read.csv(paste(directoryRC, "realistic_combo_45_45_10combo0.0_0.0_1combined.csv", sep=""))
 dfRC45_45_10<- uniqueID(dfRC45_45_10)
 
-dfRC65_25_10<- read.csv(paste(directoryRC, "realistic_combo_65_25_10combo251combined.csv", sep=""))
+dfRC65_25_10<- read.csv(paste(directoryRC, "realistic_combo_65_25_10combo0.0_0.0_1combined.csv", sep=""))
 dfRC65_25_10<- uniqueID(dfRC65_25_10)
 
-dfRC25_65_10<- read.csv(paste(directoryRC, "realistic_combo_25_65_10combo251combined.csv", sep=""))
+dfRC25_65_10<- read.csv(paste(directoryRC, "realistic_combo_25_65_10combo0.0_0.0_1combined.csv", sep=""))
 dfRC25_65_10<- uniqueID(dfRC25_65_10)
 
-dfRC40_40_20 <- read.csv(paste(directoryRC, "realistic_combo_40_40_20combo251combined.csv", sep=""))
+dfRC40_40_20 <- read.csv(paste(directoryRC, "realistic_combo_40_40_20combo0.0_0.0_1combined.csv", sep=""))
 dfRC40_40_20 <- uniqueID(dfRC40_40_20)
 
-dfRC20_60_20 <- read.csv(paste(directoryRC, "realistic_combo_20_60_20combo251combined.csv", sep=""))
+dfRC20_60_20 <- read.csv(paste(directoryRC, "realistic_combo_20_60_20combo0.0_0.0_1combined.csv", sep=""))
 dfRC20_60_20 <- uniqueID(dfRC20_60_20)
 
-dfRC60_20_20 <- read.csv(paste(directoryRC, "realistic_combo_60_20_20combo251combined.csv", sep=""))
+dfRC60_20_20 <- read.csv(paste(directoryRC, "realistic_combo_60_20_20combo0.0_0.0_1combined.csv", sep=""))
 dfRC60_20_20 <- uniqueID(dfRC60_20_20)
 
-dfRC35_35_30<- read.csv(paste(directoryRC, "realistic_combo_35_35_30combo251combined.csv", sep=""))
+dfRC35_35_30<- read.csv(paste(directoryRC, "realistic_combo_35_35_30combo0.0_0.0_1combined.csv", sep=""))
 dfRC35_35_30<- uniqueID(dfRC35_35_30)
 
-dfRC55_15_30<- read.csv(paste(directoryRC, "realistic_combo_55_15_30combo251combined.csv", sep=""))
+dfRC55_15_30<- read.csv(paste(directoryRC, "realistic_combo_55_15_30combo0.0_0.0_1combined.csv", sep=""))
 dfRC55_15_30<- uniqueID(dfRC55_15_30)
 
-dfRC15_55_30<- read.csv(paste(directoryRC, "realistic_combo_15_55_30combo251combined.csv", sep=""))
+dfRC15_55_30<- read.csv(paste(directoryRC, "realistic_combo_15_55_30combo0.0_0.0_1combined.csv", sep=""))
 dfRC15_55_30<- uniqueID(dfRC15_55_30)
 
 save(dfRC50_50_00, dfRC75_25_00, dfRC25_75_00, dfRC45_45_10, dfRC65_25_10, dfRC25_65_10, dfRC40_40_20, dfRC20_60_20, dfRC60_20_20, dfRC35_35_30, dfRC55_15_30, dfRC15_55_30, file = "figure data/comboandmixedtesting.RData")
@@ -278,20 +286,19 @@ save(dfRC50_50_00, dfRC75_25_00, dfRC25_75_00, dfRC45_45_10, dfRC65_25_10, dfRC2
 #FITNESS COSTS
 fitnesspath <- "/Users/me597/Documents/MSMoutput/"
   # Define fitness costs as a simple vector
-fitness_costs <- c("0.0_0.0", "0.01_0.01", "0.025_0.025", "0.05_0.05", "0.0_0.1", "0.1_0.0", "0.1_0.1")  
+fitness_costs <- c("0.01_0.01", "0.025_0.025", "0.05_0.05", "0.0_0.1", "0.1_0.0", "0.1_0.1")  
 
 strategies <- list(
   "GISP" = "GISPrand_05",
   "random" = "random",
-  "real" = "realistic_combo_50_50_00",
-  "TOC" = "test-of-cure_80"
+  "real" = "realistic_combo_50_50_00"
 )
 
   # Loop through and create dataframes
 for (cost_value in fitness_costs) {
   cost_code <- str_replace_all(cost_value, "_", "")
 
-  dir_path <- paste0(fitnesspath, "output_MAY_09_2026_overnight_all_combo_", cost_value, "/")
+  dir_path <- paste0(fitnesspath, "output_MAY_09_2026_overnight_all_combo_25_", cost_value, "/")
 
   for (strat_name in names(strategies)) {
     strat_prefix <- strategies[[strat_name]]
@@ -318,26 +325,51 @@ for (cost_value in fitness_costs) {
     assign(df_name, temp_df, envir = .GlobalEnv)
   }
 }
-save(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0,
-     dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01,
+strategies <- list(
+  "TOC" = "test-of-cure_80"
+)
+
+for (cost_value in fitness_costs) {
+  cost_code <- str_replace_all(cost_value, "_", "")
+
+  dir_path <- paste0(fitnesspath, "output_MAY_09_2026_overnight_3_all_combo_25_", cost_value, "/")
+
+  for (strat_name in names(strategies)) {
+    strat_prefix <- strategies[[strat_name]]
+
+    filename <- paste0(strat_prefix, "combo", cost_value, "_1combined.csv")
+    filepath <- paste0(dir_path, filename)
+
+    df_name <- paste0("df", strat_name, "fitnessCost", cost_value)
+
+    # Read and uniqueID data
+    temp_df <- uniqueID(read.csv(filepath))
+
+    # Standardize counterfactual values to match plotting function expectations
+    if (strat_name == "real") {
+      temp_df$counterfactual <- "realistic_combo_50_50_00"
+    } else if (strat_name == "GISP") {
+      temp_df$counterfactual <- "GISPrand_05"
+    } else if (strat_name == "random") {
+      temp_df$counterfactual <- "random"
+    } 
+
+    assign(df_name, temp_df, envir = .GlobalEnv)
+  }
+}
+
+
+save(     dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01,
      dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025,
       dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05,
-
      dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1,
-     dfrealfitnessCost0.25_0.25, dfGISPfitnessCost0.25_0.25, dfrandomfitnessCost0.25_0.25, dfTOCfitnessCost0.25_0.25,
-     dfrealfitnessCost0.5_0.5, dfGISPfitnessCost0.5_0.5, dfrandomfitnessCost0.5_0.5, dfTOCfitnessCost0.5_0.5,
-
      dfrealfitnessCost0.1_0.0, dfGISPfitnessCost0.1_0.0, dfrandomfitnessCost0.1_0.0, dfTOCfitnessCost0.1_0.0,
-     dfrealfitnessCost0.25_0.1, dfGISPfitnessCost0.25_0.1, dfrandomfitnessCost0.25_0.1, dfTOCfitnessCost0.25_0.1,
-     dfrealfitnessCost0.5_0.25, dfGISPfitnessCost0.5_0.25, dfrandomfitnessCost0.5_0.25, dfTOCfitnessCost0.5_0.25,
      dfrealfitnessCost0.0_0.1, dfGISPfitnessCost0.0_0.1, dfrandomfitnessCost0.0_0.1, dfTOCfitnessCost0.0_0.1,
-     dfrealfitnessCost0.1_0.25, dfGISPfitnessCost0.1_0.25, dfrandomfitnessCost0.1_0.25, dfTOCfitnessCost0.1_0.25,
-     dfrealfitnessCost0.25_0.5, dfGISPfitnessCost0.25_0.5, dfrandomfitnessCost0.25_0.5, dfTOCfitnessCost0.25_0.5,
   file = "figure data/fitnessCostData.RData")
 
 ```
 
-```{r loadDataFromRData, echo = FALSE}
+```{r loadDataFromRData}
 
 #calibration and main text
 load("figure data/sweepdata.RData")
@@ -614,12 +646,13 @@ write_calibrated = function(df, path){
 
 # Figure 1
 ![**Figure 1.** ](Figure 1.jpg)
+
 Figure 1. Diagram of the major processes of the model, showing the generic treatment pathway. “sus A” and “sus B” represent susceptibility to drug A and drug B, respectively, and “resist A” and “resist B” represent resistance to drug A and drug B, respectively. Dice icon indicates a pseudo-random event, whose probability is controlled by a parameter. The clock icon indicates that time elapses before the next event occurs; arrows without clock icons indicate that the next event takes place immediately (except for treatment success, which has a delay of 3 days on average).
 
 
 
 
-#Calibration
+# Calibration
 ```{r calibrationProcedureStep1, include = FALSE, eval = FALSE}
 
 
@@ -781,7 +814,7 @@ df_best_traj <- best_traj(dfGISPparcal, df_best_ends)
 
 ```
 
-#Figure 2
+# Figure 2
 ```{r setupFigure2, include = FALSE}
 # This chunk contains functions for the calibration figure (Figure 2).
 visualize_calibration_MSM = function(dfcalibrated){
@@ -882,6 +915,7 @@ visualize_calibration_MSM(dfcalibrated)
 
 ```
 
+Figure 2. Comparing calibration targets (shown in red) with simulated trajectories without AMR for 25 years. A) prevalence of infection. B) gonorrhea cases detected per 100,000. C) proportion of detected cases that present with symptoms. Darkness of the black lines relates to how frequently that trajectory was resampled, according to its likelihood when compared to the calibration target. Red dots indicate the observed value, and the red error bars indicate the confidence interval (see text for data sources). The grey region represents the calibration period. 
 
 # Figure 3
 
@@ -1168,6 +1202,9 @@ cumulative_mutated = function(df){
 summary_plot_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25)
 ```
 
+Figure 3. Cumulative outcomes for the four mitigation strategies, beginning at the end of the calibration period and continuing to the end of each simulation. Dot indicates the mean model prediction; line corresponds to the 95% uncertainty interval (i.e., extending from the 2.5% quantile to the 97.5% quantile). A) total infection incidence, including both detected and undetected infections. B) percentage of treatment attempts that resulted in treatment failure for drugs A, B, and X. C) count of treatments with ertapenem
+
+
 # Figure 4
 
 ```{r setupFigure4, include = FALSE}
@@ -1362,6 +1399,9 @@ calc_failure_rate = function(df){
 ```{r Figure4, echo = FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25, 25)
 ```
+
+Figure 4. Trends over time in cases detected (first row), prevalence of AMR strains (rows 2-4), treatment failure rate (row 5), and usage of ertapenem, the last-line treatment (row 6) across four strategies. GISP: the surveillance strategy; RT: randomized treatment strategy; TOC: test-of-cure strategy; Combo: combination of RT and TOC. The gray box indicates the calibration period, during which all strategies performed identically. The dashed vertical line indicates when drug X became available in the simulation. Darkness of trajectory lines relates to their likelihood weights (see S1.3).
+
 
 # Figure 5
 ```{r setupFigure5, include = FALSE}
@@ -1656,8 +1696,12 @@ rearrange_cea_real_noDST = function(ceadf){
     theme(legend.position = "bottom", legend.title = element_blank(), legend.text = element_text(size=12), axis.text = element_text(size=12)) 
 ```
 
-#Table 1 Mean Cum Results
- 
+Figure 5. Cost-effectiveness analysis of GISP and three counterfactual strategies. Combination of TOC and RT (Combo) is used as the reference strategy, located at (0,0). Small dots are values from individual trajectories, diamonds are means of each counterfactual (mean was weighted by how frequently that trajectory had been resampled during calibration.) 
+
+
+# Table 1 Mean Cumulative Results
+
+Table 1. Mean cumulative results (uncertainty intervals) of four measures of gonorrhea burden: gonorrhea incidence, antimicrobial-resistant (AMR) gonorrhea incidence, treatment failure rate, and total count of treatments with ertapenem
 ```{r table1, echo = FALSE}
 summary_GISP <- cumulative_everything(dfGISP25)
 summary_random <-cumulative_everything(dfrandom25)
@@ -1749,54 +1793,64 @@ rownames(table1df) <- c("Incidence Mean", "Incidence Quantiles", "
 kable(table1df)
 ```
 
-##Data for main text
-```{r propLowestCostMainText, echo=FALSE}
+Cumulative results of gonorrhea burden under GISP and three counterfactual strategies, beginning at the end of the calibration period (year 5). Presented are the means of 143 unique trajectories; in parentheses are the 95% uncertainty intervals, derived from the 2.5% and 97.5% quantiles of the simulated data. Cumulative incidence of gonorrhea includes both detected and undetected infections. Cumulative incidence of antimicrobial-resistant (AMR) gonorrhea includes both detected and undetected infections of all resistant strains, combined. Treatment failure rate is calculated as the number of treatment failures divided by the number of all treatment attempts.
+*GISP: Gonococcal Isolate Surveillance Project, where treatments were removed from use when GISP surveillance data indicated AMR resistance of 5% or greater.
+†RT: Randomized Treatment, where treatment was selected randomly from available drugs.
+‡TOC: Test-of-Cure, where some cases received confirmatory diagnostic testing after treatment attempts.
+§Combo: Combination, where cases were randomly assigned to RT or TOC
 
-ceadf <- cea_real_weighted_noDST(df_best_ends, dfreal25, dfGISP25, dfrandom25, dfTOC25)
+
+
+## Data for main text
+```{r propLowestCostMainText}
+
+ceadf <- cea_real_unweighted_noDST(dfreal25, dfGISP25, dfrandom25, dfTOC25)
 
 sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts)
 
-sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts) / 134
+sum(ceadf$GISPcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$GISPcumulativeCosts < ceadf$RandomcumulativeCosts) / 143
 
 sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs)
 
-sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs) / 134
+sum(ceadf$GISPcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$GISPcumulativeQALYs < ceadf$RandomcumulativeQALYs) / 143
 
 sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts)
 
-sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+sum(ceadf$RandomcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RandomcumulativeCosts < ceadf$GISPcumulativeCosts) / 143
 
 sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs)
 
-sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+sum(ceadf$RandomcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RandomcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 143
 ```
 
-```{r whenWasTOCtheCheapest, echo=FALSE}
+```{r whenWasTOCtheCheapest}
 
 sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts)
 
 sum(ceadf$TOCcumulativeCosts < ceadf$RCcumulativeCosts & ceadf$TOCcumulativeCosts < ceadf$RandomcumulativeCosts & 
-      ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+      ceadf$TOCcumulativeCosts < ceadf$GISPcumulativeCosts) / 143
 
 sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & 
       ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
 
-sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+sum(ceadf$TOCcumulativeQALYs < ceadf$RCcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$TOCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 143
 ```
 
-```{r whenWasCombotheCheapest, echo=FALSE}
+```{r whenWasCombotheCheapest}
 sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts)
 
-sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts) / 134
+sum(ceadf$RCcumulativeCosts < ceadf$RandomcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$TOCcumulativeCosts & ceadf$RCcumulativeCosts < ceadf$GISPcumulativeCosts) / 143
 
 sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs)
 
-sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 134
+sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$TOCcumulativeQALYs & ceadf$RCcumulativeQALYs < ceadf$GISPcumulativeQALYs) / 143
 
 ```
 
 
-#Table 2 CEA results table
+# Table 2 CEA results table
+
+Table 2. Cost-effectiveness results: Cost, number of quality-adjusted life years (QALYs), and incremental cost-effectiveness ratios for four strategies.
 ```{r table2, echo = FALSE}
 summary_GISP <- cumulative_everything(dfGISP25)
 summary_random <-cumulative_everything(dfrandom25)
@@ -1850,6 +1904,14 @@ rownames(table2df) <- c("Cost Mean", "Cost Quantiles", "QALY Mean", "QALY Quanti
 kable(table2df)
 ```
 
+The strategies are listed in increasing order of cost. Costs and QALYs were cumulative from year 5 to year 25 in the model, with 3% discounting year-over-year. Presented are the means of 143 unique trajectories; in parentheses are the 95% uncertainty intervals, derived from the 2.5% and 97.5% quantiles of the simulated data.  Costs are in 2022 United States dollars (USD).
+*GISP: Gonococcal Isolate Surveillance Project, where treatments were removed from use based on surveillance
+†RT: Randomized Treatment, where treatment was selected randomly from available drugs
+‡Combo: Combination, where cases were randomly assigned to RT or TOC 
+§TOC: Test-of-Cure, where some cases received confirmatory diagnostic testing after treatment attempts
+¶QALYs: Quality-Adjusted Life-Years. These values represent decrements in QALYs that resulted from gonorrhea.
+#ICER: incremental cost-effectiveness ratio
+
 
 
 
@@ -1858,6 +1920,153 @@ kable(table2df)
 # Supplements
 
 ```{r setupForSupplement, include = FALSE}
+
+nmb = function(cea_df, title){
+  #y = (x * QALYs) - costs
+  
+  random_mean_intercept <- mean(cea_df$RandomcumulativeCostsAdj)
+  random_mean_slope <- mean(cea_df$RandomcumulativeQALYsAdj)
+  random_lower_begin <- CI_lower(1, cea_df$RandomcumulativeCostsAdj, -cea_df$RandomcumulativeQALYsAdj)
+  random_lower_end <- CI_lower(160000, cea_df$RandomcumulativeCostsAdj, -cea_df$RandomcumulativeQALYsAdj)
+  random_upper_begin <- CI_upper(1, cea_df$RandomcumulativeCostsAdj, -cea_df$RandomcumulativeQALYsAdj)
+  random_upper_end <- CI_upper(160000, cea_df$RandomcumulativeCostsAdj, -cea_df$RandomcumulativeQALYsAdj)
+  
+  TOC_intercepts<- t.test(cea_df$TOCcumulativeCostsAdj)
+  TOC_mean_intercept <- TOC_intercepts$estimate
+  
+  TOC_slopes <- t.test(cea_df$TOCcumulativeQALYsAdj)
+  TOC_mean_slope <- TOC_slopes$estimate
+  TOC_lower_begin <- CI_lower(1, cea_df$TOCcumulativeCostsAdj, -cea_df$TOCcumulativeQALYsAdj)
+  TOC_lower_end <- CI_lower(160000, cea_df$TOCcumulativeCostsAdj, -cea_df$TOCcumulativeQALYsAdj)
+  TOC_upper_begin <- CI_upper(1, cea_df$TOCcumulativeCostsAdj, -cea_df$TOCcumulativeQALYsAdj)
+  TOC_upper_end <- CI_upper(160000, cea_df$TOCcumulativeCostsAdj, -cea_df$TOCcumulativeQALYsAdj)
+  
+  DST_intercepts<- t.test(cea_df$DSTcumulativeCostsAdj)
+  DST_mean_intercept <- DST_intercepts$estimate
+  
+  DST_slopes <- t.test(cea_df$DSTcumulativeQALYsAdj)
+  DST_mean_slope <- DST_slopes$estimate
+  DST_lower_begin <- CI_lower(1, cea_df$DSTcumulativeCostsAdj, -cea_df$DSTcumulativeQALYsAdj)
+  DST_lower_end <- CI_lower(160000, cea_df$DSTcumulativeCostsAdj, -cea_df$DSTcumulativeQALYsAdj)
+  DST_upper_begin <- CI_upper(1, cea_df$DSTcumulativeCostsAdj, -cea_df$DSTcumulativeQALYsAdj)
+  DST_upper_end <- CI_upper(160000, cea_df$DSTcumulativeCostsAdj, -cea_df$DSTcumulativeQALYsAdj)
+  
+  GISP_mean_intercept <- mean(cea_df$GISPcumulativeCostsAdj)
+  GISP_mean_slope <- mean(cea_df$GISPcumulativeQALYsAdj)
+  GISP_lower_begin <- CI_lower(1, cea_df$GISPcumulativeCostsAdj, -cea_df$GISPcumulativeQALYsAdj)
+  GISP_lower_end <- CI_lower(160000, cea_df$GISPcumulativeCostsAdj, -cea_df$GISPcumulativeQALYsAdj)
+  GISP_upper_begin <- CI_upper(1, cea_df$GISPcumulativeCostsAdj, -cea_df$GISPcumulativeQALYsAdj)
+  GISP_upper_end <- CI_upper(160000, cea_df$GISPcumulativeCostsAdj, -cea_df$GISPcumulativeQALYsAdj)
+  
+  
+  
+  ggplot(data = cea_df) + 
+    # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
+    scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000), labels = c("0", "50", "100", "150"))+
+    scale_y_continuous(expand = c(0,0), limits = c(-40000000, 40000000), breaks = c(-40000000,-20000000,0, 20000000, 40000000), labels = c("-40", "-20", "0", "20","40"))+
+    geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
+    
+    geom_abline(aes(slope = -GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
+    geom_segment(aes(x = 1, y = GISP_lower_begin, xend = 160000, yend = GISP_lower_end), colour = "#377EB8", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = GISP_upper_begin, xend = 160000, yend = GISP_upper_end), colour = "#377EB8", linetype= 'dashed')+
+    
+    geom_abline(aes(slope = -random_mean_slope, intercept=-random_mean_intercept),color="#4DAF4A") +
+    geom_segment(aes(x = 1, y = random_lower_begin, xend = 160000, yend = random_lower_end), colour = "#4DAF4A", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = random_upper_begin, xend = 160000, yend = random_upper_end), colour = "#4DAF4A", linetype= 'dashed')+
+    
+    
+    
+    geom_abline(aes(slope = -TOC_mean_slope, intercept=-TOC_mean_intercept), color = "#984EA3") +
+    geom_segment(aes(x = 1, y = TOC_lower_begin, xend = 160000, yend = TOC_lower_end), colour = "#984EA3", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = TOC_upper_begin, xend = 160000, yend = TOC_upper_end), colour = "#984EA3", linetype= 'dashed')+
+    
+    
+    
+    geom_abline(aes(slope = -DST_mean_slope, intercept=-DST_mean_intercept), color = "#FF7F00") +
+    geom_segment(aes(x = 1, y = DST_lower_begin, xend = 160000, yend = DST_lower_end), colour = "#FF7F00", linetype= 'dashed')+
+    geom_segment(aes(x = 1, y = DST_upper_begin, xend = 160000, yend = DST_upper_end), colour = "#FF7F00", linetype= 'dashed')+
+    
+    
+    
+    
+    my_theme+
+    labs(
+      title=title,
+      x = "Cost-effectiveness Threshold (1000s USD)",
+      y = "Incremental\nNMB (millions USD)"
+    )
+  
+}
+
+rearrange_cea_real = function(ceadf){
+  newdf <- data.frame(matrix(ncol=5, nrow = 0))
+  colnames(newdf)<- c("seed",
+                      "counterfactual",
+                      "AdjustedCost",
+                      "AdjustedQALYs")
+  
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("RC", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$RCcumulativeCostsAdj, AdjustedQALYs = ceadf$RCcumulativeQALYsAdj) )
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual = rep("GISP", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost = ceadf$GISPcumulativeCostsAdj, AdjustedQALYs = -ceadf$GISPcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("Random", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$RandomcumulativeCostsAdj, AdjustedQALYs = -ceadf$RandomcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("TOC", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$TOCcumulativeCostsAdj, AdjustedQALYs = -ceadf$TOCcumulativeQALYsAdj))
+  newdf <- rbind(newdf, data.frame(seed = ceadf$seed, counterfactual=rep("DST", length(ceadf$GISPcumulativeCostsAdj)), AdjustedCost =ceadf$DSTcumulativeCostsAdj, AdjustedQALYs = -ceadf$DSTcumulativeQALYsAdj))
+  
+  return(newdf)
+}
+
+
+giant_inc_box = function(df, title, counter_levels, counter_labels){
+ 
+  
+  inc <- ggplot(data = df, aes(x=cumulativeInc/1000, y = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = title,
+      y = "",
+      x="Cumulative incidence over 20 years\nper 100,000 (thousands)"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    coord_cartesian(xlim=c(0, 3000))
+  
+  return(inc)
+  
+}
+
+giant_failure_box = function(df, title, counter_levels, counter_labels){
+  
+  
+  failure <- ggplot(data = df, aes(x=cumulativeFailure * 100, y = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = title,
+      y = "",
+      x="% failures per treatment attempt\ncumulative over 20 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels) +
+    coord_cartesian(xlim=c(0, 100))
+  
+  return(failure)
+  
+}
+
+giant_e_box = function(df, title, counter_levels, counter_labels, xlim=200000){
+ 
+  
+  e <- ggplot(data = df, aes(x=cumulativeE, y = factor(counterfactual, levels = counter_levels))) +
+    stat_summary(fun = mean, fun.min = function(a) {quantile(a, 0.025)}, fun.max = function(a){quantile(a, 0.975)})+
+    labs(
+      title = title,
+      y = "",
+      x="Treatments with ertapenem\nover 20 years"
+    )+
+    my_theme +
+    scale_y_discrete(labels=counter_labels)+
+    scale_x_continuous(breaks = c(xlim/2, xlim))+
+    coord_cartesian(xlim=c(0, xlim))
+  return(e)
+}
 
 
 viz_initial_infected = function(df, n, max, min){
@@ -2069,7 +2278,7 @@ visualize_parameters = function(df){
     theme_bw()
   
   
-    return(multiplot(a,b,c,d,e,f,f2,g,h,i, j, k,l,m, cols = 5))
+    return(multiplot(a,b,c,d,e,f,f2,g,h,i, j, k,l,m, cols =3))
 }
 
 
@@ -2380,7 +2589,7 @@ nmb_noDST = function(cea_df, title){
   ggplot(data = cea_df) + 
     # geom_point(aes(x=c(0,-1), y = c(0, -1)))+
     scale_x_continuous(expand = c(0, 0), limits=c(0, 160000), breaks=c(0, 50000, 100000, 150000), labels = c("0", "50", "100", "150"))+
-    scale_y_continuous(expand = c(0,0), limits = c(-30000000, 30000000), breaks = c(-30000000,-20000000,-10000000, 0, 10000000, 20000000, 30000000), labels = c("-30", "-20","-10", "0", "10", "20", "30"))+
+    scale_y_continuous(expand = c(0,0), limits = c(-40000000, 40000000), breaks = c(-40000000,-30000000,-20000000,-10000000, 0, 10000000, 20000000, 30000000, 40000000), labels = c("-40", "-30", "-20","-10", "0", "10", "20", "30", "40"))+
     geom_abline(aes(slope = 0, intercept = 0), color = "#E41A1C")+
     
     geom_abline(aes(slope = -GISP_mean_slope, intercept=-GISP_mean_intercept),color="#377EB8") +
@@ -2467,24 +2676,192 @@ summary_plot_sa = function(df1, df2, df3, df4, df5, counter_levels, counter_labe
 }
 
 
+CI_lower = function(wtp, Dcost, Deffect){
+  n <- length(Dcost)
+  estimate <- wtp * mean(Deffect) - mean(Dcost)
+  error <- equation_five(wtp, Dcost, Deffect)
+  return(estimate - error)
+}
 
+CI_upper = function(wtp, Dcost, Deffect){
+  n <- length(Dcost)
+  estimate <- wtp * mean(Deffect) - mean(Dcost)
+  error<- equation_five(wtp, Dcost, Deffect)
+  return(estimate + error)
+}
+
+
+
+equation_five = function(wtp, Dcost, Deffect){
+  n <- length(Dcost)
+  error <- qt(0.975, n-1) * sqrt(equation_six(wtp, Dcost, Deffect)/n)
+  return(error)
+}
+
+equation_six = function(wtp, Dcost, Deffect){
+  return((wtp^2 * var(Deffect)) + var(Dcost) - cov((wtp * Deffect), Dcost))
+}
+
+
+cea_real_unweighted = function(dfReal, dfGISP, dfRandom, dfTOC, dfDST){
+  #new df which contains the cumulative outcomes for cost and QALYs, relative to GISP
+  ceadf <- data.frame(matrix(ncol = 26, nrow = length(unique(dfGISP$uniqueID))))
+  colnames(ceadf) <- c("seed", 
+                       # "InitialInfected",
+                       "TransmissionMSM",
+                       "RecoveryLambda",
+                       "ProbSymptomaticMSM",
+                       "ScreenIntervalMSM",
+                       "DelayToSeekCareMSM",
+                       "DelayToRetreatmentMSM",
+                       "PercentResistantA",
+                       #"BeginImportingB",
+                       #"ImportingBInterval",
+                       "DSTsensitivity",
+                       #"DSTspecificity",
+                       "CareCost",
+                       "TestCost",
+                       "StrainTestCost",
+                       "DrugATreatmentCost",
+                       "DrugBTreatmentCost",
+                       "DrugXTreatmentCost",
+                       "DrugETreatmentCost",
+                       "RCcumulativeCosts",
+                       "RCcumulativeQALYs",
+                       "GISPcumulativeQALYs", 
+                       "GISPcumulativeCosts", 
+                       "RandomcumulativeCosts", 
+                       "RandomcumulativeQALYs", 
+                       "TOCcumulativeCosts", 
+                       "TOCcumulativeQALYs", 
+                       "DSTcumulativeCosts", 
+                       "DSTcumulativeQALYs")
+  
+  dfReal <- dfReal[order(dfReal$uniqueID),]
+  dfGISP <- dfGISP[order(dfGISP$uniqueID),]
+  dfRandom <- dfRandom[order(dfRandom$uniqueID),]
+  dfTOC <- dfTOC[order(dfTOC$uniqueID),]
+  dfDST <- dfDST[order(dfDST$uniqueID),]
+  
+  
+  dfReal <- dfReal %>% filter(tick > 521) 
+  dfGISP <- dfGISP %>% filter(tick > 521) 
+  dfRandom <- dfRandom %>% filter(tick > 521) 
+  dfTOC <- dfTOC %>% filter(tick > 521) 
+  dfDST <- dfDST %>% filter(tick > 521) 
+  
+  
+  ceadf$seed <- unique(dfReal$seed)
+  
+  #ceadf$InitialInfected <- unique(dfGISP$InitialInfected)
+  
+  ceadf$TransmissionMSM<- unique(dfGISP$TransmissionMSM)
+  ceadf$RecoveryLambda<- unique(dfGISP$RecoveryLambda)
+  ceadf$ProbSymptomaticMSM<- unique(dfGISP$ProbSymptomaticMSM)
+  ceadf$ScreenIntervalMSM<- unique(dfGISP$ScreenIntervalMSM)
+  ceadf$DelayToSeekCareMSM<- unique(dfGISP$DelayToSeekCareMSM)
+  ceadf$DelayToRetreatmentMSM<- unique(dfGISP$DelayToRetreatmentMSM)
+  ceadf$PercentResistantA<- unique(dfGISP$PercentResistantA)
+  #ceadf$BeginImportingB<- unique(dfGISP$BeginImportingB)
+  #ceadf$ImportingBInterval<- unique(dfGISP$ImportingBInterval)
+  ceadf$DSTsensitivity<- unique(dfGISP$DSTsensitivity)
+  #ceadf$DSTspecificity<- unique(dfGISP$DSTspecificity)
+  ceadf$CareCost<- unique(dfGISP$CareCost)
+  ceadf$TestCost<- unique(dfGISP$TestCost)
+  ceadf$StrainTestCost<- unique(dfGISP$StrainTestCost)
+  ceadf$DrugATreatmentCost<- unique(dfGISP$DrugATreatmentCost)
+  ceadf$DrugBTreatmentCost<- unique(dfGISP$DrugBTreatmentCost)
+  ceadf$DrugXTreatmentCost<- unique(dfGISP$DrugXTreatmentCost)
+  ceadf$DrugETreatmentCost<- unique(dfGISP$DrugETreatmentCost)
+  
+  ceadf$RCcumulativeCosts <- cumulative_costs(dfReal)
+  ceadf$RCcumulativeQALYs <- cumulative_QALYs(dfReal)
+  ceadf$GISPcumulativeCosts <- cumulative_costs(dfGISP)
+  
+
+  ceadf$GISPcumulativeQALYs <- cumulative_QALYs(dfGISP)
+  ceadf$RandomcumulativeCosts <- cumulative_costs(dfRandom)
+  ceadf$RandomcumulativeQALYs <- cumulative_QALYs(dfRandom)
+  ceadf$TOCcumulativeCosts <- cumulative_costs(dfTOC)
+  ceadf$TOCcumulativeQALYs <- cumulative_QALYs(dfTOC)
+  ceadf$DSTcumulativeCosts <- cumulative_costs(dfDST)
+  ceadf$DSTcumulativeQALYs <- cumulative_QALYs(dfDST)
+  
+  ceadf$RCcumulativeCostsAdj <- ceadf$RCcumulativeCosts - ceadf$RCcumulativeCosts
+  ceadf$GISPcumulativeCostsAdj <- ceadf$GISPcumulativeCosts - ceadf$RCcumulativeCosts
+  ceadf$RandomcumulativeCostsAdj <- ceadf$RandomcumulativeCosts - ceadf$RCcumulativeCosts
+  ceadf$TOCcumulativeCostsAdj <- ceadf$TOCcumulativeCosts - ceadf$RCcumulativeCosts
+  ceadf$DSTcumulativeCostsAdj <- ceadf$DSTcumulativeCosts - ceadf$RCcumulativeCosts
+  
+  ceadf$RCcumulativeQALYsAdj <- ceadf$RCcumulativeQALYs - ceadf$RCcumulativeQALYs
+  ceadf$GISPcumulativeQALYsAdj <- ceadf$GISPcumulativeQALYs - ceadf$RCcumulativeQALYs
+  ceadf$RandomcumulativeQALYsAdj <- ceadf$RandomcumulativeQALYs - ceadf$RCcumulativeQALYs
+  ceadf$TOCcumulativeQALYsAdj <- ceadf$TOCcumulativeQALYs - ceadf$RCcumulativeQALYs
+  ceadf$DSTcumulativeQALYsAdj <- ceadf$DSTcumulativeQALYs - ceadf$RCcumulativeQALYs
+  
+  #get the cumulative QALYS and cost for each scenario
+  #subtract GISP values from GISP, random, TOC, and DST values
+  #add each seed under each scenario as its own row in a df
+  newceadf <- ceadf
+ 
+  
+  
+
+  return(newceadf)
+}
+
+
+visualize_cea_unweighted_real = function(title, df1, df2, df3, df4, df5){
+  
+  ceadf_sum <- cea_real_unweighted( df1, df2, df3, df4, df5)
+  ceadf_sum <- rbind(ceadf_sum, lapply(ceadf_sum[], mean))
+  ceadf_sum$seed[nrow(ceadf_sum)] <- "mean"
+  
+  ceadf <- rearrange_cea_real(ceadf_sum)
+  
+  counter_levels <- c("RC", "GISP", "Random", "TOC", "DST")
+  counter_labels <- c("RC", "GISP", "RT", "TOC", "DST")
+  
+  ceadf$counterfactual <- factor(ceadf$counterfactual, levels=counter_levels, labels=counter_labels)
+  
+  ggplot() +
+    # geom_hline(yintercept=0, color = "gray") +
+    #geom_vline(xintercept = 0, color = "gray") +
+    geom_point(data=ceadf, aes(x=AdjustedQALYs, y=AdjustedCost/1000000, color=counterfactual), size = 0.1, show.legend = FALSE) +
+    geom_point(data=ceadf[ceadf$seed=="mean",], aes(x=AdjustedQALYs, y=AdjustedCost/1000000, fill=counterfactual), size = 2, shape = 23) +
+    labs(title=title,
+         x="Discounted incremental QALYs",
+         y="Discounted\nincremental costs\n(in millions USD)",
+         fill="Counterfactual")+
+    scale_fill_brewer(palette="Set1")+
+    scale_color_brewer(palette="Set1")+
+    # coord_cartesian(xlim=c(-600, 50), ylim=c(-5, 25))+
+    my_theme  
+}
 
 
 ```
 
 
-#Supplement 1 Model Description
-##Figure S1, model diagram for GISP and RT
-##Figure S2, Model diagram for TOC
+# Supplement 1 Model Description
+## Figure S1, model diagram for GISP and RT
+![**Figure S1.** ](FigureS1.jpg)
 
-##Figure S3, Posterior parameter estimates
 
-```{r figureS3, echo = FALSE}
-visualize_parameters(dfFinalCalEnds)
+## Figure S2, Model diagram for TOC
+![**Figure S2.** ](FigureS2.jpg)
+
+
+## Figure S3, Posterior parameter estimates
+
+```{r figureS3, echo = FALSE, fig.width=8, fig.height=11}
+dfcalibratedends <- dfcalibrated[dfcalibrated$tick==1560,] 
+visualize_parameters(dfcalibratedends)
 ```
 
-##Figure S4, Transmission per infection per year
-```{r figureS4}
+
+## Figure S4, Transmission per infection per year
+```{r tpisetupandtable, include = FALSE}
 dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_204-89205transmission.csv")
 dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_1-41970transmission.csv")
 dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_2-84789transmission.csv")
@@ -2495,8 +2872,9 @@ dfcalibratedTPI$TransmissionRate <- dfcalibratedTPI$CountTransmissions / dfcalib
 max(na.omit(dfcalibratedTPI$TransmissionRate))
 dfcalibratedTPI[dfcalibratedTPI$TransmissionRate> 100,]
 median(dfcalibratedTPI$TransmissionRate)
+```
 
-
+```{r figureS4, echo = FALSE, fig.width=8, fig.height=11}
 multiplot(
   ggplot(dfcalibratedTPI) + geom_histogram(aes(x=CountTransmissions, fill = RiskGroup), binwidth = 1)
     +coord_cartesian(xlim = c(0, 30))
@@ -2518,20 +2896,21 @@ multiplot(
             x="Transmissions per year of infection",
             y="Count (log10 scale)") +
     scale_y_log10(breaks=c(10, 500,10000, 1000000, 100000000),labels=c(10,500,10000, 1000000, 100000000)),
-  cols = 3)
+  cols = 1)
 ```
 
 
-##Table S1, parameter defs and prior distributions
-##Table S2, Cost parameters
-##Table S3, Sequelae-associated constants
-##Table S4, other QALY loss constants 
+## Table S1, parameter defs and prior distributions
+## Table S2, Cost parameters
+## Table S3, Sequelae-associated constants
+## Table S4, other QALY loss constants 
 
-##Table S5, Goodness-of-fit Metrics
+## Table S5, Goodness-of-fit Metrics
 
 ```{r calibrationQuant, echo = FALSE}
 
-df <- dfFinalCal %>% filter(tick > 261) #years 6, 7, 8, 9, 10
+df <- dfcalibrated %>% filter(tick > 261) #years 6, 7, 8, 9, 10
+df <- df %>% filter(tick < 521)
 
 calculate_calibration_fit <- function(posterior_samples, 
                                      empirical_point, 
@@ -2628,7 +3007,7 @@ colnames(calibration_fit_df) <- c("Calibration Target",
 kable(calibration_fit_df, digits = 2)
 ```
 
-##Table S6, PRCC table
+## Table S6, PRCC table
 
 ```{r PRCC, echo = FALSE}
 prcc_arrange = function(df, outcome_col){
@@ -2636,11 +3015,14 @@ prcc_arrange = function(df, outcome_col){
   #the only columns should be parameters for analysis + the one outcome
   df <- get_ends(df)
   
-  new_df <- df[,12:34]
+  new_df <- df[,c(13:17, 19:37)]
   
   new_df <- cbind(new_df, df[,outcome_col])
+   new_df_scaled <- as.data.frame(scale(new_df))
+
+    return(new_df_scaled)
   
-  return(new_df)
+  #return(new_df)
 }
 
 prcc = function(df, outcome_col){
@@ -2648,20 +3030,20 @@ prcc = function(df, outcome_col){
 }
 
 prcc_prev = function(df){
-  return(prcc(df, 36))
+  return(prcc(df, 39))
 }
 
 prcc_inc = function(df){
-  return(prcc(df, 37))}
+  return(prcc(df, 40))}
 
 prcc_sympt = function(df){
-  return(prcc(df, 41))}
+  return(prcc(df, 44))}
 
 prcc_cost = function(df){
-  return(prcc(df, 80))}
+  return(prcc(df, 83))}
 
 prcc_qalys = function(df){
-  return(prcc(df, 81))}
+  return(prcc(df, 84))}
 
 
 prcc_all = function(df){
@@ -2691,18 +3073,18 @@ kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "QALYs PRCC")
 ```
 
 
-#Supplement 2, ODD
-##Table S6, Model entities
+# Supplement 2, ODD
+## Table S6, Model entities
 
-#Supplement 3, CHEERS Checklist
+# Supplement 3, CHEERS Checklist
 
 
 
-#Supplement 4, Sensitivity analysis
+# Supplement 4, Sensitivity analysis
 
-##Figure S5, drug X availability summary results
+## Figure S5, drug X availability summary results
 
-```{r figureS5, echo=FALSE, message=FALSE, fig.width=8, fig.height=3}
+```{r figureS5, echo=FALSE, message=FALSE, fig.width=8, fig.height=11}
 giant_summary_plot_noDST(dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
                          dfrandom15, dfrandom20, dfrandom25, dfrandom31, 
                          dfTOC15, dfTOC20, dfTOC25, dfTOC31,
@@ -2711,23 +3093,27 @@ giant_summary_plot_noDST(dfGISP15, dfGISP20, dfGISP25, dfGISP31,
 
 ```
 
-##Figure S6, yearX = 10, trends over time
-```{r figureS6}
-new_figure_four_nDST(dfGISP15, dfrandom15, dfTOC15, dfreal15, 15)
+
+## Figure S6, yearX = 10, trends over time
+```{r figureS6, echo=FALSE, fig.width=8, fig.height=11}
+new_figure_four_noDST(dfGISP15, dfrandom15, dfTOC15, dfreal15, 15)
 ```
 
-##Figure S7, yearX = 15, trends over time 
-```{r figureS7}
+
+## Figure S7, yearX = 15, trends over time 
+```{r figureS7, echo=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP20, dfrandom20, dfTOC20, dfreal20, 20)
 ```
 
-##Figure S8, never drug X, trends over time
-```{r figureS8}
+
+## Figure S8, never drug X, trends over time
+```{r figureS8, echo=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP31, dfrandom31, dfTOC31, dfreal31, 31)
 ```
 
-##Figure S9, CEA under different drug X availability
-```{r figureS9, echo=FALSE}
+
+## Figure S9, CEA under different drug X availability
+```{r figureS9, echo=FALSE, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
   visualize_cea_unweighted_real_noDST("A. Drug X available year 10", dfreal15, dfGISP15, dfrandom15, dfTOC15)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
@@ -2735,38 +3121,40 @@ multiplot(
   visualize_cea_unweighted_real_noDST("E. Drug X available year 20", dfRC50_50_00, dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),  
   visualize_cea_unweighted_real_noDST("G. Drug X never available", dfreal31, dfGISP31, dfrandom31, dfTOC31)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-300, 200)),
   
-  nmb_noDST(cea_real_unweighted_noDST(df_best_ends,dfreal15, dfGISP15, dfrandom15, dfTOC15), "B.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(df_best_ends,dfreal20, dfGISP20, dfrandom20, dfTOC20), "D.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(df_best_ends,dfRC50_50_00, dfGISP25, dfrandom25, dfTOC25), "F.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(df_best_ends,dfreal31, dfGISP31, dfrandom31, dfTOC31), "H.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfreal15, dfGISP15, dfrandom15, dfTOC15), "B."),
+  nmb_noDST(cea_real_unweighted_noDST(dfreal20, dfGISP20, dfrandom20, dfTOC20), "D."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00, dfGISP25, dfrandom25, dfTOC25), "F."),
+  nmb_noDST(cea_real_unweighted_noDST(dfreal31, dfGISP31, dfrandom31, dfTOC31), "H."),
   
   cols = 2
 )
 ```
 
-##Figure S10, varying GISP switchpoint summary results
-```{r figureS10, fig.width=8, fig.height=4}
+
+## Figure S10, varying GISP switchpoint summary results
+```{r figureS10, echo=FALSE, fig.width=8, fig.height=4}
 summary_plot_sa(dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7, 
                 c("GISPrand_3", "GISPrand_4", "GISPrand_5", "GISPrand_6", "GISPrand_7"), 
                 c("GISP 3%", "GISP 4%", "GISP 5%", "GISP 6%", "GISP 7%"), 
                 3000, 10, 120000)
 ```
 
-##Figure S11, varying GISP switchpoint CEA results
-```{r figureS11}
+
+## Figure S11, varying GISP switchpoint CEA results
+```{r figureS11, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
-  visualize_cea_unweighted_real_noDST("A. GISP 3%", dfRC50_50_00,dfGISP3, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
+  visualize_cea_unweighted_real_noDST("A. GISP 3%", dfRC50_50_00,dfGISP3, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
   # visualize_cea_unweighted_real_noDST("C. GISP 4%", dfRC50_50_00,dfGISP4, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
-  visualize_cea_unweighted_real_noDST("E. GISP 5% (default)", dfRC50_50_00,dfreal25,dfGISP5, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),  
+  visualize_cea_unweighted_real_noDST("E. GISP 5% (default)", dfRC50_50_00,dfGISP5, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),  
   #visualize_cea_unweighted_real_noDST("G. GISP 6%", dfRC50_50_00,dfGISP6, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
-  visualize_cea_unweighted_real_noDST("I. GISP 7%",dfRC50_50_00,dfGISP7, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
+  visualize_cea_unweighted_real_noDST("I. GISP 7%",dfRC50_50_00,dfGISP7, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
   
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP3, dfrandom25, dfTOC25), "B.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP3, dfrandom25, dfTOC25), "B."),
   #nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP4, dfrandom25, dfTOC25), "D.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP5, dfrandom25, dfTOC25), "F.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP5, dfrandom25, dfTOC25), "F."),
   #nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP6, dfrandom25, dfTOC25), "H.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP7, dfrandom25, dfTOC25), "J.")+ coord_cartesian(ylim = c(-7000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP7, dfrandom25, dfTOC25), "J."),
   
   cols = 2
 )
@@ -2774,17 +3162,19 @@ multiplot(
 
 ```
 
-##Figure S12, symptomatic adherence to TOC, summary results
-```{r figureS12}
+
+## Figure S12, symptomatic adherence to TOC, summary results
+```{r figureS12, echo=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_sa_nine(dfTOCadsympt20, dfTOCadsympt30, dfTOCadsympt40, dfTOCadsympt50, dfTOCadsympt60, dfTOCadsympt70, dfTOCadsympt80, dfTOCadsympt90, dfTOCadsympt100, 
                      c("test-of-cure_sympt_20", "test-of-cure_sympt_30", "test-of-cure_sympt_40", "test-of-cure_sympt_50", "test-of-cure_sympt_60", "test-of-cure_sympt_70", "test-of-cure_sympt_80", "test-of-cure_sympt_90", "test-of-cure_sympt_100"), 
                      c("TOC symptomatic 20%", "TOC symptomatic 30%", "TOC symptomatic 40%", "TOC symptomatic 50%", "TOC symptomatic 60%", "TOC symptomatic 70%", "TOC symptomatic 80%", "TOC symptomatic 90%", "TOC symptomatic 100%"), 
-                     3000, 100, 20000)
+                     3000, 100, 100000)
 ```
 
-##Figure S13, symptomatic adherence to TOC, CEA results
-```{r figureS13}
+
+## Figure S13, symptomatic adherence to TOC, CEA results
+```{r figureS13, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
   visualize_cea_unweighted_real_noDST("A. TOC symptomatic 20%", dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
@@ -2797,30 +3187,32 @@ multiplot(
  
   visualize_cea_unweighted_real_noDST("G. TOC symptomatic 100%", dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt100)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
   
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt20), "B.")+ coord_cartesian(ylim = c(-6000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt20), "B."),
 
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt40), "F.")+ coord_cartesian(ylim = c(-6000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt40), "F."),
   
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt60), "J.")+ coord_cartesian(ylim = c(-6000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt60), "J."),
   
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt80), "F.")+ coord_cartesian(ylim = c(-6000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt80), "F."),
  
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt100), "H.")+ coord_cartesian(ylim = c(-6000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadsympt100), "H."),
   
   cols = 2
 )
 ```
 
-##Figure S14, asymptomatic adherence to TOC, summary results
-```{r figureS14}
+
+## Figure S14, asymptomatic adherence to TOC, summary results
+```{r figureS14,echo=FALSE,  fig.width=8, fig.height=3}
 summary_plot_sa_nine(dfTOCadasympt20, dfTOCadasympt30, dfTOCadasympt40, dfTOCadasympt50, dfTOCadasympt60, dfTOCadasympt70, dfTOCadasympt80, dfTOCadasympt90, dfTOCadasympt100, 
                      c("test-of-cure_asympt_20", "test-of-cure_asympt_30", "test-of-cure_asympt_40", "test-of-cure_asympt_50", "test-of-cure_asympt_60", "test-of-cure_asympt_70", "test-of-cure_asympt_80", "test-of-cure_asympt_90", "test-of-cure_asympt_100"), 
                      c("TOC asymptomatic 20%", "TOC asymptomatic 30%", "TOC asymptomatic 40%", "TOC asymptomatic 50%", "TOC asymptomatic 60%", "TOC asymptomatic 70%", "TOC asymptomatic 80%", "TOC asymptomatic 90%", "TOC asymptomatic 100%"), 
-                     3000, 60, 20000)
+                     3000, 60, 100000)
 ```
 
-##Figure S15, asymptomatic adherence to TOC, CEA results
-```{r figureS15}
+
+## Figure S15, asymptomatic adherence to TOC, CEA results
+```{r figureS15, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
   visualize_cea_unweighted_real_noDST("A. TOC asymptomatic 20%", dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt20)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
@@ -2829,48 +3221,60 @@ multiplot(
   visualize_cea_unweighted_real_noDST("E. TOC asymptomatic 80%", dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt80)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
   visualize_cea_unweighted_real_noDST("G. TOC asymptomatic 100%", dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt100)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
   
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt20), "B.")+ coord_cartesian(ylim = c(-12000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt40), "F.")+ coord_cartesian(ylim = c(-12000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt60), "J.")+ coord_cartesian(ylim = c(-12000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt80), "F.")+ coord_cartesian(ylim = c(-12000000, 5000000)),
-  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt100), "H.")+ coord_cartesian(ylim = c(-12000000, 5000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt20), "B."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt40), "F."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt60), "J."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt80), "F."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOCadasympt100), "H."),
   
   cols = 2
 )
 
 ```
 
-##Figure S16, combo sensitivity analysis, summary results
-```{r figureS16}
+
+## Figure S16, combo sensitivity analysis, summary results
+```{r figureS16, echo=FALSE, fig.width=8, fig.height=3}
 summary_plot_sa(dfRC50_50_00, dfRC75_25_00, dfRC25_75_00, dfrandom25, dfTOC25, 
                 c("random","test-of-cure_80", "realistic_combo_50_50_00", "realistic_combo_75_25_00", "realistic_combo_25_75_00"),
                 c("RT","TOC","Combo 50-50", "Combo 75-25", "Combo 25-75"), 
-                3000, 50, 20000)
+                3000, 50, 50000)
 ```
 
-##Figure S17, combo sensitivity analysis, CEA results
-```{r figureS17}
+
+## Figure S17, combo sensitivity analysis, CEA results
+```{r figureS17, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
-  visualize_cea_weighted_real_noDST("A. Combo 50-50", df_best_ends,dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_weighted_real_noDST("C. Combo 75-25", df_best_ends,dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_weighted_real_noDST("E. Combo 25-75", df_best_ends, dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),  
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25), "B.") + coord_cartesian(ylim = c(-7000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25), "D.")+ coord_cartesian(ylim = c(-7000000, 10000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25), "F.")+ coord_cartesian(ylim = c(-7000000, 10000000)),
+  visualize_cea_unweighted_real_noDST("A. Combo 50-50",dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real_noDST("C. Combo 75-25",dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real_noDST("E. Combo 25-75", dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),  
+  nmb_noDST(cea_real_unweighted_noDST(dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25), "B.") ,
+  nmb_noDST(cea_real_unweighted_noDST(dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25), "D."),
+  nmb_noDST(cea_real_unweighted_noDST(dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25), "F."),
   cols = 2
 )
 
 ```
 
 
-#Supplement 5 rDST and MT
+# Supplement 5 rDST and MT
 
-##Table S7, sensitivity and specificity parameters for rDST
-##Figure S18, model diagram for rDST counterfactual
-##Figure S19, Model diagram for MT counterfactual (combo which includes rDST)
-##Figure S20, impact of rDST on a given strain, given sensitivity and specificity
+## Table S7, sensitivity and specificity parameters for rDST
 
-##Table S8, Results table with rDST and MT
+
+## Figure S18, model diagram for rDST counterfactual
+![**Figure S18.** ](FigureS18.jpg)
+
+
+## Figure S19, Model diagram for MT counterfactual (combo which includes rDST)
+![**Figure S19.** ](FigureS19.jpg)
+
+
+## Figure S20, impact of rDST on a given strain, given sensitivity and specificity
+![**Figure S20.** ](FigureS20.jpg)
+
+
+## Table S8, Results table with rDST and MT
 ```{r tableS8}
 #supplement tables for rDST and MT
 summary_DST <- cumulative_everything(dfDST80)
@@ -2908,7 +3312,8 @@ quantile(summary_MT$cumulativeE, probs = c(0.025, 0.975))
 
 ```
 
-##Table S9, CEA table with rDST and MT
+
+## Table S9, CEA table with rDST and MT
 ```{r tableS9}
 
 #cost
@@ -2927,7 +3332,7 @@ mean(summary_MT$cumulativeQALYs)
 quantile(summary_MT$cumulativeQALYs, probs = c(0.025, 0.975))
 
 
-ceatable_w_DST <- cea_real_weighted(df_best_ends, dfRC45_45_10, dfGISP25, dfrandom25, dfTOC25, dfDST80)
+ceatable_w_DST <- cea_real_unweighted(dfRC45_45_10, dfGISP25, dfrandom25, dfTOC25, dfDST80)
 
 ceatable_w_DST$IncrementalCostsMTtoGISP <- ceatable_w_DST$GISPcumulativeCosts - ceatable_w_DST$RCcumulativeCosts
 ceatable_w_DST$IncrementalCostsGISPtoRT <- ceatable_w_DST$RandomcumulativeCosts - ceatable_w_DST$GISPcumulativeCosts
@@ -2973,69 +3378,84 @@ mean(ceatable_w_DST$ICERGISPtoDST) / 1000000
 quantile(ceatable_w_DST$ICERGISPtoDST, probs = c(0.025, 0.975)) /1000000
 ```
 
-##Figure S21, varying rDST summary figure
-```{r figureS21}
+
+## Figure S21, varying rDST summary figure
+```{r figureS21, echo=FALSE, fig.width=8, fig.height=3}
 summary_plot_sa(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100, 
                 c("drug_sus_testing_60", "drug_sus_testing_70", "drug_sus_testing_80", "drug_sus_testing_90", "drug_sus_testing_100"), 
                 c("rDST 60%", "rDST 70%", "rDST 80%", "rDST 90%", "rDST 100%"), 
-                3000, 20, 1500)
+                3000, 50, 150000)
 ```
 
-##Figure S22, varying rDST CEA figure
-```{r figureS22}
+
+## Figure S22, varying rDST CEA figure
+```{r figureS22, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
-  visualize_cea_unweighted_real("A. rDST 60%", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
-  visualize_cea_unweighted_real("C. rDST 80% (default)", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),  
-  visualize_cea_unweighted_real("E. rDST 100%", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 100)),
+  visualize_cea_unweighted_real("A. rDST 60%", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real("C. rDST 80% (default)", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),  
+  visualize_cea_unweighted_real("E. rDST 100%", dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
   
-  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60), "B.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80), "D.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100), "F.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
+  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST60), "B."),
+  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST80), "D."),
+  nmb(cea_real_unweighted(dfreal25, dfGISP25, dfrandom25, dfTOC25, dfDST100), "F."),
   
   cols = 2
 )
 
 ```
 
-##Figure S23, varying MT summary figure
-```{r figureS23}
+
+## Figure S23, varying MT summary figure
+```{r figureS23, echo=FALSE, fig.width=8, fig.height=4}
 summary_plot_sa_nine(dfRC45_45_10, dfRC65_25_10, dfRC25_65_10,dfRC40_40_20, dfRC60_20_20, dfRC20_60_20, dfRC35_35_30, dfRC55_15_30, dfRC15_55_30,
                      c("realistic_combo_45_45_10", "realistic_combo_65_25_10", "realistic_combo_25_65_10", "realistic_combo_40_40_20", "realistic_combo_60_20_20", "realistic_combo_20_60_20", "realistic_combo_35_35_30", "realistic_combo_55_15_30", "realistic_combo_15_55_30"),
                      c("MT 45-45-10", "MT 65-25-10", "MT 25-65-10","MT 40-40-20", "MT 60-20-20", "MT 20-60-20", "MT 35-35-30", "MT 55-15-30", "MT 15-55-30"),  
-                    3000, 50, 20000)
+                    3000, 100, 100000)
 ```
 
-##Figure S24, varying MT CEA figure
-```{r figure S24}
+## Figure S24, varying MT CEA figure
+```{r figure S24, echo=FALSE, warning=FALSE, fig.width=8, fig.height=11}
 multiplot(
-  visualize_cea_unweighted_real("A. MT 50-50-00*", dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_unweighted_real("C. MT 75-25-00", dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_unweighted_real("E. MT 25-75-00",  dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),  
-  visualize_cea_unweighted_real("G. MT 45-45-10", dfRC45_45_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_unweighted_real("I. MT 65-25-10", dfRC65_25_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
-  visualize_cea_unweighted_real("K. MT 25-65-10", dfRC25_65_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-20, 20), xlim = c(-200, 50)),
+  visualize_cea_unweighted_real("A. MT 50-50-00*", dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real("C. MT 75-25-00", dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real("E. MT 25-75-00",  dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),  
+  visualize_cea_unweighted_real("G. MT 45-45-10", dfRC45_45_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real("I. MT 65-25-10", dfRC65_25_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
+  visualize_cea_unweighted_real("K. MT 25-65-10", dfRC25_65_10,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
   
-  nmb(cea_real_unweighted(dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "B.") + coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "D.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "F.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfRC45_45_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "H.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfRC65_25_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "J.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
-  nmb(cea_real_unweighted(dfRC25_65_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "L.")+ coord_cartesian(ylim = c(-20000000, 10000000)),
+  nmb(cea_real_unweighted(dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "B."),
+  nmb(cea_real_unweighted(dfRC75_25_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "D."),
+  nmb(cea_real_unweighted(dfRC25_75_00,dfGISP25, dfrandom25, dfTOC25, dfDST25), "F."),
+  nmb(cea_real_unweighted(dfRC45_45_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "H."),
+  nmb(cea_real_unweighted(dfRC65_25_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "J."),
+  nmb(cea_real_unweighted(dfRC25_65_10,dfGISP25, dfrandom25, dfTOC25, dfDST25), "L."),
   
   cols = 2
 )
 ```
 
 
-#Supplement 6 Screening Heterogeneity (not updating)
-##Figure S25, posterior distributions
-##Figure S26, calibrated trajectories
-##Figure S27, summary results
-##Figure S28, trends over time
-##Figure S29, CEA figure
-##Table S10, main results table
-##Table S11, CEA results table
+# Supplement 6 Screening Heterogeneity (not updating)
+## Figure S25, posterior distributions
+![**Figure S20.** ](FigureS25.png)
+
+
+## Figure S26, calibrated trajectories
+![**Figure S20.** ](FigureS26.png)
+
+## Figure S27, summary results
+![**Figure S20.** ](FigureS27.png)
+
+## Figure S28, trends over time
+![**Figure S20.** ](FigureS28.png)
+
+## Figure S29, CEA figure
+![**Figure S20.** ](FigureS29.png)
+
+## Table S10, main results table
+
+## Table S11, CEA results table
 
 
 
@@ -3170,35 +3590,41 @@ CI_upper = function(wtp, Dcost, Deffect){
 
 ```
 
-##Figure S30
+## Figure S30
 ```{r fitnessCostsSummary0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
+dfrealfitnessCost0.0_0.0 <- dfreal25
+dfGISPfitnessCost0.0_0.0 <- dfGISP25
+dfrandomfitnessCost0.0_0.0 <- dfrandom25
+dfTOCfitnessCost0.0_0.0 <- dfTOC25
+
+
 summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)
 ```
 Figure S30. Summary plot when fitness costs were 0%. Identical to figure 3 in main text.
 
 
-##Figure S31
+## Figure S31
 ```{r fitnessCostsSummary1, echo = FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)
 ```
 Figure S31. Summary plot when fitness costs were 1% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-##Figure S32
+## Figure S32
 ```{r fitnessCostsSummary2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)
 ```
 Figure S32. Summary plot when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-##Figure S33
+## Figure S33
 ```{r fitnessCostsSummary5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)
 ```
 Figure S33. Summary plot when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-##Figure S34
+## Figure S34
 ```{r fitnessCostsSummary10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
 ```
@@ -3209,7 +3635,7 @@ Figure S34. Summary plot when fitness costs were 10% for both strain resistant t
 
 
 
-##Figure S35
+## Figure S35
 ```{r fitnessCostsFigureFour0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0, dfrealfitnessCost0.0_0.0, 25)
 ```
@@ -3217,28 +3643,28 @@ Figure S35. Trends in incidence and resistance when fitness costs were 0%. Ident
 
 
 
-##Figure S36
+## Figure S36
 ```{r fitnessCostsFigureFour1, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01, dfrealfitnessCost0.01_0.01, 25)
 ```
 Figure S36. Trends in incidence and resistance when fitness costs were 1%for both strain resistant to drug A and strain resistant to drug B.
 
 
-##Figure S37
+## Figure S37
 ```{r fitnessCostsFigureFour2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025, dfrealfitnessCost0.025_0.025, 25)
 ```
 Figure S37. Trends in incidence and resistance when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B.
 
 
-##Figure S38
+## Figure S38
 ```{r fitnessCostsFigureFour5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05, dfrealfitnessCost0.05_0.05, 25)
 ```
 Figure S38. Trends in incidence and resistance when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B.
 
 
-##Figure S39
+## Figure S39
 ```{r fitnessCostsFigureFour10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
 ```
@@ -3246,26 +3672,26 @@ Figure S39. Trends in incidence and resistance when fitness costs were 10% for b
 
 
 
-##Figure S40
+## Figure S40
 ```{r fitnessCostsCEA, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
-  visualize_cea_weighted_real_noDST("A. Fitness costs 0%", df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
+  visualize_cea_unweighted_real_noDST("A. Fitness costs 0%",dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0)+theme(legend.position = "none")+coord_cartesian(ylim=c(-75, 75), xlim = c(-400, 400)),
   
-   visualize_cea_weighted_real_noDST("C. Fitness costs 1%",df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
+   visualize_cea_unweighted_real_noDST("C. Fitness costs 1%", dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)+theme(legend.position = "none")+coord_cartesian(ylim=c(-75, 75), xlim = c(-400, 400)),
    
-  visualize_cea_weighted_real_noDST("E. Fitness costs 2.5%", df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),  
+  visualize_cea_unweighted_real_noDST("E. Fitness costs 2.5%",dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)+theme(legend.position = "none")+coord_cartesian(ylim=c(-75, 75), xlim = c(-400, 400)),  
   
-   visualize_cea_weighted_real_noDST("G. Fitness costs 5%", df_best_ends,dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),  
+   visualize_cea_unweighted_real_noDST("G. Fitness costs 5%",dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)+theme(legend.position = "none")+coord_cartesian(ylim=c(-75, 75), xlim = c(-400, 400)),  
   
-  visualize_cea_weighted_real_noDST("I. Fitness costs 10%",df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-50, 50), xlim = c(-400, 400)),
+  visualize_cea_unweighted_real_noDST("I. Fitness costs 10%", dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)+theme(legend.position = "none")+coord_cartesian(ylim=c(-75, 75), xlim = c(-400, 400)),
   
 
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01), "D.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025), "F.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends,dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05), "H.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
-  nmb_noDST(cea_real_weighted_noDST(df_best_ends, dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "J.")+ coord_cartesian(ylim = c(-30000000, 30000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0), "B.")+ coord_cartesian(ylim = c(-30000000, 40000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01), "D.")+ coord_cartesian(ylim = c(-30000000, 40000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025), "F.")+ coord_cartesian(ylim = c(-30000000, 40000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05), "H.")+ coord_cartesian(ylim = c(-30000000, 40000000)),
+  nmb_noDST(cea_real_unweighted_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1), "J.")+ coord_cartesian(ylim = c(-30000000, 40000000)),
  
 
   cols = 2

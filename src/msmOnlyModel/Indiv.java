@@ -461,7 +461,7 @@ public class Indiv {
 		String resistance = allParameters.getString("resistance");
 		//System.out.println("resistance: " + resistance);
 
-		if (tickNow() <=520 && !allParameters.getString("counterfactual").contains("test")) {
+		if (tickNow() <=520) {
 			actuallyRecoverwTreatment(treatment);
 		} else if (treatment.equals("X")) {
 			actuallyRecoverwTreatment(treatment);
