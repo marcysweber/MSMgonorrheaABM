@@ -372,7 +372,7 @@ save(     dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnes
 ```{r loadDataFromRData}
 
 #calibration and main text
-load("figure data/sweepdata.RData")
+#load("figure data/sweepdata.RData")
 load("figure data/parcaldata.RData")
 load("figure data/calnoresist.RData")
 load("figure data/mainresults.RData")
@@ -643,8 +643,10 @@ write_calibrated = function(df, path){
 
 ```
 
+# Main Text Figures and Tables
 
-# Figure 1
+## Figure 1
+
 ![**Figure 1.** ](Figure 1.jpg)
 
 Figure 1. Diagram of the major processes of the model, showing the generic treatment pathway. “sus A” and “sus B” represent susceptibility to drug A and drug B, respectively, and “resist A” and “resist B” represent resistance to drug A and drug B, respectively. Dice icon indicates a pseudo-random event, whose probability is controlled by a parameter. The clock icon indicates that time elapses before the next event occurs; arrows without clock icons indicate that the next event takes place immediately (except for treatment success, which has a delay of 3 days on average).
@@ -652,7 +654,7 @@ Figure 1. Diagram of the major processes of the model, showing the generic treat
 
 
 
-# Calibration
+## Calibration
 ```{r calibrationProcedureStep1, include = FALSE, eval = FALSE}
 
 
@@ -814,7 +816,7 @@ df_best_traj <- best_traj(dfGISPparcal, df_best_ends)
 
 ```
 
-# Figure 2
+## Figure 2
 ```{r setupFigure2, include = FALSE}
 # This chunk contains functions for the calibration figure (Figure 2).
 visualize_calibration_MSM = function(dfcalibrated){
@@ -917,7 +919,7 @@ visualize_calibration_MSM(dfcalibrated)
 
 Figure 2. Comparing calibration targets (shown in red) with simulated trajectories without AMR for 25 years. A) prevalence of infection. B) gonorrhea cases detected per 100,000. C) proportion of detected cases that present with symptoms. Darkness of the black lines relates to how frequently that trajectory was resampled, according to its likelihood when compared to the calibration target. Red dots indicate the observed value, and the red error bars indicate the confidence interval (see text for data sources). The grey region represents the calibration period. 
 
-# Figure 3
+## Figure 3
 
 ```{r setupFigure3, include = FALSE}
 summary_plot_noDST = function(df1, df2, df3, df4){ 
@@ -1205,7 +1207,7 @@ summary_plot_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25)
 Figure 3. Cumulative outcomes for the four mitigation strategies, beginning at the end of the calibration period and continuing to the end of each simulation. Dot indicates the mean model prediction; line corresponds to the 95% uncertainty interval (i.e., extending from the 2.5% quantile to the 97.5% quantile). A) total infection incidence, including both detected and undetected infections. B) percentage of treatment attempts that resulted in treatment failure for drugs A, B, and X. C) count of treatments with ertapenem
 
 
-# Figure 4
+## Figure 4
 
 ```{r setupFigure4, include = FALSE}
 my_theme <- my_theme + theme(axis.text = element_text(size=12))
@@ -1403,7 +1405,7 @@ new_figure_four_noDST(dfGISP25, dfrandom25, dfTOC25, dfreal25, 25)
 Figure 4. Trends over time in cases detected (first row), prevalence of AMR strains (rows 2-4), treatment failure rate (row 5), and usage of ertapenem, the last-line treatment (row 6) across four strategies. GISP: the surveillance strategy; RT: randomized treatment strategy; TOC: test-of-cure strategy; Combo: combination of RT and TOC. The gray box indicates the calibration period, during which all strategies performed identically. The dashed vertical line indicates when drug X became available in the simulation. Darkness of trajectory lines relates to their likelihood weights (see S1.3).
 
 
-# Figure 5
+## Figure 5
 ```{r setupFigure5, include = FALSE}
 visualize_cea_unweighted_real_noDST = function(title, df1, df2, df3, df4){
   
@@ -1699,7 +1701,7 @@ rearrange_cea_real_noDST = function(ceadf){
 Figure 5. Cost-effectiveness analysis of GISP and three counterfactual strategies. Combination of TOC and RT (Combo) is used as the reference strategy, located at (0,0). Small dots are values from individual trajectories, diamonds are means of each counterfactual (mean was weighted by how frequently that trajectory had been resampled during calibration.) 
 
 
-# Table 1 Mean Cumulative Results
+## Table 1 Mean Cumulative Results
 
 Table 1. Mean cumulative results (uncertainty intervals) of four measures of gonorrhea burden: gonorrhea incidence, antimicrobial-resistant (AMR) gonorrhea incidence, treatment failure rate, and total count of treatments with ertapenem
 ```{r table1, echo = FALSE}
@@ -1848,7 +1850,7 @@ sum(ceadf$RCcumulativeQALYs < ceadf$RandomcumulativeQALYs & ceadf$RCcumulativeQA
 ```
 
 
-# Table 2 CEA results table
+## Table 2 CEA results table
 
 Table 2. Cost-effectiveness results: Cost, number of quality-adjusted life years (QALYs), and incremental cost-effectiveness ratios for four strategies.
 ```{r table2, echo = FALSE}
@@ -1910,7 +1912,8 @@ The strategies are listed in increasing order of cost. Costs and QALYs were cumu
 ‡Combo: Combination, where cases were randomly assigned to RT or TOC 
 §TOC: Test-of-Cure, where some cases received confirmatory diagnostic testing after treatment attempts
 ¶QALYs: Quality-Adjusted Life-Years. These values represent decrements in QALYs that resulted from gonorrhea.
-#ICER: incremental cost-effectiveness ratio
+ICER: incremental cost-effectiveness ratio
+
 
 
 
@@ -2843,16 +2846,16 @@ visualize_cea_unweighted_real = function(title, df1, df2, df3, df4, df5){
 ```
 
 
-# Supplement 1 Model Description
-## Figure S1, model diagram for GISP and RT
+## Supplement 1 Model Description
+### Figure S1, model diagram for GISP and RT
 ![**Figure S1.** ](FigureS1.jpg)
 
 
-## Figure S2, Model diagram for TOC
+### Figure S2, Model diagram for TOC
 ![**Figure S2.** ](FigureS2.jpg)
 
 
-## Figure S3, Posterior parameter estimates
+### Figure S3, Posterior parameter estimates
 
 ```{r figureS3, echo = FALSE, fig.width=8, fig.height=11}
 dfcalibratedends <- dfcalibrated[dfcalibrated$tick==1560,] 
@@ -2860,7 +2863,7 @@ visualize_parameters(dfcalibratedends)
 ```
 
 
-## Figure S4, Transmission per infection per year
+### Figure S4, Transmission per infection per year
 ```{r tpisetupandtable, include = FALSE}
 dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_204-89205transmission.csv")
 dfcalibratedTPI  <-  read.csv("/Users/me597/Documents/MSMoutput/JANUARY_27_2025_1_none_none/Batch_1_none_25/JANUARY_27_2025_none_none_25_1-41970transmission.csv")
@@ -2900,12 +2903,12 @@ multiplot(
 ```
 
 
-## Table S1, parameter defs and prior distributions
-## Table S2, Cost parameters
-## Table S3, Sequelae-associated constants
-## Table S4, other QALY loss constants 
+### Table S1, parameter defs and prior distributions
+### Table S2, Cost parameters
+### Table S3, Sequelae-associated constants
+### Table S4, other QALY loss constants 
 
-## Table S5, Goodness-of-fit Metrics
+### Table S5, Goodness-of-fit Metrics
 
 ```{r calibrationQuant, echo = FALSE}
 
@@ -3007,7 +3010,7 @@ colnames(calibration_fit_df) <- c("Calibration Target",
 kable(calibration_fit_df, digits = 2)
 ```
 
-## Table S6, PRCC table
+### Tables S6 through S10, PRCC tables
 
 ```{r PRCC, echo = FALSE}
 prcc_arrange = function(df, outcome_col){
@@ -3063,26 +3066,26 @@ symptompropPRCC <- prcc_sympt(combineddf)
 monetaryCostPRCC <- prcc_cost(combineddf)
 qalysPRCC <- prcc_qalys(combineddf)
 
-kable(prevalencePRCC[order(-abs(prevalencePRCC$est)),], caption = "Prevalence PRCC")
-kable(incidencePRCC[order(-abs(incidencePRCC$est)),], caption = "Incidence PRCC")
-kable(symptompropPRCC[order(-abs(symptompropPRCC$est)),], caption = "Symptomatic Proportion PRCC")
-kable(monetaryCostPRCC[order(-abs(monetaryCostPRCC$est)),], caption = "Costs PRCC")
-kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "QALYs PRCC")
+kable(prevalencePRCC[order(-abs(prevalencePRCC$est)),], caption = "Table S6 Prevalence PRCC")
+kable(incidencePRCC[order(-abs(incidencePRCC$est)),], caption = "Table S7 Incidence PRCC")
+kable(symptompropPRCC[order(-abs(symptompropPRCC$est)),], caption = "Table S8 Symptomatic Proportion PRCC")
+kable(monetaryCostPRCC[order(-abs(monetaryCostPRCC$est)),], caption = "Table S9 Costs PRCC")
+kable(qalysPRCC[order(-abs(qalysPRCC$est)),], caption = "Table S10 QALYs PRCC")
 
 
 ```
 
 
-# Supplement 2, ODD
-## Table S6, Model entities
+## Supplement 2, ODD
+### Table S11, Model entities
 
-# Supplement 3, CHEERS Checklist
+## Supplement 3, CHEERS Checklist
 
 
 
-# Supplement 4, Sensitivity analysis
+## Supplement 4, Sensitivity analysis
 
-## Figure S5, drug X availability summary results
+### Figure S5, drug X availability summary results
 
 ```{r figureS5, echo=FALSE, message=FALSE, fig.width=8, fig.height=11}
 giant_summary_plot_noDST(dfGISP15, dfGISP20, dfGISP25, dfGISP31, 
@@ -3094,25 +3097,25 @@ giant_summary_plot_noDST(dfGISP15, dfGISP20, dfGISP25, dfGISP31,
 ```
 
 
-## Figure S6, yearX = 10, trends over time
+### Figure S6, yearX = 10, trends over time
 ```{r figureS6, echo=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP15, dfrandom15, dfTOC15, dfreal15, 15)
 ```
 
 
-## Figure S7, yearX = 15, trends over time 
+### Figure S7, yearX = 15, trends over time 
 ```{r figureS7, echo=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP20, dfrandom20, dfTOC20, dfreal20, 20)
 ```
 
 
-## Figure S8, never drug X, trends over time
+### Figure S8, never drug X, trends over time
 ```{r figureS8, echo=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISP31, dfrandom31, dfTOC31, dfreal31, 31)
 ```
 
 
-## Figure S9, CEA under different drug X availability
+### Figure S9, CEA under different drug X availability
 ```{r figureS9, echo=FALSE, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
@@ -3131,7 +3134,7 @@ multiplot(
 ```
 
 
-## Figure S10, varying GISP switchpoint summary results
+### Figure S10, varying GISP switchpoint summary results
 ```{r figureS10, echo=FALSE, fig.width=8, fig.height=4}
 summary_plot_sa(dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7, 
                 c("GISPrand_3", "GISPrand_4", "GISPrand_5", "GISPrand_6", "GISPrand_7"), 
@@ -3140,7 +3143,7 @@ summary_plot_sa(dfGISP3, dfGISP4, dfGISP5, dfGISP6, dfGISP7,
 ```
 
 
-## Figure S11, varying GISP switchpoint CEA results
+### Figure S11, varying GISP switchpoint CEA results
 ```{r figureS11, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
@@ -3163,7 +3166,7 @@ multiplot(
 ```
 
 
-## Figure S12, symptomatic adherence to TOC, summary results
+### Figure S12, symptomatic adherence to TOC, summary results
 ```{r figureS12, echo=FALSE, fig.width=8, fig.height=3}
 
 summary_plot_sa_nine(dfTOCadsympt20, dfTOCadsympt30, dfTOCadsympt40, dfTOCadsympt50, dfTOCadsympt60, dfTOCadsympt70, dfTOCadsympt80, dfTOCadsympt90, dfTOCadsympt100, 
@@ -3173,7 +3176,7 @@ summary_plot_sa_nine(dfTOCadsympt20, dfTOCadsympt30, dfTOCadsympt40, dfTOCadsymp
 ```
 
 
-## Figure S13, symptomatic adherence to TOC, CEA results
+### Figure S13, symptomatic adherence to TOC, CEA results
 ```{r figureS13, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
@@ -3202,7 +3205,7 @@ multiplot(
 ```
 
 
-## Figure S14, asymptomatic adherence to TOC, summary results
+### Figure S14, asymptomatic adherence to TOC, summary results
 ```{r figureS14,echo=FALSE,  fig.width=8, fig.height=3}
 summary_plot_sa_nine(dfTOCadasympt20, dfTOCadasympt30, dfTOCadasympt40, dfTOCadasympt50, dfTOCadasympt60, dfTOCadasympt70, dfTOCadasympt80, dfTOCadasympt90, dfTOCadasympt100, 
                      c("test-of-cure_asympt_20", "test-of-cure_asympt_30", "test-of-cure_asympt_40", "test-of-cure_asympt_50", "test-of-cure_asympt_60", "test-of-cure_asympt_70", "test-of-cure_asympt_80", "test-of-cure_asympt_90", "test-of-cure_asympt_100"), 
@@ -3211,7 +3214,7 @@ summary_plot_sa_nine(dfTOCadasympt20, dfTOCadasympt30, dfTOCadasympt40, dfTOCada
 ```
 
 
-## Figure S15, asymptomatic adherence to TOC, CEA results
+### Figure S15, asymptomatic adherence to TOC, CEA results
 ```{r figureS15, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
@@ -3233,7 +3236,7 @@ multiplot(
 ```
 
 
-## Figure S16, combo sensitivity analysis, summary results
+### Figure S16, combo sensitivity analysis, summary results
 ```{r figureS16, echo=FALSE, fig.width=8, fig.height=3}
 summary_plot_sa(dfRC50_50_00, dfRC75_25_00, dfRC25_75_00, dfrandom25, dfTOC25, 
                 c("random","test-of-cure_80", "realistic_combo_50_50_00", "realistic_combo_75_25_00", "realistic_combo_25_75_00"),
@@ -3242,7 +3245,7 @@ summary_plot_sa(dfRC50_50_00, dfRC75_25_00, dfRC25_75_00, dfrandom25, dfTOC25,
 ```
 
 
-## Figure S17, combo sensitivity analysis, CEA results
+### Figure S17, combo sensitivity analysis, CEA results
 ```{r figureS17, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   visualize_cea_unweighted_real_noDST("A. Combo 50-50",dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
@@ -3257,24 +3260,24 @@ multiplot(
 ```
 
 
-# Supplement 5 rDST and MT
+## Supplement 5 rDST and MT
 
-## Table S7, sensitivity and specificity parameters for rDST
+### Table S12, sensitivity and specificity parameters for rDST
 
 
-## Figure S18, model diagram for rDST counterfactual
+### Figure S18, model diagram for rDST counterfactual
 ![**Figure S18.** ](FigureS18.jpg)
 
 
-## Figure S19, Model diagram for MT counterfactual (combo which includes rDST)
+### Figure S19, Model diagram for MT counterfactual (combo which includes rDST)
 ![**Figure S19.** ](FigureS19.jpg)
 
 
-## Figure S20, impact of rDST on a given strain, given sensitivity and specificity
+### Figure S20, impact of rDST on a given strain, given sensitivity and specificity
 ![**Figure S20.** ](FigureS20.jpg)
 
 
-## Table S8, Results table with rDST and MT
+### Table S13, Results table with rDST and MT
 ```{r tableS8}
 #supplement tables for rDST and MT
 summary_DST <- cumulative_everything(dfDST80)
@@ -3313,7 +3316,7 @@ quantile(summary_MT$cumulativeE, probs = c(0.025, 0.975))
 ```
 
 
-## Table S9, CEA table with rDST and MT
+### Table S14, CEA table with rDST and MT
 ```{r tableS9}
 
 #cost
@@ -3379,7 +3382,7 @@ quantile(ceatable_w_DST$ICERGISPtoDST, probs = c(0.025, 0.975)) /1000000
 ```
 
 
-## Figure S21, varying rDST summary figure
+### Figure S21, varying rDST summary figure
 ```{r figureS21, echo=FALSE, fig.width=8, fig.height=3}
 summary_plot_sa(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100, 
                 c("drug_sus_testing_60", "drug_sus_testing_70", "drug_sus_testing_80", "drug_sus_testing_90", "drug_sus_testing_100"), 
@@ -3388,7 +3391,7 @@ summary_plot_sa(dfDST60, dfDST70, dfDST80, dfDST90, dfDST100,
 ```
 
 
-## Figure S22, varying rDST CEA figure
+### Figure S22, varying rDST CEA figure
 ```{r figureS22, echo=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
@@ -3406,7 +3409,7 @@ multiplot(
 ```
 
 
-## Figure S23, varying MT summary figure
+### Figure S23, varying MT summary figure
 ```{r figureS23, echo=FALSE, fig.width=8, fig.height=4}
 summary_plot_sa_nine(dfRC45_45_10, dfRC65_25_10, dfRC25_65_10,dfRC40_40_20, dfRC60_20_20, dfRC20_60_20, dfRC35_35_30, dfRC55_15_30, dfRC15_55_30,
                      c("realistic_combo_45_45_10", "realistic_combo_65_25_10", "realistic_combo_25_65_10", "realistic_combo_40_40_20", "realistic_combo_60_20_20", "realistic_combo_20_60_20", "realistic_combo_35_35_30", "realistic_combo_55_15_30", "realistic_combo_15_55_30"),
@@ -3414,7 +3417,7 @@ summary_plot_sa_nine(dfRC45_45_10, dfRC65_25_10, dfRC25_65_10,dfRC40_40_20, dfRC
                     3000, 100, 100000)
 ```
 
-## Figure S24, varying MT CEA figure
+### Figure S24, varying MT CEA figure
 ```{r figure S24, echo=FALSE, warning=FALSE, fig.width=8, fig.height=11}
 multiplot(
   visualize_cea_unweighted_real("A. MT 50-50-00*", dfRC50_50_00,dfGISP25, dfrandom25, dfTOC25, dfDST25)+theme(legend.position = "none")+coord_cartesian(ylim=c(-100, 100), xlim = c(-500, 500)),
@@ -3436,30 +3439,30 @@ multiplot(
 ```
 
 
-# Supplement 6 Screening Heterogeneity (not updating)
-## Figure S25, posterior distributions
+## Supplement 6 Screening Heterogeneity (not updating)
+### Figure S25, posterior distributions
 ![**Figure S20.** ](FigureS25.png)
 
 
-## Figure S26, calibrated trajectories
+### Figure S26, calibrated trajectories
 ![**Figure S20.** ](FigureS26.png)
 
-## Figure S27, summary results
+### Figure S27, summary results
 ![**Figure S20.** ](FigureS27.png)
 
-## Figure S28, trends over time
+### Figure S28, trends over time
 ![**Figure S20.** ](FigureS28.png)
 
-## Figure S29, CEA figure
+### Figure S29, CEA figure
 ![**Figure S20.** ](FigureS29.png)
 
-## Table S10, main results table
+### Table S15, main results table
 
-## Table S11, CEA results table
+### Table S16, CEA results table
 
 
 
-#Supplement 7 Fitness Costs
+##Supplement 7 Fitness Costs
 
 ```{r fitnessfunctions, echo=FALSE}
 
@@ -3590,7 +3593,7 @@ CI_upper = function(wtp, Dcost, Deffect){
 
 ```
 
-## Figure S30
+### Figure S30
 ```{r fitnessCostsSummary0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 dfrealfitnessCost0.0_0.0 <- dfreal25
 dfGISPfitnessCost0.0_0.0 <- dfGISP25
@@ -3603,28 +3606,28 @@ summary_plot_noDST(dfrealfitnessCost0.0_0.0, dfGISPfitnessCost0.0_0.0, dfrandomf
 Figure S30. Summary plot when fitness costs were 0%. Identical to figure 3 in main text.
 
 
-## Figure S31
+### Figure S31
 ```{r fitnessCostsSummary1, echo = FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.01_0.01, dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01)
 ```
 Figure S31. Summary plot when fitness costs were 1% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-## Figure S32
+### Figure S32
 ```{r fitnessCostsSummary2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.025_0.025, dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025)
 ```
 Figure S32. Summary plot when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-## Figure S33
+### Figure S33
 ```{r fitnessCostsSummary5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.05_0.05, dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05)
 ```
 Figure S33. Summary plot when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B. 
 
 
-## Figure S34
+### Figure S34
 ```{r fitnessCostsSummary10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3}
 summary_plot_noDST(dfrealfitnessCost0.1_0.1, dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1)
 ```
@@ -3635,7 +3638,7 @@ Figure S34. Summary plot when fitness costs were 10% for both strain resistant t
 
 
 
-## Figure S35
+### Figure S35
 ```{r fitnessCostsFigureFour0, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.0_0.0, dfrandomfitnessCost0.0_0.0, dfTOCfitnessCost0.0_0.0, dfrealfitnessCost0.0_0.0, 25)
 ```
@@ -3643,28 +3646,28 @@ Figure S35. Trends in incidence and resistance when fitness costs were 0%. Ident
 
 
 
-## Figure S36
+### Figure S36
 ```{r fitnessCostsFigureFour1, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.01_0.01, dfrandomfitnessCost0.01_0.01, dfTOCfitnessCost0.01_0.01, dfrealfitnessCost0.01_0.01, 25)
 ```
 Figure S36. Trends in incidence and resistance when fitness costs were 1%for both strain resistant to drug A and strain resistant to drug B.
 
 
-## Figure S37
+### Figure S37
 ```{r fitnessCostsFigureFour2.5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.025_0.025, dfrandomfitnessCost0.025_0.025, dfTOCfitnessCost0.025_0.025, dfrealfitnessCost0.025_0.025, 25)
 ```
 Figure S37. Trends in incidence and resistance when fitness costs were 2.5% for both strain resistant to drug A and strain resistant to drug B.
 
 
-## Figure S38
+### Figure S38
 ```{r fitnessCostsFigureFour5, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.05_0.05, dfrandomfitnessCost0.05_0.05, dfTOCfitnessCost0.05_0.05, dfrealfitnessCost0.05_0.05, 25)
 ```
 Figure S38. Trends in incidence and resistance when fitness costs were 5% for both strain resistant to drug A and strain resistant to drug B.
 
 
-## Figure S39
+### Figure S39
 ```{r fitnessCostsFigureFour10, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 new_figure_four_noDST(dfGISPfitnessCost0.1_0.1, dfrandomfitnessCost0.1_0.1, dfTOCfitnessCost0.1_0.1, dfrealfitnessCost0.1_0.1, 25)
 ```
@@ -3672,7 +3675,7 @@ Figure S39. Trends in incidence and resistance when fitness costs were 10% for b
 
 
 
-## Figure S40
+### Figure S40
 ```{r fitnessCostsCEA, echo = FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=11}
 multiplot(
   
