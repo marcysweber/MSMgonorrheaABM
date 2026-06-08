@@ -133,8 +133,8 @@ public class CustomFileOutput {
 					"ProbSymptomaticMSM",
 
 
-					"ScreenIntervalMSM",
-
+					"ScreenIntervalMeanMSM",
+					"ScreenIntervalVarMSM",
 
 
 					"DelayToSeekCareMSM",
@@ -148,6 +148,9 @@ public class CustomFileOutput {
 					"PercentResistantA",
 					"BeginImportingB",
 					"ImportingBInterval",
+					"ProbDevelopResistanceAExponent",
+					"ProbDevelopResistanceBExponent",
+					
 					"DSTsensitivity", 
 					"DSTspecificity",
 					"CareCost",
@@ -226,24 +229,24 @@ public class CustomFileOutput {
 			e.printStackTrace();
 		} 
 		
-		File file2 = new File(outputDir + outputTransmissionFileName);
-		FileWriter outputfile2;
-		
-		try {
-			outputfile2 = new FileWriter(file2, true);
-			CSVWriter writer2 = new CSVWriter(outputfile2); 
-			
-			String[] header2 = { 
-					"CountTransmissions", 
-					"InfectionDuration",
-					"RiskGroup"};
-			writer2.writeNext(header2);
-			writer2.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		File file2 = new File(outputDir + outputTransmissionFileName);
+//		FileWriter outputfile2;
+//		
+//		try {
+//			outputfile2 = new FileWriter(file2, true);
+//			CSVWriter writer2 = new CSVWriter(outputfile2); 
+//			
+//			String[] header2 = { 
+//					"CountTransmissions", 
+//					"InfectionDuration",
+//					"RiskGroup"};
+//			writer2.writeNext(header2);
+//			writer2.close();
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		
 		
 	}
@@ -276,7 +279,8 @@ public class CustomFileOutput {
 
 			double ProbSymptomaticMSM,
 
-			double ScreenIntervalMSM,
+			double ScreenIntervalMeanMSM,
+			double ScreenIntervalVarMSM,
 
 
 			double delayToSeekCareMSM,
@@ -292,6 +296,9 @@ public class CustomFileOutput {
 			double percentResistantA,
 			int beginImportingB,
 			double importingBInterval,
+			double probDevelopResistanceAExponent,
+			double probDevelopResistanceBExponent,
+			
 			double DSTsensitivity,
 			double DSTspecificity,
 
@@ -398,7 +405,9 @@ public class CustomFileOutput {
 
 						String.valueOf(ProbSymptomaticMSM),
 
-						String.valueOf(ScreenIntervalMSM),
+						String.valueOf(ScreenIntervalMeanMSM),
+						String.valueOf(ScreenIntervalVarMSM),
+
 
 						String.valueOf(delayToSeekCareMSM),
 
@@ -412,6 +421,9 @@ public class CustomFileOutput {
 						String.valueOf(percentResistantA),
 						String.valueOf(beginImportingB),
 						String.valueOf(importingBInterval),
+						String.valueOf(probDevelopResistanceAExponent),
+						String.valueOf(probDevelopResistanceBExponent),
+						
 						String.valueOf(DSTsensitivity),
 						String.valueOf(DSTspecificity),
 

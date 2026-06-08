@@ -20,8 +20,19 @@ public class CalibratedParameters {
 	
 	
 	
-	CalibratedParameters(){
-		path = "/Users/me597/Documents/MSM_calibrated_params/";
+	CalibratedParameters(String expdir){
+		//the root of the path depends on the machine. these are for my laptop and desktop respectively.
+		String root = "/Users/me597/Documents/";
+		//String root = "/usr/local/";
+		
+		if (expdir.contains("parcal")) {
+			path = root + "MSM_parcalibrated_params/2026-05-09";
+
+		} else {
+			path = root + "/MSM_final_calibrated_params/2026-05-09";
+
+		}
+		
 	}
 	
 	public List<Integer> getInitialInfectedValues() throws IOException {
@@ -119,14 +130,23 @@ public class CalibratedParameters {
 		
 	}
 	
-	public List<Double> getScreenIntervalMSMValues() throws IOException{
+	public List<Double> getScreenIntervalMeanMSMValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_MSM_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_mean_MSM_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
+	}
 		
+public List<Double> getScreenIntervalVarMSMValues() throws IOException{
+			//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
+			
+			List<String> dataAsStrings = new ArrayList<String>();
+			dataAsStrings = Files.readAllLines(Paths.get(path + "screen_interval_var_MSM_resample.txt"));		
+			List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+			return dataAsDoubles;
+			
 	}
 	public List<Double> getScreenIntervalMSWValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
@@ -225,7 +245,7 @@ public class CalibratedParameters {
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "risk_group_transfer_prop_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "activity_group_transfer_prop_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		
@@ -235,7 +255,7 @@ public class CalibratedParameters {
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles
 		
 		List<String> dataAsStrings = new ArrayList<String>();
-		dataAsStrings = Files.readAllLines(Paths.get(path + "risk_group_transmission_ratio_resample.txt"));		
+		dataAsStrings = Files.readAllLines(Paths.get(path + "activity_group_transmission_ratio_resample.txt"));		
 		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
 		return dataAsDoubles;
 		
@@ -275,6 +295,23 @@ public class CalibratedParameters {
 	}
 	
 	
+	
+	
+	
+	
+	public List<Double> getProbDevelopResistanceAExponentValues() throws IOException{
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get(path + "prob_develop_resistance_A_exponent_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+	}
+	
+	public List<Double> getProbDevelopResistanceBExponentValues() throws IOException{
+		List<String> dataAsStrings = new ArrayList<String>();
+		dataAsStrings = Files.readAllLines(Paths.get(path + "prob_develop_resistance_B_exponent_resample.txt"));		
+		List<Double> dataAsDoubles = dataAsStrings.stream().map(s -> Double.parseDouble(s)).collect(Collectors.toList());
+		return dataAsDoubles;
+	}
 	
 	public List<Double> getDSTsensitivityValues() throws IOException{
 		//reads the resampled ScreenInterval values from file, and gives them back as a list of doubles

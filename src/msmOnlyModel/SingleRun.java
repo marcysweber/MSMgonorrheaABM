@@ -8,7 +8,10 @@ import cern.jet.random.Beta;
 import cern.jet.random.Exponential;
 import cern.jet.random.Normal;
 import cern.jet.random.Uniform;
+import cern.jet.random.Gamma;
 import cern.jet.random.engine.RandomEngine;
+import org.apache.commons.math3.distribution.GammaDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
 import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.parameter.Parameters;
@@ -143,14 +146,12 @@ public ThreadSafeRandomHelper registerDistributions() {
 			Uniform symptomaticUniform = new Uniform(0.0,1.0, eng);
 			randomHelper.registerDistribution("symptomaticUniform", symptomaticUniform);
 			
-			Normal screenIntervalMSMNormal = new Normal(parameters.getDouble("screen_interval_MSM")*52, 52*parameters.getDouble("screen_interval_MSM")/10, eng);
-			randomHelper.registerDistribution("screenIntervalMSMNormal", screenIntervalMSMNormal);
-			Uniform screenFirstValueMSMUniform = new Uniform(0, parameters.getDouble("screen_interval_MSM")*52, eng);
-			randomHelper.registerDistribution("screenFirstValueMSMUniform", screenFirstValueMSMUniform);
+			
+			this.makeScreenIntervalDistributions(randomHelper, eng);
+			
 			
 			Normal activityGroupTransferPropNormal = new Normal(parameters.getDouble("activity_group_transfer_prop"), parameters.getDouble("activity_group_transfer_prop")/10, eng);
 			randomHelper.registerDistribution("activityGroupTransferPropNormal", activityGroupTransferPropNormal);
-		
 			
 			Uniform sequelaeUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("sequelaeUniform", sequelaeUniform);
@@ -189,12 +190,18 @@ public ThreadSafeRandomHelper registerDistributions() {
 			randomHelper.registerDistribution("delayToRetreatmentMSMExp", delayToRetreatmentMSMExp);
 			
 		
-			
-			
+			double mean_delay_to_clearance = 3/7; //mean of three days, scaled to the week
+			Exponential delayToClearanceExp = new Exponential(1/mean_delay_to_clearance, eng);
+			randomHelper.registerDistribution("delayToClearanceExp", delayToClearanceExp);
 			
 			
 			Uniform testsUniform = new Uniform(0.0, 1.0, eng);
 			randomHelper.registerDistribution("testsUniform", testsUniform);
+			
+			
+			//distribution for doubling or tripling testing cost, to reflect multisite testing
+			Uniform testSitesUniform = new Uniform(0.0, 3.0, eng);
+			randomHelper.registerDistribution("testSitesUniform", testSitesUniform);
 			
 			return randomHelper;
 			
@@ -216,6 +223,27 @@ public Observer createObserver(int seed, String counterfactual, String resistanc
 			scheduleAddX(yearX, observer);
 			this.observer = observer;
 			return observer;
+
+}
+
+public void makeScreenIntervalDistributions(ThreadSafeRandomHelper randomHelper, RandomEngine eng) {
+
+	double mean = parameters.getDouble("screen_interval_mean_MSM") * 52;
+	double variance = parameters.getDouble("screen_interval_var_MSM") * 52;
+	
+	Uniform screenIntervalUniform = new Uniform(0, mean, eng);
+	randomHelper.registerDistribution("screeningIntervalUniform", screenIntervalUniform);
+
+	double lambda = 1 / (variance / mean);
+	double alpha = (mean * mean) / variance;
+	double scale = 1.0 / lambda;
+
+	Gamma screenIntervalMSMGamma = new Gamma(alpha, lambda, eng);
+	randomHelper.registerDistribution("screeningIntervalMSMGamma", screenIntervalMSMGamma);
+
+	JDKRandomGenerator rng = new JDKRandomGenerator(parameters.getInteger("seed"));
+	GammaDistribution cmScreenIntervalMSMGamma = new GammaDistribution(rng, alpha, scale);
+	randomHelper.registerDistribution("screeningIntervalMSMGamma", cmScreenIntervalMSMGamma);
 
 }
 
@@ -364,6 +392,10 @@ public ChangeActivityGroups riskGroupChanger() {
 
 public void assignSchedule(ThreadSafeSchedule schedule) {
 	this.schedule = schedule; //for testing
+}
+
+public void assignRandomHelper(ThreadSafeRandomHelper randomHelper) {
+	this.randomHelper = randomHelper;
 }
 
 public void assignOutputter(CustomFileOutput outputter) {

@@ -29,6 +29,7 @@ public class Infection {
 	private double naturalRecoveryTime;
 	private ThreadSafeRandomHelper randomHelper;
 	private String riskGroup;
+	private Boolean reinfection; //true if this is a reinfection during another infection
 	
 	//treatment history
 	private boolean inTreatment;
@@ -61,7 +62,7 @@ public class Infection {
 
 
 	
-	public Infection(Indiv host, Parameters parameters, String strain, boolean starting, double naturalRecoveryTime, String subPop, ThreadSafeRandomHelper randomHelper, double currentTick) {//different for start of sim
+	public Infection(Indiv host, Parameters parameters, String strain, boolean starting, double naturalRecoveryTime, String subPop, ThreadSafeRandomHelper randomHelper, double currentTick, Boolean reinfection) {//different for start of sim
 		this.host = host;
 		this.riskGroup = host.getRiskGroup();
 		this.strain = strain;
@@ -84,7 +85,7 @@ public class Infection {
 		this.parameters = parameters;
 		this.starting = starting;
 		this.randomHelper = randomHelper;
-
+		this.reinfection = reinfection;
 		this.symptoms = assignSymptoms(starting);
 		
 		this.naturalRecoveryTime = naturalRecoveryTime;
@@ -336,11 +337,11 @@ public class Infection {
 		return soughtCare;
 	}
 	
-	public void attemptA() {
+	public void recordAttemptA() {
 		attemptedA++;
 	}
 
-	public void attemptB() {
+	public void recordAttemptB() {
 		attemptedB++;
 	}
 	
@@ -422,7 +423,34 @@ public class Infection {
 	}
 	
 	public void recordDiagnosticTest() {
-		diagnosticTests++;
+		Uniform testSitesUniform = (Uniform) this.randomHelper.getDistribution("testSitesUniform");
+		double value = testSitesUniform.nextDouble();
+		//System.out.println(value);
+		if (value < 1.0) {
+			//only a urogenital test
+			//System.out.println("only a urogenital test");
+			diagnosticTests++;
+
+		} else if (value < 2.0) {
+			//urogenital test + another site
+			//System.out.println("urogenital test + another site");
+
+			diagnosticTests++;
+			diagnosticTests++;
+
+		} else {
+			//testing at all three sites (urogenital, pharynx, rectum)
+			//System.out.println("testing at all three sites (urogenital, pharynx, rectum)");
+
+			diagnosticTests++;
+			diagnosticTests++;
+			diagnosticTests++;
+		}
+		
+		
+		
+		
+		
 	}
 	
 	
@@ -458,10 +486,15 @@ public class Infection {
 			succeededAandB = true;
 		} else if (treatment.contains("A")) {
 			succeededA = true;
+			if (attemptedA<1) {
+				//System.out.println("Successful treatment " + treatment + " without recorded attempt");
+				//System.out.println("reinfection? " + reinfection);
+			}
 		} else if (treatment.contains("B")) {
 			succeededB = true;
 			if (attemptedB<1) {
-				System.out.print("issue");
+				//System.out.println("Successful treatment " + treatment + " without recorded attempt");
+				//System.out.println("reinfection? " + reinfection);
 			}
 		} else if (treatment.contains("X")) {
 			succeededX = true;

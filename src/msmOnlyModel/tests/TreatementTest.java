@@ -66,9 +66,10 @@ public class TreatementTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
-		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
-		testRun.setUp(1000);
+				7,//treatmentEcost);
+				0,
+				0);		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		//testRun.setUp(1000);
 		
 		return testRun;
 	}
@@ -81,23 +82,59 @@ public class TreatementTest {
 	@Test
 	public void testX() {
 
-		for (int i = 0; i < 1; i++) {
+		//for (int i = 0; i < 1; i++) {
 
-			SingleRun testRun = setUpTreatmentTest(i);
+			//SingleRun testRun = setUpTreatmentTest(i);
+			//testRun.testSetUp(52);
 
-			for (int j = 0; j < 10; j++) {
-				testRun.schedule().execute();
-			}
 
-			testRun.go();
+			//for (int j = 0; j < 10; j++) {
+			//	testRun.schedule().execute();
+			//}
 
-			if (testRun.observer().attemptsX() != testRun.observer().sucessesX()) {
+			//testRun.go();
 
-				System.out.println(testRun.observer().attemptsX());
-				System.out.println(testRun.observer().sucessesX());
-			}
+			//if (testRun.observer().attemptsX() != testRun.observer().sucessesX()) {
 
+			//	System.out.println(testRun.observer().attemptsX());
+			//	System.out.println(testRun.observer().sucessesX());
+		//	}
+
+		//}
+	}
+	
+	
+	@Test
+	public void testClearanceDelay() {
+		SingleRun testRun = setUpTreatmentTest(3);
+		
+		testRun.testSetUp(52);
+		
+		testRun.createIndivs(100);
+		testRun.observer().setPopulation(testRun.population());
+		
+		System.out.println(testRun.observer().calcPrev());
+
+		Indiv indiv = testRun.population().msm().get(20);
+		System.out.println("The selected indiv: " + indiv.hashCode());
+		
+		indiv.infect("none");
+		
+		System.out.println(testRun.observer().calcPrev());
+		
+		Treatment treatment = new Treatment(indiv.myInfection(), testRun.observer());
+		treatment.prescribeDrugA();
+		
+		System.out.println(testRun.observer().calcPrev());
+
+		for (int i = 0; i < 100; i++) {
+			testRun.schedule().execute();
 		}
+		
+		System.out.println(testRun.observer().calcPrev());
+		System.out.println(indiv.infectious());
+
+						
 	}
 
 }

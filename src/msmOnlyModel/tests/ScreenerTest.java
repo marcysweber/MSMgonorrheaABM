@@ -36,14 +36,15 @@ public class ScreenerTest {
 				1000,//endtime
 				1, //seed
 				"combo", //resistance
-				"none", //counterfactual
+				"test", //counterfactual
 				10, //yearX
 				10, //initial infected
 				0.1, //propHighRisk
 				10, //transmission
 				1 , //recoveryLambda
 				0.5, //probSymptomatic
-				2, //screenInterval
+				2, //screenIntervalmean
+				2, //screenIntervalVar
 				1, //delaytoseekcare
 				2, //delaytoretreatment
 				1.0,//assortativity
@@ -52,6 +53,9 @@ public class ScreenerTest {
 				25, //amount resistant A
 				10, //being importing B
 				10,//importing B interval
+				-0.1,//probDevelopResistanceAExponent
+				-0.1,//probDevelopResistanceBExponent
+
 				95, //sensitivity
 				97,//specificity
 				1, //care cost
@@ -60,7 +64,9 @@ public class ScreenerTest {
 				4, //treatmentAcost
 				5, //treatmentBcost
 				6, //treatmentXcost
-				7);//treatmentEcost);
+				7,//treatmentEcost);
+				0,
+				0);	
 		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
 		testRun.setUp(52);
 		
@@ -69,6 +75,46 @@ public class ScreenerTest {
 	
 	@Test
 	public void test() {
+		BatchRun testBatch = new BatchRun("GISP", "combo");
+		Parameters params = testBatch.setParameters(1,//runNumber
+				1000,//endtime
+				1, //seed
+				"combo", //resistance
+				"test", //counterfactual
+				10, //yearX
+				10, //initial infected
+				0.1, //propHighRisk
+				10, //transmission
+				1 , //recoveryLambda
+				0.5, //probSymptomatic
+				2, //screenIntervalmean
+				2, //screenIntervalVar
+				1, //delaytoseekcare
+				2, //delaytoretreatment
+				1.0,//assortativity
+				0.1,//riskGroupTransferProp
+				0.5,//riskGroupTransmissionRatio
+				25, //amount resistant A
+				10, //being importing B
+				10,//importing B interval
+				-0.1,//probDevelopResistanceAExponent
+				-0.1,//probDevelopResistanceBExponent
+
+				95, //sensitivity
+				97,//specificity
+				1, //care cost
+				2,//testcost
+				3,//straintestcost
+				4, //treatmentAcost
+				5, //treatmentBcost
+				6, //treatmentXcost
+				7,//treatmentEcost);
+				0,
+				0);	
+		SingleRun testRun = new SingleRun("/Users/me597/Documents/MSMoutput/tests", params);
+		testRun.setUp(52);
+		
+		
 	}
 
 }

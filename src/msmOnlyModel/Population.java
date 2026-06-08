@@ -126,17 +126,17 @@ public class Population {
 	}
 	
 	public Stream <Indiv> allInfectious(){
-		return allIndivs().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
+		return allIndivs().filter(indiv -> indiv.getState()==1).unordered();
 	}
 	
 	
 	public Stream <Indiv> lowRiskInfected(){
-		return lowActivityGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
+		return lowActivityGroup.stream().filter(indiv -> indiv.getState()==1).unordered();
 
 	}
 	
 	public Stream <Indiv> highRiskInfected(){
-		return highActivityGroup.stream().filter(indiv -> indiv.getState()==1).collect(Collectors.toList()).stream().unordered();
+		return highActivityGroup.stream().filter(indiv -> indiv.getState()==1).unordered();
 
 	}
 	
@@ -150,7 +150,7 @@ public class Population {
 	}
 	
 	public Stream<Indiv> msmInfected(){
-		return msmList.stream().filter(indiv -> indiv.infectious()).collect(Collectors.toList()).stream().unordered();
+		return msmList.stream().filter(indiv -> indiv.infectious()).unordered();
 	}
 	
 	public void add(Indiv indiv) {

@@ -62,12 +62,88 @@ public class Treatment {
 		this.removedAandB = observer.getSurveillance().getRemovedAandB();
 	}
 	
+	public void scheduleClearance(String treatment) {
+		//even if the treatment is successful,
+		//the indiv remains infectious for an average of 3 days
+		
+		Indiv indiv = this.infection.host();
+		
+		Exponential delayToClearanceExp = null;
+		delayToClearanceExp = (Exponential) randomHelper.getDistribution("delayToClearanceExp");
+		double thisDelay = delayToClearanceExp.nextDouble();
+		ScheduleParameters schparams = ScheduleParameters.createOneTime(thisDelay + indiv.tickNow());
+
+		schedule.schedule(schparams, indiv, "recoverOrDevelopResistance", treatment);
+	}
+
+	
+	public void prescribeDrugA() {
+		//System.out.println("tryA");
+
+		boolean success = administerA();
+		
+		if (success) {
+			this.scheduleClearance("A");
+		} else if (infection.symptoms()) {
+			symptomaticTreatmentFailure("A");
+		} else { // if asymptomatic, true fail
+			fail(infection.host());
+		}
+	}
+
+
+	public void prescribeDrugB() {
+		//System.out.println("tryA");
+
+		boolean success = administerB();
+
+		if (success) {
+			this.scheduleClearance("B");
+		} else if (infection.symptoms()) { // if symptomatic, known failure, try again
+			symptomaticTreatmentFailure("B");
+		} else { // if asymptomatic, true fail
+			fail(infection.host());
+		}
+	}
+	
+	public void prescribeAandBTogether() {
+		boolean a = administerA();
+		boolean b = administerB();
+	
+		if (a || b) {
+			
+			this.scheduleClearance("AandB");
+			
+		} else if (infection.symptoms()) {
+			symptomaticTreatmentFailure("AandB");
+		} else {
+			fail(infection.host());
+		}
+		
+	}
+	
+
+	public void prescribeDrugXorE() {
+		
+		addedX = observer.getAddedX();
+		
+		if (addedX) {
+			administerX();
+		} else {
+			//if no X, what do?
+			administerE();
+
+			}
+			
+	}
+	
+	
 	
 	public boolean administerA() {
 		//System.out.println("adminA");
 		
 		boolean success = false;
-		infection.attemptA();
+		infection.recordAttemptA();
 
 		if (infection.susceptibleToA()) {
 			success = true;
@@ -84,25 +160,11 @@ public class Treatment {
 		return success;
 	}
 	
-	public void tryDrugA() {
-		//System.out.println("tryA");
-
-		boolean success = administerA();
-		
-		if (success) {
-			infection.host().recoverOrDevelopResistance("A");
-		} else if (infection.symptoms()) {
-			symptomaticTreatmentFailure("A");
-		} else { // if asymptomatic, true fail
-			fail(infection.host());
-		}
-	}
-	
 	public boolean administerB() {
 		//System.out.println("adminB");
 
 		boolean success = false;
-		infection.attemptB();
+		infection.recordAttemptB();
 		
 		if (infection.susceptibleToB()) {
 			success = true;
@@ -119,67 +181,23 @@ public class Treatment {
 		
 		return success;
 	}
-
-	public void tryDrugB() {
-		//System.out.println("tryA");
-
-		boolean success = administerB();
-
-		if (success) {
-			infection.host().recoverOrDevelopResistance("B");
-		} else if (infection.symptoms()) { // if symptomatic, known failure, try again
-			symptomaticTreatmentFailure("B");
-		} else { // if asymptomatic, true fail
-			fail(infection.host());
-		}
-	}
 	
-	public void tryAandBTogether() {
-		boolean a = administerA();
-		boolean b = administerB();
-	
-		if (a || b) {
-			
-			infection.host().recoverOrDevelopResistance("AandB");
-			
-		} else if (infection.symptoms()) {
-			symptomaticTreatmentFailure("AandB");
-		} else {
-			fail(infection.host());
-		}
-		
-	}
-	
-	public boolean treatWithX() {
+	public boolean administerX() {
 		boolean success = true;
-		infection.host().actuallyRecoverwTreatment("X");
+		scheduleClearance("X");
 		
 		return success;
 	}
 	
-	public boolean treatWithE() {
+	public boolean administerE() {
 		boolean success = true;
-		infection.host().actuallyRecoverwTreatment("E");
+		scheduleClearance("E");
 		
 		return success;
 	}
 	
 
 
-	public void tryDrugXorE() {
-		
-		addedX = observer.getAddedX();
-		
-		if (addedX) {
-			treatWithX();
-		} else {
-			//if no X, what do?
-			treatWithE();
-
-			}
-			
-	}
-	
 
 	public void treat() throws Exception {
 
@@ -191,7 +209,7 @@ public class Treatment {
 		if (infection.current()) {
 
 			if (schedule.getTickCount() < 520) {
-				tryDrugA();
+				prescribeDrugA();
 			} else {
 
 				//sweeps and non-AMR runs
@@ -254,19 +272,19 @@ public class Treatment {
 	public void treatGISPEmp() throws Exception{
 
 		if (!removedA && !removedB && !removedAandB) { //default, nothing removed yet
-			tryDrugA();
+			prescribeDrugA();
 			
 		} else if (removedA && !removedB) { //if we've removed A but not B
-			tryDrugB();
+			prescribeDrugB();
 			
 		} else if (removedB && !removedA) {
-			tryDrugA();
+			prescribeDrugA();
 			
 		} else if (removedA && removedB && !removedAandB) { // if we've remove A and B separately but not combo therapy
-			tryAandBTogether();
+			prescribeAandBTogether();
 			
 		} else if (removedA && removedB && removedAandB) {
-			tryDrugXorE();
+			prescribeDrugXorE();
 			
 		} else {
 			System.out.println("RemovedA:");
@@ -292,21 +310,21 @@ public class Treatment {
 			if (addedX) { //if nothing has been removed and X is added...
 				if (randomValue < 0.33333333) {
 					// treat with drug A first
-					tryDrugA();
+					prescribeDrugA();
 
 				} else if (randomValue < 0.66666667){
-					tryDrugB();
+					prescribeDrugB();
 				} else {
 					// treat with drug B first
-					tryDrugXorE();
+					prescribeDrugXorE();
 				}
 			} else { //before X is added to possible treatments
 				if (randomValue < 0.5) {
 					// treat with drug A first
-					tryDrugA();
+					prescribeDrugA();
 
 				} else{
-					tryDrugB();
+					prescribeDrugB();
 				}
 			}
 			
@@ -314,34 +332,34 @@ public class Treatment {
 			
 			if (addedX) { //if A has been removed and X is added...
 				if (randomValue < 0.5) {
-					tryDrugB();
+					prescribeDrugB();
 				} else {
-					tryDrugXorE();
+					prescribeDrugXorE();
 				}
 			} else { //before X is added to possible treatments
-					tryDrugB();
+					prescribeDrugB();
 			}
 			
 		} else if (removedB && !removedA) {
 			if (addedX) { //if A has been removed and X is added...
 				if (randomValue < 0.5) {
-					tryDrugA();
+					prescribeDrugA();
 				} else {
-					tryDrugXorE();
+					prescribeDrugXorE();
 				}
 			} else { //before X is added to possible treatments
-					tryDrugA();
+					prescribeDrugA();
 			}
 			
 			
 		} else if (removedA && removedB && !removedAandB) { // if we've remove A and B separately but not combo therapy
 			if (addedX) {
-				tryDrugXorE();
+				prescribeDrugXorE();
 			} else {
-				tryAandBTogether();
+				prescribeAandBTogether();
 			}
 		} else if (removedA && removedB && removedAandB) {
-			tryDrugXorE();
+			prescribeDrugXorE();
 		} else {
 			System.out.println("RemovedA:");
 			System.out.println(removedA);
@@ -363,21 +381,21 @@ public class Treatment {
 		if (addedX) {
 			if (randomValue < 0.33333333) {
 				// treat with drug A first
-				tryDrugA();
+				prescribeDrugA();
 
 			} else if (randomValue < 0.66666667){
-				tryDrugB();
+				prescribeDrugB();
 			} else {
 				// treat with drug B first
-				tryDrugXorE();
+				prescribeDrugXorE();
 			}
 		} else { //before X is added to possible treatments
 			if (randomValue < 0.5) {
 				// treat with drug A first
-				tryDrugA();
+				prescribeDrugA();
 
 			} else{
-				tryDrugB();
+				prescribeDrugB();
 			}
 		}
 	}
@@ -404,11 +422,11 @@ public class Treatment {
 		String susProfile = testing.drugSusceptibilityTest();
 
 		if (susProfile.contains("A")) {
-			tryDrugA();
+			prescribeDrugA();
 		} else if (susProfile.contains("B")) {
-			tryDrugB();
+			prescribeDrugB();
 		} else {
-			tryDrugXorE();
+			prescribeDrugXorE();
 		}
 	}
 	
@@ -421,7 +439,7 @@ public class Treatment {
 			treatDrugSusTestingPerfect();
 		} else { // only get re-treated if BOTH resistant and symptomatic
 			//System.out.println("non-adherent");
-			tryDrugA();
+			prescribeDrugA();
 
 		}
 
@@ -481,7 +499,7 @@ public class Treatment {
 					boolean successA = administerA();
 				if (successA) {
 					success = "A";
-					infection.host().recoverOrDevelopResistance(success);
+					this.scheduleClearance(success);
 
 				} else {
 					// schedule retreatment with X
@@ -492,14 +510,14 @@ public class Treatment {
 				
 				if (successB) {
 					success = "B";
-					infection.host().recoverOrDevelopResistance(success);
+					this.scheduleClearance(success);
 
 				} else {
 					// schedule retreatment with X
 					schedule.schedule(schparams, this, "retreat", "X");
 				}
 			} else {
-				tryDrugXorE();
+				prescribeDrugXorE();
 				
 			}
 
@@ -514,32 +532,32 @@ public class Treatment {
 		if (addedX) {
 			if (randomValue < 0.33333333) {
 				// treat with drug A first
-				tryDrugA();
+				prescribeDrugA();
 
 			} else if (randomValue < 0.66666667){
-				tryDrugB();
+				prescribeDrugB();
 			} else {
 				// treat with drug B first
-				tryDrugXorE();
+				prescribeDrugXorE();
 			}
 		} else { //before X is added to possible treatments
 			if (randomValue < 0.5) {
 				// treat with drug A first
-				tryDrugA();
+				prescribeDrugA();
 
 			} else{
-				tryDrugB();
+				prescribeDrugB();
 			}
 		}
 		
 	}
 
 	public void treatAfterSwitchB() {
-		tryDrugB();
+		prescribeDrugB();
 	}
 
 	public void treatAfterSwitchX() {
-		tryDrugXorE();
+		prescribeDrugXorE();
 	}
 
 	public void whichTestOfCure() {
@@ -556,13 +574,13 @@ public class Treatment {
 		//indiv.abstain();
 		if (infection.current()) {
 		
-		infection.attemptA();
+		infection.recordAttemptA();
 
 		// everybody incurs the cost of getting re-tested
 
 		if (infection.susceptibleToA()) {
 			infection.recordDiagnosticTest();
-			infection.host().recoverOrDevelopResistance("A");
+			this.scheduleClearance("A");
 
 		} else {
 			// initial treatment failure
@@ -596,11 +614,11 @@ public class Treatment {
 			
 			infection.recordVisitClinic();
 			if (treatment.equals("B")) {
-				infection.attemptB();
+				infection.recordAttemptB();
 
 				if (infection.susceptibleToB()) {
 					infection.recordDiagnosticTest();
-					infection.host().recoverOrDevelopResistance("B");
+					this.scheduleClearance("B");
 				} else {
 					// schedule another retreatment
 					//ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
@@ -624,7 +642,7 @@ public class Treatment {
 
 			} else if (treatment.equals("X")) {
 				infection.recordDiagnosticTest();
-				tryDrugXorE();
+				prescribeDrugXorE();
 			}
 		}
 	}
@@ -639,7 +657,7 @@ public class Treatment {
 		if (randomValue < adherence) { // get retested and retreated if appropriate
 			treatTestOfCurePerfect();
 		} else { // only get re-treated if BOTH resistant and symptomatic
-			tryDrugA();
+			prescribeDrugA();
 
 		}
 
